@@ -1,5 +1,7 @@
 package com.oap200.app;
 
+import java.lang.LiveStackFrame.PrimitiveSlot;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,9 +11,12 @@ public class App {
 
 	public static void main(String[] args) throws Exception {
 		new App().proceed();
+		PrimitiveSlot
 	}
+	
 
 	public void proceed() {
 		LOGGER.info("Hello World!");
 	}
 }
+sug kuken min
