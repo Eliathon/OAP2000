@@ -19,4 +19,3 @@ public class App {
 		LOGGER.info("Hello World!");
 	}
 }
-sug kuken min
