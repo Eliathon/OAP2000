@@ -13,7 +13,6 @@ public class App {
 		new App().proceed();
 		PrimitiveSlot
 	}
-	
 
 	public void proceed() {
 		LOGGER.info("Hello World!");
