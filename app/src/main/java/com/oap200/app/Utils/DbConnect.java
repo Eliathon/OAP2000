@@ -2,7 +2,7 @@
  * Created by Sindre
  */
 
-package com.oap200.app.Utils;
+package com.oap200.app.utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
