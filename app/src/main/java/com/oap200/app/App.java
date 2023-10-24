@@ -1,20 +1,32 @@
+/*
+ * Created by Sindre
+ */
+
 package com.oap200.app;
 
-import java.lang.LiveStackFrame.PrimitiveSlot;
+import com.oap200.app.Utils.DbConnect;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import java.sql.SQLException;
 
 public class App {
-	@SuppressWarnings("unused")
-	private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
+	public static void main(String[] args) {
+		try {
+			DbConnect db = new DbConnect();
+			Connection myConnection = db.getConnection();
+			Statement myStmt = myConnection.createStatement();
+			ResultSet myRs = myStmt.executeQuery("select * from employees");
 
-	public static void main(String[] args) throws Exception {
-		new App().proceed();
-		PrimitiveSlot
-	}
+			// Example: Print out the result set
+			while (myRs.next()) {
+				System.out.println(myRs.getString("email"));
+			}
 
-	public void proceed() {
-		LOGGER.info("Hello World!");
+		} catch (SQLException | ClassNotFoundException ex) {
+			ex.printStackTrace();
+		}
 	}
 }
