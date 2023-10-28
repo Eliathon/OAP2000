@@ -1,3 +1,5 @@
+// Created by Sindre
+
 package com.oap200.app.models;
 
 import com.oap200.app.utils.DbConnect;
@@ -29,7 +31,6 @@ public class OrdersDAO {
                 orders.add(myRs.getString("comments"));
                 orders.add(myRs.getString("customerNumber"));
             }
-
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
