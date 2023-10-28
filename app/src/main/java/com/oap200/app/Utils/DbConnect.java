@@ -1,6 +1,4 @@
-/*
- * Created by Sindre
- */
+// Created by Sindre
 
 package com.oap200.app.utils;
 

@@ -1,11 +1,9 @@
-/*
- * Created by Sindre
- */
+// Created by Sindre
 
 package com.oap200.app;
 
-import com.oap200.app.swing.MainFrame;
 import com.oap200.app.utils.DbConnect;
+import com.oap200.app.views.MainFrame;
 
 import javax.swing.SwingUtilities;
 
