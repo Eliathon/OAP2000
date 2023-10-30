@@ -1,6 +1,6 @@
 // Created by Sindre
 
-package com.oap200.app.views;
+package com.oap200.app.utils;
 
 import java.awt.Color;
 import java.awt.Dimension;
