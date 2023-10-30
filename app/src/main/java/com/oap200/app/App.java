@@ -13,7 +13,7 @@ import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+//test kristian, bare å fjerne
 public class App {
 	public static void main(String[] args) {
 		List<String> emails = new ArrayList<>();
@@ -40,4 +40,4 @@ public class App {
 			frame.setVisible(true);
 		});
 	}
-}
+} 
