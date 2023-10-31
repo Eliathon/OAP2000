@@ -5,7 +5,6 @@ package com.oap200.app.views;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
@@ -13,7 +12,7 @@ public class EmployeeManagement {
     private JFrame frame;
     private Connection connection;
     private JTable table;
-    private JTextField employeeNumberSearchField, searchField, firstNameField, lastNameField, emailField, jobTitleField;
+    private JTextField employeeIdField, employeeNumberSearchField, searchField, firstNameField, lastNameField, emailField, jobTitleField;
     private JButton addButton, updateButton, deleteButton, refreshButton, searchButton;
 
     public EmployeeManagement() {
@@ -27,7 +26,6 @@ public class EmployeeManagement {
         String password = "";
 
         try {
-            // Load MySQL JDBC Driver
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException | ClassNotFoundException e) {
@@ -37,29 +35,28 @@ public class EmployeeManagement {
 
     private void createUI() {
         frame = new JFrame("Employee Management");
-        frame.setSize(1100, 600); // Adjusted width for better layout
+        frame.setSize(1100, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
     
         JPanel inputPanel = new JPanel(new BorderLayout());
-        
-        // Separating the search panel
+
         JPanel searchPanel = new JPanel(new FlowLayout());
-        JTextField employeeNumberSearchField = new JTextField(10);
+        employeeNumberSearchField = new JTextField(10);
         JButton employeeNumberSearchButton = new JButton("Search by Employee Number");
         searchField = new JTextField(15);
         searchButton = new JButton("Search by Last Name");
-        
+
         searchPanel.add(new JLabel("Employee Number:"));
         searchPanel.add(employeeNumberSearchField);
         searchPanel.add(employeeNumberSearchButton);
         searchPanel.add(new JLabel("Last Name:"));
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
-    
-        // Creating the add/update employee panel
-        JPanel employeeInputPanel = new JPanel(new GridLayout(2, 7)); 
-    
+
+        JPanel employeeInputPanel = new JPanel(new GridLayout(3, 7)); 
+
+        employeeIdField = new JTextField(10);
         firstNameField = new JTextField(10);
         lastNameField = new JTextField(10);
         emailField = new JTextField(20);
@@ -68,7 +65,9 @@ public class EmployeeManagement {
         updateButton = new JButton("Update");
         deleteButton = new JButton("Delete");
         refreshButton = new JButton("Refresh");
-    
+
+        employeeInputPanel.add(new JLabel("Employee ID:"));
+        employeeInputPanel.add(employeeIdField);
         employeeInputPanel.add(new JLabel("First Name:"));
         employeeInputPanel.add(firstNameField);
         employeeInputPanel.add(new JLabel("Last Name:"));
@@ -81,27 +80,25 @@ public class EmployeeManagement {
         employeeInputPanel.add(updateButton);
         employeeInputPanel.add(deleteButton);
         employeeInputPanel.add(refreshButton);
-    
-        // Add panels to the main input panel
+
         inputPanel.add(searchPanel, BorderLayout.NORTH);
         inputPanel.add(employeeInputPanel, BorderLayout.CENTER);
-    
+
         table = new JTable();
         refreshTable();
-    
+
         JScrollPane scrollPane = new JScrollPane(table);
-    
+
         frame.add(inputPanel, BorderLayout.NORTH);
         frame.add(scrollPane, BorderLayout.CENTER);
-    
-        // Adjusted the search button's action to differentiate between employee number and last name search.
+
         employeeNumberSearchButton.addActionListener(e -> searchEmployeeByNumber(employeeNumberSearchField.getText()));
         searchButton.addActionListener(e -> searchEmployeeByLastName(searchField.getText()));
         addButton.addActionListener(e -> addEmployee());
         updateButton.addActionListener(e -> updateEmployee());
         deleteButton.addActionListener(e -> deleteEmployee());
         refreshButton.addActionListener(e -> refreshTable());
-    
+
         frame.setVisible(true);
     }
 
@@ -125,7 +122,7 @@ public class EmployeeManagement {
             e.printStackTrace();
         }
     }
-    
+
     private void searchEmployeeByLastName(String lastName) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName, email, jobTitle FROM employees WHERE lastName LIKE ?");
@@ -160,7 +157,38 @@ public class EmployeeManagement {
     }
 
     private void addEmployee() {
-        JOptionPane.showMessageDialog(frame, "Adding employees functionality is not implemented yet.");
+        String employeeId = employeeIdField.getText().trim();
+        String firstName = firstNameField.getText().trim();
+        String lastName = lastNameField.getText().trim();
+        String email = emailField.getText().trim();
+        String jobTitle = jobTitleField.getText().trim();
+        
+        if (employeeId.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || jobTitle.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "All fields are required.");
+            return;
+        }
+
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO employees (employeeNumber, firstName, lastName, email, jobTitle) VALUES (?, ?, ?, ?, ?)");
+            ps.setInt(1, Integer.parseInt(employeeId));
+            ps.setString(2, firstName);
+            ps.setString(3, lastName);
+            ps.setString(4, email);
+            ps.setString(5, jobTitle);
+
+            int result = ps.executeUpdate();
+
+            if (result > 0) {
+                JOptionPane.showMessageDialog(frame, "Employee added successfully!");
+                refreshTable();
+            } else {
+                JOptionPane.showMessageDialog(frame, "Failed to add the employee. Please try again.");
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(frame, "Error: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void updateEmployee() {
