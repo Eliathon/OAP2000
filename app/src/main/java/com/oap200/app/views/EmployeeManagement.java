@@ -22,14 +22,23 @@ public class EmployeeManagement {
     }
 
     private void connectDatabase() {
+        String url = "jdbc:mysql://localhost:3306/classicmodels?useSSL=false&serverTimezone=UTC";
+        String user = "root"; 
+        String password = ""; 
+        
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:employees.db");
-            PreparedStatement ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS employees(id INTEGER PRIMARY KEY, name TEXT, age INTEGER)");
+            // Load MySQL JDBC Driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            
+            connection = DriverManager.getConnection(url, user, password);
+            PreparedStatement ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS employees(id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), age INT)");
             ps.execute();
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
+    
+    
 
     private void createUI() {
         frame = new JFrame("Employee Management");
