@@ -4,7 +4,6 @@ import javax.swing.*;
 
 import java.awt.BorderLayout;
 import java.util.List;
-// TEST
 public class OrderManagementPanel extends JPanel {
 
     private JTextArea textArea = new JTextArea();
