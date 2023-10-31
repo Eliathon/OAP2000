@@ -15,7 +15,7 @@ public class ProductManagementPanel {
     private JTextField productNameField;
 
     public void start() {
-  frame = new JFrame("Product Management");
+        frame = new JFrame("Product Management");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
 
@@ -29,10 +29,9 @@ public class ProductManagementPanel {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Legg til koden her for å håndtere når knappen blir trykket
                 String productName = productNameField.getText();
-                // Gjør noe med produktet, for eksempel lagre det i en database
-                System.out.println("Lagt til produkt: " + productName);
+                System.out.println("Product: " + productName);
+        
             }
         });
 
