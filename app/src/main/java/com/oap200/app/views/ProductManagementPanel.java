@@ -17,6 +17,8 @@ public class ProductManagementPanel {
     private JButton viewButton; // Knapp for å vise produkter
     private JButton addButton;  // Knapp for å legge til produkt
     private JButton deleteButton;  // Knapp for å slette produkt
+    private JTextArea resultTextArea;
+
     private JTextField productNameField;
     private JTextField productCodeField; // Legg til et felt for produktkoden
     private JTextField productLineField; // Legg til et felt for produktlinjen
@@ -26,15 +28,18 @@ public class ProductManagementPanel {
     private JTextField quantityInStockField; // Legg til et felt for antall på lager
     private JTextField buyPriceField; // Legg til et felt for kjøpsprisen
     private JTextField MSRPField; // Legg til et felt for MSRP
-    private JTextArea resultTextArea;
+   
 
     public void start() {
         frame = new JFrame("Product Management");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 500); // Økt høyden for å plassere flere komponenter
+        frame.setSize(1100, 600); // Økt høyden for å plassere flere komponenter
+        frame.setLayout(new BorderLayout());
+ 
+        panel = new JPanel(new GridLayout(0, 2));
 
-        panel = new JPanel();
-        panel.setLayout(new GridLayout(0, 2));
+       
+        JPanel inputPanel = new JPanel(new BorderLayout());
 
         JLabel productNameLabel = new JLabel("Product Name:");
         productNameField = new JTextField();
@@ -125,7 +130,7 @@ public class ProductManagementPanel {
         panel.add(deleteButton);
         panel.add(scrollPane);
 
-        frame.add(panel);
+        frame.add(panel, BorderLayout.NORTH);
         frame.setVisible(true);
     }
 
