@@ -35,7 +35,7 @@ public class OrderManagementPanel extends JPanel {
         repaint();
     }
     
-}
+
 {
 try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
