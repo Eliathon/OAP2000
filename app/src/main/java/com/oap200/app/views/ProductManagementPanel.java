@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import java.math.BigDecimal;
 
+
 public class ProductManagementPanel {
 
     private JFrame frame;
