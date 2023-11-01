@@ -10,6 +10,15 @@ import java.awt.BorderLayout;
 import java.util.List;
 public class OrderManagementPanel extends JPanel {
 
+    private JFrame frame;
+    private JPanel panel;
+    private JButton viewButton; 
+    private JButton addButton;
+    private JButton deleteButton;
+    private JTextField orderNumberField;
+    private JTextField productCodeField;
+    private JTextField quantityOrderedField;
+    private JTextField priceEachField;
     private JTextArea textArea = new JTextArea();
 
     public OrderManagementPanel() {
