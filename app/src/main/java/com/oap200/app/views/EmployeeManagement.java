@@ -12,7 +12,7 @@ public class EmployeeManagement {
     private JFrame frame;
     private Connection connection;
     private JTable table;
-    private JTextField employeeIdField, employeeNumberSearchField, searchField, firstNameField, lastNameField, emailField, jobTitleField;
+    private JTextField employeeIdField, employeeNumberSearchField, searchField, firstNameField, extensionField, lastNameField, emailField, jobTitleField, officeCodeField, reportsToField;
     private JButton addButton, updateButton, deleteButton, refreshButton, searchButton;
 
     public EmployeeManagement() {
@@ -54,17 +54,25 @@ public class EmployeeManagement {
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
-        JPanel employeeInputPanel = new JPanel(new GridLayout(3, 7)); 
+        JPanel employeeInputPanel = new JPanel(new GridLayout(8, 2));
 
         employeeIdField = new JTextField(10);
         firstNameField = new JTextField(10);
         lastNameField = new JTextField(10);
         emailField = new JTextField(20);
         jobTitleField = new JTextField(15);
+        extensionField = new JTextField(10);
+        officeCodeField = new JTextField(10);
+        reportsToField = new JTextField(10);
         addButton = new JButton("Add");
         updateButton = new JButton("Update");
         deleteButton = new JButton("Delete");
         refreshButton = new JButton("Refresh");
+deleteButton.addActionListener(e -> deleteEmployee());
+        refreshButton.addActionListener(e -> refreshTable());
+
+        
+        frame.setVisible(true);
 
         employeeInputPanel.add(new JLabel("Employee ID:"));
         employeeInputPanel.add(employeeIdField);
@@ -76,6 +84,12 @@ public class EmployeeManagement {
         employeeInputPanel.add(emailField);
         employeeInputPanel.add(new JLabel("Job Title:"));
         employeeInputPanel.add(jobTitleField);
+        employeeInputPanel.add(new JLabel("Extension:"));
+        employeeInputPanel.add(extensionField);
+        employeeInputPanel.add(new JLabel("Office Code:"));
+        employeeInputPanel.add(officeCodeField);
+        employeeInputPanel.add(new JLabel("Reports To:"));
+        employeeInputPanel.add(reportsToField);
         employeeInputPanel.add(addButton);
         employeeInputPanel.add(updateButton);
         employeeInputPanel.add(deleteButton);
@@ -104,7 +118,7 @@ public class EmployeeManagement {
 
     private void refreshTable() {
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName, email, jobTitle FROM employees");
+            PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName, email, jobTitle, extension, officeCode, reportsTo FROM employees");
             ResultSet rs = ps.executeQuery();
             populateTableFromResultSet(rs);
         } catch (SQLException e) {
@@ -141,7 +155,10 @@ public class EmployeeManagement {
         columnNames.add("Last Name");
         columnNames.add("Email");
         columnNames.add("Job Title");
-
+        columnNames.add("Extension");
+        columnNames.add("Office Code");
+        columnNames.add("Reports To");
+    
         Vector<Vector<Object>> data = new Vector<>();
         while (rs.next()) {
             Vector<Object> row = new Vector<>();
@@ -150,9 +167,12 @@ public class EmployeeManagement {
             row.add(rs.getString("lastName"));
             row.add(rs.getString("email"));
             row.add(rs.getString("jobTitle"));
+            row.add(rs.getString("extension"));
+            row.add(rs.getString("officeCode"));
+            row.add(rs.getInt("reportsTo"));
             data.add(row);
         }
-
+    
         table.setModel(new DefaultTableModel(data, columnNames));
     }
 
@@ -162,6 +182,10 @@ public class EmployeeManagement {
         String lastName = lastNameField.getText().trim();
         String email = emailField.getText().trim();
         String jobTitle = jobTitleField.getText().trim();
+        String extension = extensionField.getText().trim();
+        String officeCode = officeCodeField.getText().trim();
+        String reportsTo = reportsToField.getText().trim();
+    
         
         if (employeeId.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || jobTitle.isEmpty()) {
             JOptionPane.showMessageDialog(frame, "All fields are required.");
@@ -169,13 +193,16 @@ public class EmployeeManagement {
         }
 
         try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO employees (employeeNumber, firstName, lastName, email, jobTitle) VALUES (?, ?, ?, ?, ?)");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO employees (employeeNumber, firstName, lastName, email, jobTitle, extension, officeCode, reportsTo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             ps.setInt(1, Integer.parseInt(employeeId));
             ps.setString(2, firstName);
             ps.setString(3, lastName);
             ps.setString(4, email);
             ps.setString(5, jobTitle);
-
+            ps.setString(6, extension);
+            ps.setString(7, officeCode);
+            ps.setInt(8, Integer.parseInt(reportsTo));
+    
             int result = ps.executeUpdate();
 
             if (result > 0) {
@@ -196,14 +223,29 @@ public class EmployeeManagement {
     }
 
     private void deleteEmployee() {
-        if (table.getSelectedRow() != -1) {
-            int employeeNumber = (int) table.getValueAt(table.getSelectedRow(), 0);
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(frame, "Please select an employee to delete.", "No Selection", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int employeeNumber = (int) table.getValueAt(selectedRow, 0);
+        int dialogResult = JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete the selected employee?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+
+        if (dialogResult == JOptionPane.YES_OPTION) {
             try {
                 PreparedStatement ps = connection.prepareStatement("DELETE FROM employees WHERE employeeNumber = ?");
                 ps.setInt(1, employeeNumber);
-                ps.execute();
-                refreshTable();
+                int rowsAffected = ps.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    JOptionPane.showMessageDialog(frame, "Employee deleted successfully!");
+                    refreshTable();
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Failed to delete the employee. Please try again.");
+                }
             } catch (SQLException e) {
+                JOptionPane.showMessageDialog(frame, "Error: " + e.getMessage());
                 e.printStackTrace();
             }
         }
