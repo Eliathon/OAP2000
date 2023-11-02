@@ -36,25 +36,55 @@ public class ProductManagementPanel {
         frame.setSize(1100, 600); // Økt høyden for å plassere flere komponenter
         frame.setLayout(new BorderLayout());
  
-        panel = new JPanel(new GridLayout(0, 2));
+       // centerPanel = new JPanel(new GridLayout(0, 2));
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setLayout(new FlowLayout());
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.setLayout(new FlowLayout());
+
+        JPanel labelPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
+        labelPanel.setPreferredSize(new Dimension(150, 200));
+
+        JPanel fieldPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
+        fieldPanel.setPreferredSize(new Dimension(350, 200));
+       
+        
 
        
-        JPanel inputPanel = new JPanel(new BorderLayout());
 
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setLayout(new FlowLayout());
+
+       
+       
+        //Defining labels for the text inputs and size
         JLabel productNameLabel = new JLabel("Product Name:");
         productNameField = new JTextField();
+        productNameField.setPreferredSize(new Dimension(200, 30));
 
         JLabel productCodeLabel = new JLabel("Product Code:");
         productCodeField = new JTextField();
+        productCodeField.setPreferredSize(new Dimension(200, 30));
+
+        
 
         JLabel productLineLabel = new JLabel("Product Line:");
         productLineField = new JTextField();
+        
+        
 
         JLabel productScaleLabel = new JLabel("Product Scale:");
         productScaleField = new JTextField();
+        
 
         JLabel productVendorLabel = new JLabel("Product Vendor:");
         productVendorField = new JTextField();
+        
 
         JLabel productDescriptionLabel = new JLabel("Product Description:");
         productDescriptionArea = new JTextArea();
@@ -98,39 +128,49 @@ public class ProductManagementPanel {
         resultTextArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(resultTextArea);
 
-        panel.add(productNameLabel);
-        panel.add(productNameField);
+        topPanel.add(productCodeLabel, BorderLayout.WEST);
+        topPanel.add(productCodeField, BorderLayout.WEST);
 
-        panel.add(productCodeLabel);
-        panel.add(productCodeField);
+        topPanel.add(productNameLabel, BorderLayout.WEST);
+        topPanel.add(productNameField, BorderLayout.WEST);
 
-        panel.add(productLineLabel);
-        panel.add(productLineField);
+        
 
-        panel.add(productScaleLabel);
-        panel.add(productScaleField);
+        labelPanel.add(productLineLabel);
+fieldPanel.add(productLineField);
 
-        panel.add(productVendorLabel);
-        panel.add(productVendorField);
+labelPanel.add(productScaleLabel);
+fieldPanel.add(productScaleField);
 
-        panel.add(productDescriptionLabel);
-        panel.add(descriptionScrollPane);
+labelPanel.add(productVendorLabel);
+fieldPanel.add(productVendorField);
 
-        panel.add(quantityInStockLabel);
-        panel.add(quantityInStockField);
+labelPanel.add(productDescriptionLabel);
+fieldPanel.add(descriptionScrollPane);
 
-        panel.add(buyPriceLabel);
-        panel.add(buyPriceField);
+labelPanel.add(quantityInStockLabel);
+fieldPanel.add(quantityInStockField);
 
-        panel.add(MSRPLabel);
-        panel.add(MSRPField);
+labelPanel.add(buyPriceLabel);
+fieldPanel.add(buyPriceField);
 
-        panel.add(viewButton);
-        panel.add(addButton);
-        panel.add(deleteButton);
-        panel.add(scrollPane);
+labelPanel.add(MSRPLabel);
+fieldPanel.add(MSRPField);
 
-        frame.add(panel, BorderLayout.NORTH);
+centerPanel.add(labelPanel);
+centerPanel.add(fieldPanel);  
+
+        buttonPanel.add(viewButton);
+        buttonPanel.add(addButton);
+        buttonPanel.add(deleteButton);
+        topPanel.add(buttonPanel, BorderLayout.EAST);
+        
+        
+        bottomPanel.add(scrollPane, BorderLayout.CENTER);
+
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.add(centerPanel, BorderLayout.CENTER);
+        frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.setVisible(true);
     }
 
