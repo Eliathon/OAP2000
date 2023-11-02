@@ -4,54 +4,64 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-import java.awt.BorderLayout;
-import java.util.List;
-public class OrderManagementPanel extends JPanel {
-
+public class OrderManagementPanel extends JFrame {
     private JFrame frame;
     private JPanel panel;
-    private JButton viewButton; 
-    private JButton addButton;
+    private JTable table;
+    private Connection connection;
+    private JButton viewButton;
+    private JButton createButton;
+    private JButton updateButton;
     private JButton deleteButton;
-    private JTextField orderNumberField;
-    private JTextField productCodeField;
-    private JTextField quantityOrderedField;
-    private JTextField priceEachField;
-    private JTextArea textArea = new JTextArea();
-
+    private JTextField orderNumberField, orderDateField, requiredDateField, shippedDateField, statusField, commentsField, customerNumberField;
+    private JTextField orderNumberField, productCodeField, quantityOrderedField, priceEachField, OrderLineNumberField; 
+  
     public OrderManagementPanel() {
-        setLayout(new BorderLayout());
-        add(new JScrollPane(textArea), BorderLayout.CENTER);
-    }
+        // Set up your JFrame and components here
 
-    public void displayOrders(List<String> orders) {
-        textArea.setText(""); // Clear existing content
-        for (String order : orders) {
-            textArea.append(order + "\n");
-        }
-        revalidate();
-        repaint();
-    }
-    
-
-{
-try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM orders WHERE ordernumber LIKE '%" + searchQuery + "%'");
-
-            StringBuilder resultText = new StringBuilder();
-            while (resultSet.next()) {
-                String ordernumber = resultSet.getString("ordernumber");
-                resultText.append(ordernumber).append("\n");
+        // Create action listeners for buttons
+        viewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Implement the View functionality to fetch and display orders
             }
+        });
 
-            resultTextArea.setText(resultText.toString());
+        createButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Implement the Create functionality to add a new order
+            }
+        });
 
-            connection.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        updateButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Implement the Update functionality to edit an existing order
+            }
+        });
+
+        deleteButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Implement the Delete functionality to remove an order
+            }
+        });
+
+        // Set up the database connection
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/yourdb", "username", "password");
+            // Use 'connection' to execute database queries
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new OrderManagementPanel().setVisible(true);
+            }
+        });
+    }
+}
