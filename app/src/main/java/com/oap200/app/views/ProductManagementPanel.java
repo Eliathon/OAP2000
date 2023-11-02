@@ -57,8 +57,14 @@ public class ProductManagementPanel {
         JPanel fieldPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
         fieldPanel.setPreferredSize(new Dimension(350, 200));
     
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout());
+        JPanel viewButtonPanel = new JPanel();
+        viewButtonPanel.setLayout(new FlowLayout());
+
+        JPanel addButtonPanel = new JPanel();
+        addButtonPanel.setLayout(new FlowLayout());
+
+       /* JPanel deleteButtonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());   */
 
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setLayout(new FlowLayout());
@@ -159,9 +165,11 @@ public class ProductManagementPanel {
 
         centerPanel.add(labelPanel, BorderLayout.WEST);
         centerPanel.add(fieldPanel, BorderLayout.WEST); 
-        topPanel.add(buttonPanel, BorderLayout.EAST);
+        addButtonPanel.add(addButton, BorderLayout.WEST);
 
-        buttonPanel.add(addButton);
+     //   topPanel.add(buttonPanel, BorderLayout.EAST);
+
+        // ButtonPanel.add(addButton);
                         
                         
 
@@ -174,8 +182,8 @@ public class ProductManagementPanel {
 
         topPanel.add(productNameLabel, BorderLayout.WEST);
         topPanel.add(productNameField, BorderLayout.WEST); 
-        topPanel.add(buttonPanel, BorderLayout.EAST);
-        buttonPanel.add(viewButton);
+        viewButtonPanel.add(viewButton, BorderLayout.WEST);
+       
 
         
         
@@ -185,8 +193,7 @@ public class ProductManagementPanel {
                         break;
                     case "Delete":
                         topPanel.add(productCodeLabel, BorderLayout.WEST);
-                        topPanel.add(buttonPanel, BorderLayout.EAST);
-                        buttonPanel.add(deleteButton);
+                      //  buttonPanel.add(deleteButton);
 
                         break;
                 }
@@ -210,14 +217,16 @@ public class ProductManagementPanel {
         
         
         
-      //  topPanel.add(buttonPanel, BorderLayout.EAST);
+      //  topPanel.add(viewButtonPanel, BorderLayout.EAST);
+      
         topPanel.add(menuPanel, BorderLayout.NORTH);
         
         
         bottomPanel.add(scrollPane, BorderLayout.CENTER);
 
         frame.add(topPanel, BorderLayout.NORTH);
-        frame.add(centerPanel, BorderLayout.WEST);
+        frame.add(viewButtonPanel, BorderLayout.WEST);
+        frame.add(addButtonPanel, BorderLayout.WEST);
         frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.setVisible(true);
 
