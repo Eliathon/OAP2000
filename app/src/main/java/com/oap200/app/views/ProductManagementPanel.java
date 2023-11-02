@@ -1,4 +1,4 @@
-
+//Created by Sebastian
 
 package com.oap200.app.views;
 
@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import java.math.BigDecimal;
 
+
 public class ProductManagementPanel {
 
     private JFrame frame;
@@ -16,6 +17,8 @@ public class ProductManagementPanel {
     private JButton viewButton; // Knapp for å vise produkter
     private JButton addButton;  // Knapp for å legge til produkt
     private JButton deleteButton;  // Knapp for å slette produkt
+    private JTextArea resultTextArea;
+
     private JTextField productNameField;
     private JTextField productCodeField; // Legg til et felt for produktkoden
     private JTextField productLineField; // Legg til et felt for produktlinjen
@@ -25,30 +28,72 @@ public class ProductManagementPanel {
     private JTextField quantityInStockField; // Legg til et felt for antall på lager
     private JTextField buyPriceField; // Legg til et felt for kjøpsprisen
     private JTextField MSRPField; // Legg til et felt for MSRP
-    private JTextArea resultTextArea;
+
+    private JComboBox<String> operationDropdown;
+   
 
     public void start() {
         frame = new JFrame("Product Management");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 500); // Økt høyden for å plassere flere komponenter
+        frame.setSize(1100, 600); // Økt høyden for å plassere flere komponenter
+        frame.setLayout(new BorderLayout());
+ 
+       // centerPanel = new JPanel(new GridLayout(0, 2));
 
-        panel = new JPanel();
-        panel.setLayout(new GridLayout(0, 2));
+        JPanel menuPanel = new JPanel();
+        String[] options = {"Add", "View", "Delete"};
+        JComboBox<String> optionsComboBox = new JComboBox<>(options);
+        
 
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setLayout(new FlowLayout());
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.setLayout(new FlowLayout());
+
+        JPanel labelPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
+        labelPanel.setPreferredSize(new Dimension(150, 200));
+
+        JPanel fieldPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
+        fieldPanel.setPreferredSize(new Dimension(350, 200));
+    
+        JPanel viewButtonPanel = new JPanel();
+        viewButtonPanel.setLayout(new FlowLayout());
+
+        JPanel addButtonPanel = new JPanel();
+        addButtonPanel.setLayout(new FlowLayout());
+
+       /* JPanel deleteButtonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());   */
+
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setLayout(new FlowLayout());
+
+       
+       
+        //Defining labels for the text inputs and size
         JLabel productNameLabel = new JLabel("Product Name:");
         productNameField = new JTextField();
+        productNameField.setPreferredSize(new Dimension(200, 30));
 
         JLabel productCodeLabel = new JLabel("Product Code:");
         productCodeField = new JTextField();
+        productCodeField.setPreferredSize(new Dimension(200, 30));
+
+        
 
         JLabel productLineLabel = new JLabel("Product Line:");
         productLineField = new JTextField();
+        
+        
 
         JLabel productScaleLabel = new JLabel("Product Scale:");
         productScaleField = new JTextField();
+        
 
         JLabel productVendorLabel = new JLabel("Product Vendor:");
         productVendorField = new JTextField();
+        
 
         JLabel productDescriptionLabel = new JLabel("Product Description:");
         productDescriptionArea = new JTextArea();
@@ -88,44 +133,104 @@ public class ProductManagementPanel {
             }
         });
 
+        optionsComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedOption = (String) optionsComboBox.getSelectedItem();
+                centerPanel.removeAll();
+        
+                switch (selectedOption) {
+                    case "Add":
+                        
+        labelPanel.add(productLineLabel);
+        fieldPanel.add(productLineField);
+
+        labelPanel.add(productScaleLabel);
+        fieldPanel.add(productScaleField);
+
+        labelPanel.add(productVendorLabel);
+        fieldPanel.add(productVendorField);
+
+        labelPanel.add(productDescriptionLabel);
+        fieldPanel.add(descriptionScrollPane);
+
+        labelPanel.add(quantityInStockLabel);
+        fieldPanel.add(quantityInStockField);
+
+        labelPanel.add(buyPriceLabel);
+        fieldPanel.add(buyPriceField);
+
+        labelPanel.add(MSRPLabel);
+        fieldPanel.add(MSRPField);
+
+        centerPanel.add(labelPanel, BorderLayout.WEST);
+        centerPanel.add(fieldPanel, BorderLayout.WEST); 
+        addButtonPanel.add(addButton, BorderLayout.WEST);
+
+     //   topPanel.add(buttonPanel, BorderLayout.EAST);
+
+        // ButtonPanel.add(addButton);
+                        
+                        
+
+
+
+                        break;
+                    case "View":
+        topPanel.add(productCodeLabel, BorderLayout.WEST);
+        topPanel.add(productCodeField, BorderLayout.WEST);
+
+        topPanel.add(productNameLabel, BorderLayout.WEST);
+        topPanel.add(productNameField, BorderLayout.WEST); 
+        viewButtonPanel.add(viewButton, BorderLayout.WEST);
+       
+
+        
+        
+                        
+
+                       
+                        break;
+                    case "Delete":
+                        topPanel.add(productCodeLabel, BorderLayout.WEST);
+                      //  buttonPanel.add(deleteButton);
+
+                        break;
+                }
+                centerPanel.revalidate();
+        centerPanel.repaint();
+            }
+        });
+
         resultTextArea = new JTextArea();
         resultTextArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(resultTextArea);
 
-        panel.add(productNameLabel);
-        panel.add(productNameField);
+           
 
-        panel.add(productCodeLabel);
-        panel.add(productCodeField);
+        menuPanel.add(optionsComboBox, BorderLayout.EAST);
 
-        panel.add(productLineLabel);
-        panel.add(productLineField);
+        
+        
+        
 
-        panel.add(productScaleLabel);
-        panel.add(productScaleField);
+        
+        
+        
+      //  topPanel.add(viewButtonPanel, BorderLayout.EAST);
+      
+        topPanel.add(menuPanel, BorderLayout.NORTH);
+        
+        
+        bottomPanel.add(scrollPane, BorderLayout.CENTER);
 
-        panel.add(productVendorLabel);
-        panel.add(productVendorField);
-
-        panel.add(productDescriptionLabel);
-        panel.add(descriptionScrollPane);
-
-        panel.add(quantityInStockLabel);
-        panel.add(quantityInStockField);
-
-        panel.add(buyPriceLabel);
-        panel.add(buyPriceField);
-
-        panel.add(MSRPLabel);
-        panel.add(MSRPField);
-
-        panel.add(viewButton);
-        panel.add(addButton);
-        panel.add(deleteButton);
-        panel.add(scrollPane);
-
-        frame.add(panel);
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.add(viewButtonPanel, BorderLayout.WEST);
+        frame.add(addButtonPanel, BorderLayout.WEST);
+        frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.setVisible(true);
+
+        
     }
 
     private void viewProducts() {
