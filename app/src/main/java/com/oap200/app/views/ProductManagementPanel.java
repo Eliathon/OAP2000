@@ -1,4 +1,4 @@
-
+//Created by Sebastian
 
 package com.oap200.app.views;
 
@@ -28,6 +28,8 @@ public class ProductManagementPanel {
     private JTextField quantityInStockField; // Legg til et felt for antall på lager
     private JTextField buyPriceField; // Legg til et felt for kjøpsprisen
     private JTextField MSRPField; // Legg til et felt for MSRP
+
+    private JComboBox<String> operationDropdown;
    
 
     public void start() {
@@ -37,6 +39,11 @@ public class ProductManagementPanel {
         frame.setLayout(new BorderLayout());
  
        // centerPanel = new JPanel(new GridLayout(0, 2));
+
+        JPanel menuPanel = new JPanel();
+        String[] options = {"Add", "View", "Delete"};
+        JComboBox<String> optionsComboBox = new JComboBox<>(options);
+        
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setLayout(new FlowLayout());
@@ -49,11 +56,7 @@ public class ProductManagementPanel {
 
         JPanel fieldPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
         fieldPanel.setPreferredSize(new Dimension(350, 200));
-       
-        
-
-       
-
+    
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
 
@@ -124,54 +127,101 @@ public class ProductManagementPanel {
             }
         });
 
-        resultTextArea = new JTextArea();
-        resultTextArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(resultTextArea);
+        optionsComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedOption = (String) optionsComboBox.getSelectedItem();
+                centerPanel.removeAll();
+        
+                switch (selectedOption) {
+                    case "Add":
+                        
+        labelPanel.add(productLineLabel);
+        fieldPanel.add(productLineField);
 
+        labelPanel.add(productScaleLabel);
+        fieldPanel.add(productScaleField);
+
+        labelPanel.add(productVendorLabel);
+        fieldPanel.add(productVendorField);
+
+        labelPanel.add(productDescriptionLabel);
+        fieldPanel.add(descriptionScrollPane);
+
+        labelPanel.add(quantityInStockLabel);
+        fieldPanel.add(quantityInStockField);
+
+        labelPanel.add(buyPriceLabel);
+        fieldPanel.add(buyPriceField);
+
+        labelPanel.add(MSRPLabel);
+        fieldPanel.add(MSRPField);
+
+        centerPanel.add(labelPanel, BorderLayout.WEST);
+        centerPanel.add(fieldPanel, BorderLayout.WEST); 
+        topPanel.add(buttonPanel, BorderLayout.EAST);
+
+        buttonPanel.add(addButton);
+                        
+                        
+
+
+
+                        break;
+                    case "View":
         topPanel.add(productCodeLabel, BorderLayout.WEST);
         topPanel.add(productCodeField, BorderLayout.WEST);
 
         topPanel.add(productNameLabel, BorderLayout.WEST);
-        topPanel.add(productNameField, BorderLayout.WEST);
+        topPanel.add(productNameField, BorderLayout.WEST); 
+        topPanel.add(buttonPanel, BorderLayout.EAST);
+        buttonPanel.add(viewButton);
 
         
+        
+                        
 
-        labelPanel.add(productLineLabel);
-fieldPanel.add(productLineField);
+                       
+                        break;
+                    case "Delete":
+                        topPanel.add(productCodeLabel, BorderLayout.WEST);
+                        topPanel.add(buttonPanel, BorderLayout.EAST);
+                        buttonPanel.add(deleteButton);
 
-labelPanel.add(productScaleLabel);
-fieldPanel.add(productScaleField);
+                        break;
+                }
+                centerPanel.revalidate();
+        centerPanel.repaint();
+            }
+        });
 
-labelPanel.add(productVendorLabel);
-fieldPanel.add(productVendorField);
+        resultTextArea = new JTextArea();
+        resultTextArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(resultTextArea);
 
-labelPanel.add(productDescriptionLabel);
-fieldPanel.add(descriptionScrollPane);
+           
 
-labelPanel.add(quantityInStockLabel);
-fieldPanel.add(quantityInStockField);
+        menuPanel.add(optionsComboBox, BorderLayout.EAST);
 
-labelPanel.add(buyPriceLabel);
-fieldPanel.add(buyPriceField);
+        
+        
+        
 
-labelPanel.add(MSRPLabel);
-fieldPanel.add(MSRPField);
-
-centerPanel.add(labelPanel);
-centerPanel.add(fieldPanel);  
-
-        buttonPanel.add(viewButton);
-        buttonPanel.add(addButton);
-        buttonPanel.add(deleteButton);
-        topPanel.add(buttonPanel, BorderLayout.EAST);
+        
+        
+        
+      //  topPanel.add(buttonPanel, BorderLayout.EAST);
+        topPanel.add(menuPanel, BorderLayout.NORTH);
         
         
         bottomPanel.add(scrollPane, BorderLayout.CENTER);
 
         frame.add(topPanel, BorderLayout.NORTH);
-        frame.add(centerPanel, BorderLayout.CENTER);
+        frame.add(centerPanel, BorderLayout.WEST);
         frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.setVisible(true);
+
+        
     }
 
     private void viewProducts() {
