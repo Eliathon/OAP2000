@@ -32,10 +32,7 @@ public class ProductManagementPanel {
     private JTextField buyPriceField; // Legg til et felt for kjøpsprisen
     private JTextField MSRPField; // Legg til et felt for MSRP
 
-    private JTextArea resultMessageArea;
-    private JScrollPane messageScrollPane;
-
-    private JComboBox<String> operationDropdown;
+    private JComboBox<String> reportsToComboBox;
    
 
     public void start() {

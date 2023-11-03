@@ -9,6 +9,8 @@ import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
 public class EmployeeManagement {
+    private JComboBox<String> reportsToComboBox;
+
     private JFrame frame;
     private Connection connection;
     private JTable table;
@@ -19,7 +21,20 @@ public class EmployeeManagement {
         connectDatabase();
         createUI();
     }
-
+    private Vector<String> getAllEmployees() {
+        Vector<String> employees = new Vector<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName FROM employees");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                employees.add(rs.getInt("employeeNumber") + " - " + rs.getString("firstName") + " " + rs.getString("lastName"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employees;
+    }
+    
     private void connectDatabase() {
         String url = "jdbc:mysql://localhost:3306/classicmodels";
         String user = "root";
@@ -40,87 +55,89 @@ public class EmployeeManagement {
         frame.setLayout(new BorderLayout());
     
         JPanel inputPanel = new JPanel(new BorderLayout());
-
+    
         JPanel searchPanel = new JPanel(new FlowLayout());
         employeeNumberSearchField = new JTextField(10);
         JButton employeeNumberSearchButton = new JButton("Search by Employee Number");
         searchField = new JTextField(15);
         searchButton = new JButton("Search by Last Name");
-
+    
         searchPanel.add(new JLabel("Employee Number:"));
         searchPanel.add(employeeNumberSearchField);
         searchPanel.add(employeeNumberSearchButton);
         searchPanel.add(new JLabel("Last Name:"));
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
-
-        JPanel employeeInputPanel = new JPanel(new GridLayout(10, 10)); 
-
+    
+        JPanel employeeInputPanel = new JPanel();
+        employeeInputPanel.setLayout(new BoxLayout(employeeInputPanel, BoxLayout.Y_AXIS));
+    
+        // This function will help in creating separate panels for label and input fields
         employeeIdField = new JTextField(10);
-        lastNameField = new JTextField(10);
+        employeeInputPanel.add(createLabeledField("Employee ID:", employeeIdField));
         firstNameField = new JTextField(10);
+        employeeInputPanel.add(createLabeledField("First Name:", firstNameField));
+        lastNameField = new JTextField(10);
+        employeeInputPanel.add(createLabeledField("Last Name:", lastNameField));
         extensionField = new JTextField(10);
-        emailField = new JTextField(20);
+        employeeInputPanel.add(createLabeledField("Extension:", extensionField));
+        emailField = new JTextField(10);
+        employeeInputPanel.add(createLabeledField("Email:", emailField));
         officeCodeField = new JTextField(10);
-        reportsToField = new JTextField(10);
-        jobTitleField = new JTextField(15);
+        employeeInputPanel.add(createLabeledField("Office Code:", officeCodeField));
         
+        Vector<String> employeesList = getAllEmployees();
+reportsToComboBox = new JComboBox<>(employeesList);
+
+employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
+
+        jobTitleField = new JTextField(10);
+        employeeInputPanel.add(createLabeledField("Job Title:", jobTitleField));
+    
+        JPanel buttonPanel = new JPanel(new FlowLayout());
         addButton = new JButton("Add");
         updateButton = new JButton("Update");
         deleteButton = new JButton("Delete");
         refreshButton = new JButton("Refresh");
-
-        refreshButton.addActionListener(e -> refreshTable());
-
-        
-        
-
-        employeeInputPanel.add(new JLabel("Employee ID:"));
-        employeeInputPanel.add(employeeIdField);
-        employeeInputPanel.add(new JLabel("First Name:"));
-        employeeInputPanel.add(firstNameField);
-        employeeInputPanel.add(new JLabel("Last Name:"));
-        employeeInputPanel.add(lastNameField);
-        employeeInputPanel.add(new JLabel("Extension"));
-        employeeInputPanel.add(extensionField);
-        employeeInputPanel.add(new JLabel("Email:"));
-        employeeInputPanel.add(emailField);
-        employeeInputPanel.add(new JLabel("Office Code"));
-        employeeInputPanel.add(officeCodeField);
-        employeeInputPanel.add(new JLabel("Reports To"));
-        employeeInputPanel.add(reportsToField);
-        employeeInputPanel.add(new JLabel("Job Title:"));
-        employeeInputPanel.add(jobTitleField);
-        employeeInputPanel.add(addButton);
-        employeeInputPanel.add(updateButton);
-        employeeInputPanel.add(deleteButton);
-        employeeInputPanel.add(refreshButton);
-
+        buttonPanel.add(addButton);
+        buttonPanel.add(updateButton);
+        buttonPanel.add(deleteButton);
+        buttonPanel.add(refreshButton);
+        employeeInputPanel.add(buttonPanel);
+    
         inputPanel.add(searchPanel, BorderLayout.NORTH);
         inputPanel.add(employeeInputPanel, BorderLayout.CENTER);
-
+    
         table = new JTable();
         refreshTable();
-
+    
         JScrollPane scrollPane = new JScrollPane(table);
-
+    
         frame.add(inputPanel, BorderLayout.NORTH);
         frame.add(scrollPane, BorderLayout.CENTER);
-
+    
         employeeNumberSearchButton.addActionListener(e -> searchEmployeeByNumber(employeeNumberSearchField.getText()));
         searchButton.addActionListener(e -> searchEmployeeByLastName(searchField.getText()));
         addButton.addActionListener(e -> addEmployee());
         updateButton.addActionListener(e -> updateEmployee());
         deleteButton.addActionListener(e -> deleteEmployee());
         refreshButton.addActionListener(e -> refreshTable());
-
+    
         frame.setVisible(true);
-        
-        }
+    }
+    
+    private JPanel createLabeledField(String labelText, JComponent field) {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel.add(new JLabel(labelText));
+        panel.add(field);
+        panel.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));  // top, left, bottom, right padding
+        return panel;
+    }
+    
 
     private void refreshTable() {
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName, extenstion, email, officeCode, reportsTo, jobTitle FROM employees");
+            PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName, extension, email, officeCode, reportsTo, jobTitle FROM employees");
             ResultSet rs = ps.executeQuery();
             populateTableFromResultSet(rs);
         } catch (SQLException e) {
@@ -185,7 +202,7 @@ public class EmployeeManagement {
         String extension = extensionField.getText().trim();
         String email = emailField.getText().trim();
         String officeCode = officeCodeField.getText().trim();
-        String reportsTo = reportsToField.getText().trim();
+        String reportsTo = ((String) reportsToComboBox.getSelectedItem()).split(" - ")[0];
         String jobTitle = jobTitleField.getText().trim();
         
         if (employeeId.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || extension.isEmpty() || email.isEmpty() || officeCode.isEmpty() || reportsTo.isEmpty() || jobTitle.isEmpty()) {
@@ -227,7 +244,7 @@ String lastName = lastNameField.getText().trim();
 String extension = extensionField.getText().trim();
 String email = emailField.getText().trim();
 String officeCode = officeCodeField.getText().trim();
-String reportsTo = reportsToField.getText().trim();
+String reportsTo = ((String) reportsToComboBox.getSelectedItem()).split(" - ")[0];
 String jobTitle = jobTitleField.getText().trim();
 
 if (employeeId.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || extension.isEmpty() || email.isEmpty() || officeCode.isEmpty() || reportsTo.isEmpty() || jobTitle.isEmpty()) {
@@ -269,7 +286,21 @@ int selectedRow = table.getSelectedRow();
     
 
     
-
+    private boolean hasReports(int employeeNumber) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM employees WHERE reportsTo = ?");
+            ps.setInt(1, employeeNumber);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
     private void deleteEmployee() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
@@ -278,6 +309,12 @@ int selectedRow = table.getSelectedRow();
         }
 
         int employeeNumber = (int) table.getValueAt(selectedRow, 0);
+
+        if (hasReports(employeeNumber)) {
+            JOptionPane.showMessageDialog(frame, "This employee has other employees reporting to them. Please change the reporting structure before deleting.", "Cannot Delete", JOptionPane.ERROR_MESSAGE);
+            return;
+}
+
         int dialogResult = JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete the selected employee?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
 
         if (dialogResult == JOptionPane.YES_OPTION) {
@@ -299,6 +336,45 @@ int selectedRow = table.getSelectedRow();
         }
     
     }
+    private void populateReportsToDropdown() {
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName FROM employees");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int employeeNumber = rs.getInt("employeeNumber");
+                String firstName = rs.getString("firstName");
+                String lastName = rs.getString("lastName");
+                Employee employee = new Employee(employeeNumber, firstName, lastName);
+                reportsToDropdown.addItem(employee);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // You'll also need a simple Employee class to store and display employee details:
+    class Employee {
+        private int employeeNumber;
+        private String firstName;
+        private String lastName;
+    
+        public Employee(int employeeNumber, String firstName, String lastName) {
+            this.employeeNumber = employeeNumber;
+            this.firstName = firstName;
+            this.lastName = lastName;
+        }
+    
+        public int getEmployeeNumber() {
+            return employeeNumber;
+        }
+    
+        @Override
+        public String toString() {
+            return firstName + " " + lastName + " (" + employeeNumber + ")";
+        }
+    }
+    
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new EmployeeManagement());
