@@ -18,6 +18,7 @@ public class ProductManagementPanel {
     private JButton viewButton; // Knapp for å vise produkter
     private JButton addButton;  // Knapp for å legge til produkt
     private JButton deleteButton;  // Knapp for å slette produkt
+    private JButton updateButton;
     private JTextArea resultTextArea;
     private JTable resultTable;
 
@@ -146,6 +147,7 @@ public class ProductManagementPanel {
                 deleteProduct();
             }
         });
+        
 
         optionsComboBox.addActionListener(new ActionListener() {
             @Override
