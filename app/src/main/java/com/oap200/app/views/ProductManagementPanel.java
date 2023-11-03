@@ -56,7 +56,7 @@ public class ProductManagementPanel {
  
 
         JPanel menuPanel = new JPanel();
-        String[] options = {"Add", "View", "Delete"};
+        String[] options = {"Update", "Add", "View", "Delete"};
         JComboBox<String> optionsComboBox = new JComboBox<>(options);
         
 
@@ -147,6 +147,16 @@ public class ProductManagementPanel {
                 deleteProduct();
             }
         });
+
+                updateButton = new JButton("Update Product");
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateProduct();
+            }
+        });
+        buttonPanel.add(updateButton);
+
         
 
         optionsComboBox.addActionListener(new ActionListener() {
@@ -167,6 +177,46 @@ public class ProductManagementPanel {
               
         
                 switch (selectedOption) {
+                    case "Update":
+                       
+
+                        labelPanel.add(productCodeLabel);
+    fieldPanel.add(productCodeField);
+
+    labelPanel.add(productNameLabel);
+    fieldPanel.add(productNameField);
+
+    labelPanel.add(productLineLabel);
+    fieldPanel.add(productLineField);
+
+    labelPanel.add(productScaleLabel);
+    fieldPanel.add(productScaleField);
+
+    labelPanel.add(productVendorLabel);
+    fieldPanel.add(productVendorField);
+
+    labelPanel.add(productDescriptionLabel);
+    fieldPanel.add(descriptionScrollPane);
+
+    labelPanel.add(quantityInStockLabel);
+    fieldPanel.add(quantityInStockField);
+
+    labelPanel.add(buyPriceLabel);
+    fieldPanel.add(buyPriceField);
+
+    labelPanel.add(MSRPLabel);
+    fieldPanel.add(MSRPField);
+
+    centerPanel.add(labelPanel, BorderLayout.WEST);
+    centerPanel.add(fieldPanel, BorderLayout.WEST);
+
+    topPanel.add(updateButton, BorderLayout.WEST);
+    topPanel.add(menuPanel, BorderLayout.NORTH);
+    bottomPanel.add(tableScrollPane, BorderLayout.CENTER);
+    bottomPanel.add(messageScrollPane, BorderLayout.SOUTH);
+
+                    break;
+
                     case "Add":
         topPanel.add(productCodeLabel, BorderLayout.WEST);
         topPanel.add(productCodeField, BorderLayout.WEST);
@@ -273,6 +323,49 @@ public class ProductManagementPanel {
         DefaultTableModel tableModel = (DefaultTableModel) resultTable.getModel();
         tableModel.setRowCount(0); // Tømmer alle rader fra tabellen
     }
+
+    private void updateProduct() {
+        String productCode = productCodeField.getText();
+        String productName = productNameField.getText();
+        String productLine = productLineField.getText();
+        String productScale = productScaleField.getText();
+        String productVendor = productVendorField.getText();
+        String productDescription = productDescriptionArea.getText();
+        int quantityInStock = Integer.parseInt(quantityInStockField.getText());
+        BigDecimal buyPrice = new BigDecimal(buyPriceField.getText());
+        BigDecimal MSRP = new BigDecimal(MSRPField.getText());
+    
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
+            PreparedStatement statement = connection.prepareStatement(
+                "UPDATE products SET productName=?, productLine=?, productScale=?, " +
+                "productVendor=?, productDescription=?, quantityInStock=?, buyPrice=?, MSRP=? WHERE productCode=?"
+            );
+            statement.setString(1, productName);
+            statement.setString(2, productLine);
+            statement.setString(3, productScale);
+            statement.setString(4, productVendor);
+            statement.setString(5, productDescription);
+            statement.setInt(6, quantityInStock);
+            statement.setBigDecimal(7, buyPrice);
+            statement.setBigDecimal(8, MSRP);
+            statement.setString(9, productCode);
+    
+            int rowsAffected = statement.executeUpdate();
+    
+            if (rowsAffected > 0) {
+                resultMessageArea.setText("Product updated successfully.");
+            } else {
+                resultMessageArea.setText("Failed to update product. Product code not found.");
+            }
+    
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            resultMessageArea.setText("An error occurred while updating the product.");
+        }
+    }
+    
 
     private void viewProducts() {
     String searchQuery = productNameField.getText();
