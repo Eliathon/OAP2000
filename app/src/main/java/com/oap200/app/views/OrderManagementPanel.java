@@ -20,15 +20,57 @@ public class OrderManagementPanel extends JFrame {
     private JTextField orderNumberField, orderDateField, requiredDateField, shippedDateField, statusField, commentsField, customerNumberField;
     private JTextField orderNumberField, productCodeField, quantityOrderedField, priceEachField, OrderLineNumberField; 
   
-    public OrderManagementPanel() {
-        // Set up your JFrame and components here
+   
+   public class OrderManagementPanel() {
+
+    public static void main(String[]args) {
+        JFrame frame = new JFrame("Order Management System");
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JButton viewButton = new JButton("View");
+        JButton createButton = new JButton("Create");
+        JButton updateButton = new JButton("Update");
+        JButton deleteButton = new JButton("Delete");
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(viewButton);
+        buttonPanel.add(createButton);
+        buttonPanel.add(updateButton);
+        buttonPanel.add(deleteButton);
+
+        frame.add(buttonPanel, BorderLayout.NORTH);
+
+        JTable orderTable = new JTable();
+        JScrollPane scrollPane = new JScrollPane(orderTable);
+
+        frame.add(scrollPane, BorderLayout.Center);
+
+        frame.setVisible(true);
+
+        }
+   
+   
 
         // Create action listeners for buttons
         viewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Implement the View functionality to fetch and display orders
-            }
-        });
+            
+                List<Order> orders = fetchOrdersFromDatabase(connection);
+           
+            DefaultTableModel model = new DefaultTableModel();
+
+        classicmodels.addColumn("Ordernumber");
+        classicmodels.addColumn("Costumernumber");
+        classicmodels.addColumn("Status");
+        classicmodels.addColumn("Quantity ordered");
+
+        for(Order order : orders) {
+            classicmodels.addRow(new object[]{order.getOrderNumber(), order.getCustomerNumber(), order.getQuantityOrdered(), order.getStatus()});
+        }
+           orderTable.setmodel(classicmodels);
+    }
+       });
 
         createButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
