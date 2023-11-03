@@ -3,6 +3,8 @@
 package com.oap200.app.views;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,11 +15,11 @@ import java.math.BigDecimal;
 public class ProductManagementPanel {
 
     private JFrame frame;
-    private JPanel panel;
     private JButton viewButton; // Knapp for å vise produkter
     private JButton addButton;  // Knapp for å legge til produkt
     private JButton deleteButton;  // Knapp for å slette produkt
     private JTextArea resultTextArea;
+    private JTable resultTable;
 
     private JTextField productNameField;
     private JTextField productCodeField; // Legg til et felt for produktkoden
@@ -29,6 +31,9 @@ public class ProductManagementPanel {
     private JTextField buyPriceField; // Legg til et felt for kjøpsprisen
     private JTextField MSRPField; // Legg til et felt for MSRP
 
+    private JTextArea resultMessageArea;
+    private JScrollPane messageScrollPane;
+
     private JComboBox<String> operationDropdown;
    
 
@@ -37,8 +42,17 @@ public class ProductManagementPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1100, 600); // Økt høyden for å plassere flere komponenter
         frame.setLayout(new BorderLayout());
+
+        resultTable = new JTable();
+        JScrollPane tableScrollPane = new JScrollPane(resultTable);
+        tableScrollPane.setPreferredSize(new Dimension(800, 400));
+       
+        resultMessageArea = new JTextArea();
+        resultMessageArea.setEditable(false);
+        messageScrollPane = new JScrollPane(resultMessageArea);
+        messageScrollPane.setPreferredSize(new Dimension(800, 100));
+        
  
-       // centerPanel = new JPanel(new GridLayout(0, 2));
 
         JPanel menuPanel = new JPanel();
         String[] options = {"Add", "View", "Delete"};
@@ -60,14 +74,12 @@ public class ProductManagementPanel {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
 
-       /*  JPanel addButtonPanel = new JPanel();
-        addButtonPanel.setLayout(new FlowLayout());*/
-
-       /* JPanel deleteButtonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout());   */
-
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setLayout(new FlowLayout());
+
+       
+       
+       
 
        
        
@@ -80,11 +92,9 @@ public class ProductManagementPanel {
         productCodeField = new JTextField();
         productCodeField.setPreferredSize(new Dimension(200, 30));
 
-        
 
         JLabel productLineLabel = new JLabel("Product Line:");
         productLineField = new JTextField();
-        
         
 
         JLabel productScaleLabel = new JLabel("Product Scale:");
@@ -100,14 +110,18 @@ public class ProductManagementPanel {
         productDescriptionArea.setLineWrap(true);
         JScrollPane descriptionScrollPane = new JScrollPane(productDescriptionArea);
 
+
         JLabel quantityInStockLabel = new JLabel("Quantity In Stock:");
         quantityInStockField = new JTextField();
+
 
         JLabel buyPriceLabel = new JLabel("Buy Price:");
         buyPriceField = new JTextField();
 
+
         JLabel MSRPLabel = new JLabel("MSRP:");
         MSRPField = new JTextField();
+
 
         viewButton = new JButton("View Products");
         viewButton.addActionListener(new ActionListener() {
@@ -140,11 +154,23 @@ public class ProductManagementPanel {
                 topPanel.removeAll();
                 labelPanel.removeAll();
                 fieldPanel.removeAll();
+                bottomPanel.removeAll();
+                resetTable();
+                resetView();
+                
+               
+                
+                
 
               
         
                 switch (selectedOption) {
                     case "Add":
+        topPanel.add(productCodeLabel, BorderLayout.WEST);
+        topPanel.add(productCodeField, BorderLayout.WEST);
+
+        topPanel.add(productNameLabel, BorderLayout.WEST);
+        topPanel.add(productNameField, BorderLayout.WEST); 
         
                         
         labelPanel.add(productLineLabel);
@@ -173,13 +199,9 @@ public class ProductManagementPanel {
         topPanel.add(addButton, BorderLayout.WEST);
         topPanel.add(menuPanel, BorderLayout.NORTH);
 
+        bottomPanel.add(messageScrollPane, BorderLayout.SOUTH);
+
      
-
-        topPanel.add(addButton, BorderLayout.EAST);
-                        
-                        
-
-
 
                         break;
                     case "View":
@@ -190,20 +212,21 @@ public class ProductManagementPanel {
         topPanel.add(productNameField, BorderLayout.WEST); 
         topPanel.add(viewButton, BorderLayout.WEST);
         topPanel.add(menuPanel, BorderLayout.NORTH);
+
+      
+        bottomPanel.add(tableScrollPane, BorderLayout.SOUTH);
         
        
-
-        
-        
-                        
-
                        
-    break;
-    case "Delete":
+                        break;
+                        case "Delete":
         topPanel.add(productCodeLabel, BorderLayout.WEST);
         topPanel.add(productCodeField, BorderLayout.WEST);
         topPanel.add(deleteButton, BorderLayout.WEST);
         topPanel.add(menuPanel, BorderLayout.NORTH);
+        bottomPanel.add(messageScrollPane, BorderLayout.SOUTH);
+
+        
 
                         break;
                 }
@@ -215,23 +238,21 @@ public class ProductManagementPanel {
 
                 labelPanel.revalidate();
                 fieldPanel.repaint();
+
+                bottomPanel.revalidate();
+                bottomPanel.repaint();
+
+                
             }
         });
 
-        resultTextArea = new JTextArea();
-        resultTextArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(resultTextArea);
-
-           
+        
 
         menuPanel.add(optionsComboBox, BorderLayout.EAST);
-
-        topPanel.add(buttonPanel, BorderLayout.EAST);
-      
         topPanel.add(menuPanel, BorderLayout.NORTH);
         
         
-        bottomPanel.add(scrollPane, BorderLayout.CENTER);
+        
 
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(centerPanel, BorderLayout.CENTER);
@@ -240,28 +261,43 @@ public class ProductManagementPanel {
 
         
     }
+    private void resetView() {
+        DefaultTableModel tableModel = (DefaultTableModel) resultTable.getModel();
+        tableModel.setRowCount(0); // Tømmer alle rader fra tabellen
+        resultMessageArea.setText(""); // Tømmer tekstområdet for meldinger
+    }
+
+    private void resetTable() {
+        DefaultTableModel tableModel = (DefaultTableModel) resultTable.getModel();
+        tableModel.setRowCount(0); // Tømmer alle rader fra tabellen
+    }
 
     private void viewProducts() {
-        String searchQuery = productNameField.getText();
+    String searchQuery = productNameField.getText();
 
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM products WHERE productName LIKE '%" + searchQuery + "%'");
+    try {
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM products WHERE productName LIKE '%" + searchQuery + "%'");
 
-            StringBuilder resultText = new StringBuilder();
-            while (resultSet.next()) {
-                String productName = resultSet.getString("productName");
-                resultText.append(productName).append("\n");
-            }
+        // Opprett et dataobjekt for tabellen
+        DefaultTableModel tableModel = new DefaultTableModel();
+        tableModel.addColumn("Product Name"); // Legg til kolonner etter behov
 
-            resultTextArea.setText(resultText.toString());
-
-            connection.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        // Fyll tabellen med data fra resultatsettet
+        while (resultSet.next()) {
+            String productName = resultSet.getString("productName");
+            tableModel.addRow(new Object[]{productName}); // Legg til rad med data
         }
+
+        // Oppdater JTable med det nye datamodellen
+        resultTable.setModel(tableModel);
+
+        connection.close();
+    } catch (SQLException ex) {
+        ex.printStackTrace();
     }
+}
 
     private void addProduct() {
         String productCode = productCodeField.getText();
@@ -290,15 +326,17 @@ public class ProductManagementPanel {
             int rowsAffected = statement.executeUpdate();
 
             if (rowsAffected > 0) {
-                resultTextArea.setText("Product added successfully.");
+                resultMessageArea.setText("Product added successfully.");
             } else {
-                resultTextArea.setText("Failed to add product.");
+                resultMessageArea.setText("Failed to add product.");
             }
+            
 
             connection.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        
     }
 
     private void deleteProduct() {
@@ -312,9 +350,9 @@ public class ProductManagementPanel {
             int rowsAffected = statement.executeUpdate();
 
             if (rowsAffected > 0) {
-                resultTextArea.setText("Product deleted successfully.");
+                resultMessageArea.setText("Product deleted successfully.");
             } else {
-                resultTextArea.setText("Product with code " + productCode + " not found.");
+                resultMessageArea.setText("Product with code " + productCode + " not found.");
             }
 
             connection.close();
