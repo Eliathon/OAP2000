@@ -57,11 +57,11 @@ public class ProductManagementPanel {
         JPanel fieldPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
         fieldPanel.setPreferredSize(new Dimension(350, 200));
     
-        JPanel viewButtonPanel = new JPanel();
-        viewButtonPanel.setLayout(new FlowLayout());
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
 
-        JPanel addButtonPanel = new JPanel();
-        addButtonPanel.setLayout(new FlowLayout());
+       /*  JPanel addButtonPanel = new JPanel();
+        addButtonPanel.setLayout(new FlowLayout());*/
 
        /* JPanel deleteButtonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());   */
@@ -137,10 +137,15 @@ public class ProductManagementPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedOption = (String) optionsComboBox.getSelectedItem();
-                centerPanel.removeAll();
+                topPanel.removeAll();
+                labelPanel.removeAll();
+                fieldPanel.removeAll();
+
+              
         
                 switch (selectedOption) {
                     case "Add":
+        
                         
         labelPanel.add(productLineLabel);
         fieldPanel.add(productLineField);
@@ -165,11 +170,12 @@ public class ProductManagementPanel {
 
         centerPanel.add(labelPanel, BorderLayout.WEST);
         centerPanel.add(fieldPanel, BorderLayout.WEST); 
-        addButtonPanel.add(addButton, BorderLayout.WEST);
+        topPanel.add(addButton, BorderLayout.WEST);
+        topPanel.add(menuPanel, BorderLayout.NORTH);
 
-     //   topPanel.add(buttonPanel, BorderLayout.EAST);
+     
 
-        // ButtonPanel.add(addButton);
+        topPanel.add(addButton, BorderLayout.EAST);
                         
                         
 
@@ -182,7 +188,9 @@ public class ProductManagementPanel {
 
         topPanel.add(productNameLabel, BorderLayout.WEST);
         topPanel.add(productNameField, BorderLayout.WEST); 
-        viewButtonPanel.add(viewButton, BorderLayout.WEST);
+        topPanel.add(viewButton, BorderLayout.WEST);
+        topPanel.add(menuPanel, BorderLayout.NORTH);
+        
        
 
         
@@ -190,15 +198,23 @@ public class ProductManagementPanel {
                         
 
                        
-                        break;
-                    case "Delete":
-                        topPanel.add(productCodeLabel, BorderLayout.WEST);
-                      //  buttonPanel.add(deleteButton);
+    break;
+    case "Delete":
+        topPanel.add(productCodeLabel, BorderLayout.WEST);
+        topPanel.add(productCodeField, BorderLayout.WEST);
+        topPanel.add(deleteButton, BorderLayout.WEST);
+        topPanel.add(menuPanel, BorderLayout.NORTH);
 
                         break;
                 }
-                centerPanel.revalidate();
-        centerPanel.repaint();
+                topPanel.revalidate();
+                topPanel.repaint();
+
+                labelPanel.revalidate();
+                fieldPanel.repaint();
+
+                labelPanel.revalidate();
+                fieldPanel.repaint();
             }
         });
 
@@ -210,14 +226,7 @@ public class ProductManagementPanel {
 
         menuPanel.add(optionsComboBox, BorderLayout.EAST);
 
-        
-        
-        
-
-        
-        
-        
-      //  topPanel.add(viewButtonPanel, BorderLayout.EAST);
+        topPanel.add(buttonPanel, BorderLayout.EAST);
       
         topPanel.add(menuPanel, BorderLayout.NORTH);
         
@@ -225,8 +234,7 @@ public class ProductManagementPanel {
         bottomPanel.add(scrollPane, BorderLayout.CENTER);
 
         frame.add(topPanel, BorderLayout.NORTH);
-        frame.add(viewButtonPanel, BorderLayout.WEST);
-        frame.add(addButtonPanel, BorderLayout.WEST);
+        frame.add(centerPanel, BorderLayout.CENTER);
         frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.setVisible(true);
 
