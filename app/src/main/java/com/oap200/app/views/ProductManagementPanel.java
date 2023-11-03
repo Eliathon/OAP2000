@@ -1,4 +1,4 @@
-//Created by Sebastian.
+//Created by Sebastian
 
 package com.oap200.app.views;
 
@@ -32,7 +32,10 @@ public class ProductManagementPanel {
     private JTextField buyPriceField; // Legg til et felt for kjøpsprisen
     private JTextField MSRPField; // Legg til et felt for MSRP
 
-    private JComboBox<String> reportsToComboBox;
+    private JTextArea resultMessageArea;
+    private JScrollPane messageScrollPane;
+
+    private JComboBox<String> operationDropdown;
    
 
     public void start() {
