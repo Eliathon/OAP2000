@@ -1,165 +1,78 @@
 package com.oap200.app.views;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.math.BigDecimal;
 
-public class OrderManagementPanel extends JFrame {
+public class OrderManagementPanel {
+
     private JFrame frame;
-    private JPanel panel;
-    private JTable table;
-    private Connection connection;
-    private JButton viewButton;
-    private JButton createButton;
+    private JButton viewButton; // Knapp for å vise produkter
+    private JButton addButton;  // Knapp for å legge til produkt
+    private JButton deleteButton;  // Knapp for å slette produkt
     private JButton updateButton;
-    private JButton deleteButton;
-    private JTextField  orderNumberField, orderDateField, requiredDateField, shippedDateField, statusField, commentsField, customerNumberField;
-    private JTextField  productCodeField, quantityOrderedField, priceEachField, OrderLineNumberField; 
-  
-   
-   public class OrderManagementPanel extends JFrame {
 
-    public static void main(String[]args) {
-        JFrame frame = new JFrame("Order Management System");
-        frame.setSize(800, 600);
+    private JTextField orderNumberField;
+    private JTextField orderDateField;
+    private JTextField requiredDateField;
+    private JTextField shippedDateField;
+    private JTextField status;
+    private JTextArea comments;
+    private JTextField customerNumber;
+    private JTable resultTable;
+
+    public void start() {
+
+        frame = new JFrame("Order Management");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1100, 600); // Økt høyden for å plassere flere komponenter
+        frame.setLayout(new BorderLayout());
 
-        JButton viewButton = new JButton("View");
-        JButton createButton = new JButton("Create");
-        JButton updateButton = new JButton("Update");
-        JButton deleteButton = new JButton("Delete");
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setLayout(new FlowLayout());
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(viewButton);
-        buttonPanel.add(createButton);
-        buttonPanel.add(updateButton);
-        buttonPanel.add(deleteButton);
-
-        frame.add(buttonPanel, BorderLayout.NORTH);
-
-        JTable orderTable = new JTable();
-        JScrollPane scrollPane = new JScrollPane(orderTable);
-
-        frame.add(scrollPane, BorderLayout.Center);
-
-        frame.setVisible(true);
-
-        }
-   
-        public List<Order> fetchOrdersFromDatabase(Connection connection) {
-            List<Order> orders = new ArrayList<>();
-
-            try {
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT * FROM orders");
-
-                while (resultSet.next()) {
-                    int orderNumber = resultSet.getInt("order_number");
-                    int customerNumber = resultSet.getInt("costumer_number");
-                    int productCode = resultSet.getInt("product_code");
-                    int quantityOrdered = resultSet.getInt("quantity_ordered");
-                    String status = resultSet.getInt("status");
-                    String productName = resultSet.getInt("prodcut_name");
-
-                    Order order = new Order(orderNumber, customerName, productCode, quantityOrdered, status);
-                    orders.add(order);
-                }
-
-                resultSet.close();
-                statement.close();
-            } 
-                catch (SQLException e) {
-
-                  e.printStackTrace();  
-                }
-                
-                return orders;
-             
+        viewButton = new JButton("View Orders");
         viewButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-            
-                List<Order> orders = fetchOrdersFromDatabase(connection);
-           
-            DefaultTableModel model = new DefaultTableModel();
+                viewOrder();
+            }
+        });
 
-        DefaultTableModel.addColumn("Ordernumber");
-        DefaultTableModel.addColumn("Costumernumber");
-        DefaultTableModel.addColumn("ProductCode");
-        DefaultTableModel.addColumn("Status");
-        DefaultTableModel.addColumn("Quantity ordered");
+        topPanel.add(viewButton);
+        frame.add(topPanel, BorderLayout.NORTH);
 
-        for(Order order : orders) {
-            classicmodels.addRow(new Object[]{order.getOrderNumber(), order.getCustomerNumber(), order.getQuantityOrdered(), order.getStatus()});
-        }
-           orderTable.setModel(DefaultTableModel);
+
     }
-       });
-
-        createButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            
-            JDialong createDialog = new JDialog();
-            createDialog.setLayout(new GridLayout(0,2));
-
-            JLabel customerNumberLabel = new JLabel("Costumer Number:");
-            JTextField costumerNumberField = new JTextField();
-
-            JLabel productNameLabel = new JLabel("Product Name:");
-            JTextField productNameField = new JTextField();
-
-            JLabel productCodeLabel = new JLabel("Product Code");
-            JTextField productCodeField = new JLabel();
-
-            JLabel quantityOrderedLabel = new JLabel("QuantityOrdered");
-            JTextField quantityOrderedField = new JLabel();
-
-            JLabel statusLabel = new JLabel("Status");
-            JTextField statusField = new JLabel();
-            
-                
-            }
-        });
-
-        updateButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            
-                int selectedRow = orderTable.getSelectedRow();
-
-                if (selectedRow >= 0) {
-
-                    int orderNumber = (int) orderTable.getValueAt(selectedRow, 0);
-                    String customerName = (String) orderTable.getValueAt(selectedRow, 1);
-                    String productName = (String) orderTable.getValueAt(selectedRow, 2);
-                    int productCode = (String) orderTable
-                }
-            }
-        });
-
-        deleteButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Implement the Delete functionality to remove an order
-            }
-        });
-
-        // Set up the database connection
+    private void viewOrder() {
+        String searchQuery = orderNumberField.getText();
+    
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/yourdb", "username", "password");
-            // Use 'connection' to execute database queries
-        } catch (SQLException e) {
-            e.printStackTrace();
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM orders WHERE orderNumber LIKE '%" + searchQuery + "%'");
+    
+            // Opprett et dataobjekt for tabellen
+            DefaultTableModel tableModel = new DefaultTableModel();
+            tableModel.addColumn("Order Number"); // Legg til kolonner etter behov
+    
+            // Fyll tabellen med data fra resultatsettet
+            while (resultSet.next()) {
+                String orderNumber = resultSet.getString("orderNumber");
+                tableModel.addRow(new Object[]{orderNumber}); // Legg til rad med data
+            }
+    
+            // Oppdater JTable med det nye datamodellen
+            resultTable.setModel(tableModel);
+    
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new OrderManagementPanel().setVisible(true);
-            }
-        });
-    }
-   }
-
+}
