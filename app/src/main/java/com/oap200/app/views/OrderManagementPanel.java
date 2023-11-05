@@ -17,11 +17,11 @@ public class OrderManagementPanel extends JFrame {
     private JButton createButton;
     private JButton updateButton;
     private JButton deleteButton;
-    private JTextField orderNumberField, orderDateField, requiredDateField, shippedDateField, statusField, commentsField, customerNumberField;
-    private JTextField orderNumberField, productCodeField, quantityOrderedField, priceEachField, OrderLineNumberField; 
+    private JTextField  orderNumberField, orderDateField, requiredDateField, shippedDateField, statusField, commentsField, customerNumberField;
+    private JTextField  productCodeField, quantityOrderedField, priceEachField, OrderLineNumberField; 
   
    
-   public class OrderManagementPanel() {
+   public class OrderManagementPanel {
 
     public static void main(String[]args) {
         JFrame frame = new JFrame("Order Management System");
@@ -50,9 +50,35 @@ public class OrderManagementPanel extends JFrame {
 
         }
    
-   
+        public List<Order> fetchOrdersFromDatabase(Connection connection) {
+            List<Order> orders = new ArrayList<>();
 
-        // Create action listeners for buttons
+            try {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT * FROM orders");
+
+                while (resultSet.next()) {
+                    int orderNumber = resultSet.getInt("order_number");
+                    int customerNumber = resultSet.getInt("costumer_number");
+                    int productCode = resultSet.getInt("product_code");
+                    int quantityOrdered = resultSet.getInt("quantity_ordered");
+                    String status = resultSet.getInt("status");
+                    String productName = resultSet.getInt("prodcut_name");
+
+                    Order order = new Order(orderNumber, customerName, productCode, quantityOrdered, status);
+                    orders.add(order);
+                }
+
+                resultSet.close();
+                statement.close();
+            } 
+                catch (SQLException e) {
+
+                  e.printStackTrace();  
+                }
+                
+                return orders;
+             
         viewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             
@@ -60,21 +86,41 @@ public class OrderManagementPanel extends JFrame {
            
             DefaultTableModel model = new DefaultTableModel();
 
-        classicmodels.addColumn("Ordernumber");
-        classicmodels.addColumn("Costumernumber");
-        classicmodels.addColumn("Status");
-        classicmodels.addColumn("Quantity ordered");
+        DefaultTableModel.addColumn("Ordernumber");
+        DefaultTableModel.addColumn("Costumernumber");
+        DefaultTableModel.addColumn("ProductCode");
+        DefaultTableModel.addColumn("Status");
+        DefaultTableModel.addColumn("Quantity ordered");
 
         for(Order order : orders) {
-            classicmodels.addRow(new object[]{order.getOrderNumber(), order.getCustomerNumber(), order.getQuantityOrdered(), order.getStatus()});
+            classicmodels.addRow(new Object[]{order.getOrderNumber(), order.getCustomerNumber(), order.getQuantityOrdered(), order.getStatus()});
         }
-           orderTable.setmodel(classicmodels);
+           orderTable.setModel(DefaultTableModel);
     }
        });
 
         createButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Implement the Create functionality to add a new order
+            
+            JDialong createDialog = new JDialog();
+            createDialog.setLayout(new GridLayout(0,2));
+
+            JLabel customerNumberLabel = new JLabel("Costumer Number:");
+            JTextField costumerNumberField = new JTextField();
+
+            JLabel productNameLabel = new JLabel("Product Name:");
+            JTextField productNameField = new JTextField();
+
+            JLabel productCodeLabel = new JLabel("Product Code");
+            JTextField productCodeField = new JLabel();
+
+            JLabel quantityOrderedLabel = new JLabel("QuantityOrdered");
+            JTextField quantityOrderedField = new JLabel();
+
+            JLabel statusLabel = new JLabel("Status");
+            JTextField statusField = new JLabel();
+            
+                
             }
         });
 
@@ -107,3 +153,4 @@ public class OrderManagementPanel extends JFrame {
         });
     }
 }
+
