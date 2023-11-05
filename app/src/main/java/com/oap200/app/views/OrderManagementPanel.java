@@ -21,7 +21,7 @@ public class OrderManagementPanel extends JFrame {
     private JTextField  productCodeField, quantityOrderedField, priceEachField, OrderLineNumberField; 
   
    
-   public class OrderManagementPanel {
+   public class OrderManagementPanel extends JFrame {
 
     public static void main(String[]args) {
         JFrame frame = new JFrame("Order Management System");
@@ -126,7 +126,16 @@ public class OrderManagementPanel extends JFrame {
 
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Implement the Update functionality to edit an existing order
+            
+                int selectedRow = orderTable.getSelectedRow();
+
+                if (selectedRow >= 0) {
+
+                    int orderNumber = (int) orderTable.getValueAt(selectedRow, 0);
+                    String customerName = (String) orderTable.getValueAt(selectedRow, 1);
+                    String productName = (String) orderTable.getValueAt(selectedRow, 2);
+                    int productCode = (String) orderTable
+                }
             }
         });
 
@@ -152,5 +161,5 @@ public class OrderManagementPanel extends JFrame {
             }
         });
     }
-}
+   }
 
