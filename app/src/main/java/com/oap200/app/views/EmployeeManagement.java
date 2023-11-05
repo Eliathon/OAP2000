@@ -5,8 +5,10 @@ package com.oap200.app.views;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
+import java.util.List;
 
 public class EmployeeManagement {
     private JComboBox<String> reportsToComboBox;
@@ -247,8 +249,8 @@ String officeCode = officeCodeField.getText().trim();
 String reportsTo = ((String) reportsToComboBox.getSelectedItem()).split(" - ")[0];
 String jobTitle = jobTitleField.getText().trim();
 
-if (employeeId.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || extension.isEmpty() || email.isEmpty() || officeCode.isEmpty() || reportsTo.isEmpty() || jobTitle.isEmpty()) {
-    JOptionPane.showMessageDialog(frame, "All fields are required.");
+if (employeeId.isEmpty()) {
+    JOptionPane.showMessageDialog(frame, "Employee ID is required");
 return;
 }
 //Checks if a row in the table is selected
@@ -257,32 +259,71 @@ int selectedRow = table.getSelectedRow();
         JOptionPane.showMessageDialog(frame, "Please select an employee to update.", "No Selection", JOptionPane.ERROR_MESSAGE);
         return;}
 
+    
 
-        //Uses employeeNumber of the selected row to update the correspong record in the database
-    try{
-        PreparedStatement ps = connection.prepareStatement("UPDATE employees SET firstName=?, lastName=?, extension=?, email=?, officeCode=?, reportsTo=?, jobTitle=? WHERE employeeNumber=?");
-    ps.setString(1, firstName);
-    ps.setString(2, lastName);
-    ps.setString(3, extension);
-    ps.setString(4, email);
-    ps.setString(5, officeCode);
-    ps.setString(6, reportsTo);
-    ps.setString(7, jobTitle);
-    ps.setInt(8, Integer.parseInt(employeeId));
+    StringBuilder sql = new StringBuilder("UPDATE employees SET ");
+    List<Object> parameters = new ArrayList<>();
 
-    int result = ps.executeUpdate();
-
-    if (result > 0) {
-        JOptionPane.showMessageDialog(frame, "Employee was updated successfully");
-        refreshTable();
-    } else {
-        JOptionPane.showMessageDialog(frame, "Update of employee failed. Please try again.");
+    if (!firstName.isEmpty()) {
+        sql.append("firstName=?, ");
+        parameters.add(firstName);
     }
-} catch (SQLException e) {
-    JOptionPane.showMessageDialog(frame, "Error" + e.getMessage());
-    e.printStackTrace();
-}
+    if (!lastName.isEmpty()) {
+        sql.append("lastName=?, ");
+        parameters.add(lastName);
     }
+    if (!extension.isEmpty()) {
+        sql.append("extension=?, ");
+        parameters.add(extension);
+    }
+    if (!email.isEmpty()) {
+        sql.append("email=?, ");
+        parameters.add(email);
+    }
+    if (!officeCode.isEmpty()) {
+        sql.append("officeCode=?, ");
+        parameters.add(officeCode);
+    }
+    if (!reportsTo.isEmpty()) {
+        sql.append("reportsTo=?, ");
+        parameters.add(reportsTo);
+    }
+    if (!jobTitle.isEmpty()) {
+        sql.append("jobTitle=?, ");
+        parameters.add(jobTitle);
+    }
+
+    if (parameters.isEmpty()) {
+        JOptionPane.showMessageDialog(frame, "No fields to update.");
+        return;
+    }
+
+    // Remove trailing comma and space
+    sql = new StringBuilder(sql.substring(0, sql.length() - 2));
+    sql.append(" WHERE employeeNumber=?");
+    parameters.add(Integer.parseInt(employeeId));
+
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql.toString());
+        for (int i = 0; i < parameters.size(); i++) {
+            ps.setObject(i + 1, parameters.get(i)); // Set the parameters for PreparedStatement
+        }
+    
+        int result = ps.executeUpdate();
+    
+        if (result > 0) {
+            JOptionPane.showMessageDialog(frame, "Employee was updated successfully");
+            refreshTable(); 
+        } else {
+            JOptionPane.showMessageDialog(frame, "No employee was updated, please check the employee ID and try again.", "Update Failed", JOptionPane.ERROR_MESSAGE);
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(frame, "Error: " + e.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    } 
+    
+    }
+    
     
 
     
@@ -345,14 +386,15 @@ int selectedRow = table.getSelectedRow();
                 String firstName = rs.getString("firstName");
                 String lastName = rs.getString("lastName");
                 Employee employee = new Employee(employeeNumber, firstName, lastName);
-                reportsToDropdown.addItem(employee);
+                reportsToComboBox.addItem(employee.toString());
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     
-    // You'll also need a simple Employee class to store and display employee details:
+    
     class Employee {
         private int employeeNumber;
         private String firstName;
