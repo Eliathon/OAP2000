@@ -16,7 +16,7 @@ public class EmployeeManagement {
     private JFrame frame;
     private Connection connection;
     private JTable table;
-    private JTextField employeeIdField, employeeNumberSearchField, searchField, firstNameField, lastNameField, extensionField, emailField, officeCodeField, reportsToField, jobTitleField;
+    private JTextField employeeIdField, employeeNumberSearchField, searchField, firstNameField, lastNameField, extensionField, emailField, officeCodeField, jobTitleField;
     private JButton addButton, updateButton, deleteButton, refreshButton, searchButton;
 
     public EmployeeManagement() {
@@ -371,9 +371,10 @@ int selectedRow = table.getSelectedRow();
                     JOptionPane.showMessageDialog(frame, "Failed to delete the employee. Please try again.");
                 }
             } catch (SQLException e) {
-                JOptionPane.showMessageDialog(frame, "Error: " + e.getMessage());
-                e.printStackTrace();
-            }
+        JOptionPane.showMessageDialog(frame, "Error: " + e.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    } 
+    refreshTable();
         }
     
     }
