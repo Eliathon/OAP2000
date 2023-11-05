@@ -46,7 +46,7 @@ public class ProductManagementPanel {
 
         resultTable = new JTable();
         JScrollPane tableScrollPane = new JScrollPane(resultTable);
-        tableScrollPane.setPreferredSize(new Dimension(800, 400));
+        tableScrollPane.setPreferredSize(new Dimension(1900, 600));
        
         resultMessageArea = new JTextArea();
         resultMessageArea.setEditable(false);
@@ -197,8 +197,10 @@ public class ProductManagementPanel {
 
     topPanel.add(updateButton, BorderLayout.WEST);
     topPanel.add(menuPanel, BorderLayout.NORTH);
+    topPanel.add(viewButton, BorderLayout.WEST);
+    bottomPanel.add(messageScrollPane, BorderLayout.NORTH);
     bottomPanel.add(tableScrollPane, BorderLayout.CENTER);
-    bottomPanel.add(messageScrollPane, BorderLayout.SOUTH);
+    
 
                     break;
 
@@ -309,6 +311,8 @@ public class ProductManagementPanel {
         tableModel.setRowCount(0); // Tømmer alle rader fra tabellen
     }
 
+
+
     private void updateProduct() {
         String productCode = productCodeField.getText();
         int quantityInStock = Integer.parseInt(quantityInStockField.getText());
@@ -366,31 +370,50 @@ public class ProductManagementPanel {
     
 
     private void viewProducts() {
-    String searchQuery = productNameField.getText();
-
-    try {
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM products WHERE productName LIKE '%" + searchQuery + "%'");
-
-        // Opprett et dataobjekt for tabellen
-        DefaultTableModel tableModel = new DefaultTableModel();
-        tableModel.addColumn("Product Name"); // Legg til kolonner etter behov
-
-        // Fyll tabellen med data fra resultatsettet
-        while (resultSet.next()) {
-            String productName = resultSet.getString("productName");
-            tableModel.addRow(new Object[]{productName}); // Legg til rad med data
+        String searchQuery = productNameField.getText();
+    
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM products WHERE productName LIKE '%" + searchQuery + "%'");
+    
+            // Opprett et dataobjekt for tabellen
+            DefaultTableModel tableModel = new DefaultTableModel();
+            tableModel.addColumn("Product Code");
+            tableModel.addColumn("Product Name");
+            tableModel.addColumn("Product Line");
+            tableModel.addColumn("Product Scale");
+            tableModel.addColumn("Product Vendor");
+            tableModel.addColumn("Product Description");
+            tableModel.addColumn("quantityInStock");
+            tableModel.addColumn("buyPrice");
+            tableModel.addColumn("MSRP");
+    
+            // Fyll tabellen med data fra resultatsettet
+            while (resultSet.next()) {
+                String productCode = resultSet.getString("productCode");
+                String productName = resultSet.getString("productName");
+                String productLine = resultSet.getString("productLine");
+                String productScale = resultSet.getString("productScale");
+                String productVendor = resultSet.getString("productVendor");
+                String productDescription = resultSet.getString("productDescription");
+                String quantityInStock = resultSet.getString("quantityInStock");
+                String buyPrice = resultSet.getString("buyPrice");
+                String MSRP = resultSet.getString("MSRP");
+    
+                tableModel.addRow(new Object[]{productCode, productName, productLine, productScale, productVendor, productDescription, quantityInStock, buyPrice, MSRP});
+            }
+    
+            // Oppdater JTable med det nye datamodellen
+            resultTable.setModel(tableModel);
+    
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-
-        // Oppdater JTable med det nye datamodellen
-        resultTable.setModel(tableModel);
-
-        connection.close();
-    } catch (SQLException ex) {
-        ex.printStackTrace();
     }
-}
+    
+        
 
     private void addProduct() {
         String productCode = productCodeField.getText();
