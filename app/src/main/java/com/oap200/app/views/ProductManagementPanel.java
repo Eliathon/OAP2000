@@ -183,21 +183,6 @@ public class ProductManagementPanel {
                         labelPanel.add(productCodeLabel);
     fieldPanel.add(productCodeField);
 
-    labelPanel.add(productNameLabel);
-    fieldPanel.add(productNameField);
-
-    labelPanel.add(productLineLabel);
-    fieldPanel.add(productLineField);
-
-    labelPanel.add(productScaleLabel);
-    fieldPanel.add(productScaleField);
-
-    labelPanel.add(productVendorLabel);
-    fieldPanel.add(productVendorField);
-
-    labelPanel.add(productDescriptionLabel);
-    fieldPanel.add(descriptionScrollPane);
-
     labelPanel.add(quantityInStockLabel);
     fieldPanel.add(quantityInStockField);
 
@@ -326,30 +311,40 @@ public class ProductManagementPanel {
 
     private void updateProduct() {
         String productCode = productCodeField.getText();
-        String productName = productNameField.getText();
-        String productLine = productLineField.getText();
-        String productScale = productScaleField.getText();
-        String productVendor = productVendorField.getText();
-        String productDescription = productDescriptionArea.getText();
         int quantityInStock = Integer.parseInt(quantityInStockField.getText());
-        BigDecimal buyPrice = new BigDecimal(buyPriceField.getText());
-        BigDecimal MSRP = new BigDecimal(MSRPField.getText());
+        BigDecimal buyPrice = null; // Sett til null
+        BigDecimal MSRP = null; // Sett til null
     
         try {
+            // Hvis buyPrice og MSRP er fylt ut, oppdater variablene
+            if (!buyPriceField.getText().isEmpty()) {
+                buyPrice = new BigDecimal(buyPriceField.getText());
+            }
+    
+            if (!MSRPField.getText().isEmpty()) {
+                MSRP = new BigDecimal(MSRPField.getText());
+            }
+    
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
             PreparedStatement statement = connection.prepareStatement(
-                "UPDATE products SET productName=?, productLine=?, productScale=?, " +
-                "productVendor=?, productDescription=?, quantityInStock=?, buyPrice=?, MSRP=? WHERE productCode=?"
+                "UPDATE products SET quantityInStock=?, buyPrice=?, MSRP=? WHERE productCode=?"
             );
-            statement.setString(1, productName);
-            statement.setString(2, productLine);
-            statement.setString(3, productScale);
-            statement.setString(4, productVendor);
-            statement.setString(5, productDescription);
-            statement.setInt(6, quantityInStock);
-            statement.setBigDecimal(7, buyPrice);
-            statement.setBigDecimal(8, MSRP);
-            statement.setString(9, productCode);
+    
+            statement.setInt(1, quantityInStock);
+    
+            if (buyPrice != null) {
+                statement.setBigDecimal(2, buyPrice);
+            } else {
+                statement.setNull(2, Types.DECIMAL);
+            }
+    
+            if (MSRP != null) {
+                statement.setBigDecimal(3, MSRP);
+            } else {
+                statement.setNull(3, Types.DECIMAL);
+            }
+    
+            statement.setString(4, productCode);
     
             int rowsAffected = statement.executeUpdate();
     
@@ -365,6 +360,9 @@ public class ProductManagementPanel {
             resultMessageArea.setText("An error occurred while updating the product.");
         }
     }
+    
+
+
     
 
     private void viewProducts() {
