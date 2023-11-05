@@ -75,4 +75,9 @@ public class OrderManagementPanel {
             ex.printStackTrace();
         }
     }
+
+    public static void main(String[] args) {
+        OrderManagementPanel orderManagementPanel = new OrderManagementPanel();
+        orderManagementPanel.start();
+    }
 }
