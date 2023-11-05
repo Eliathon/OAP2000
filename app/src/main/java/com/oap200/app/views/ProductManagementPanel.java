@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.util.ArrayList;
 import java.math.BigDecimal;
 
 
@@ -315,12 +316,11 @@ public class ProductManagementPanel {
 
     private void updateProduct() {
         String productCode = productCodeField.getText();
-        int quantityInStock = Integer.parseInt(quantityInStockField.getText());
-        BigDecimal buyPrice = null; // Sett til null
-        BigDecimal MSRP = null; // Sett til null
+        BigDecimal buyPrice = null;
+        BigDecimal MSRP = null;
+        Integer quantityInStock = null;
     
         try {
-            // Hvis buyPrice og MSRP er fylt ut, oppdater variablene
             if (!buyPriceField.getText().isEmpty()) {
                 buyPrice = new BigDecimal(buyPriceField.getText());
             }
@@ -329,41 +329,62 @@ public class ProductManagementPanel {
                 MSRP = new BigDecimal(MSRPField.getText());
             }
     
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
-            PreparedStatement statement = connection.prepareStatement(
-                "UPDATE products SET quantityInStock=?, buyPrice=?, MSRP=? WHERE productCode=?"
-            );
-    
-            statement.setInt(1, quantityInStock);
-    
-            if (buyPrice != null) {
-                statement.setBigDecimal(2, buyPrice);
-            } else {
-                statement.setNull(2, Types.DECIMAL);
+            if (!quantityInStockField.getText().isEmpty()) {
+                quantityInStock = Integer.parseInt(quantityInStockField.getText());
             }
     
-            if (MSRP != null) {
-                statement.setBigDecimal(3, MSRP);
+            if (buyPrice != null || MSRP != null || quantityInStock != null) {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
+                PreparedStatement statement = connection.prepareStatement(
+                        "UPDATE products SET buyPrice = IFNULL(?, buyPrice), MSRP = IFNULL(?, MSRP), quantityInStock = IFNULL(?, quantityInStock) WHERE productCode = ?"
+                );
+    
+                if (buyPrice != null) {
+                    statement.setBigDecimal(1, buyPrice);
+                } else {
+                    statement.setNull(1, Types.DECIMAL);
+                }
+    
+                if (MSRP != null) {
+                    statement.setBigDecimal(2, MSRP);
+                } else {
+                    statement.setNull(2, Types.DECIMAL);
+                }
+    
+                if (quantityInStock != null) {
+                    statement.setInt(3, quantityInStock);
+                } else {
+                    statement.setNull(3, Types.INTEGER);
+                }
+    
+                statement.setString(4, productCode);
+    
+                int rowsAffected = statement.executeUpdate();
+    
+                if (rowsAffected > 0) {
+                    resultMessageArea.setText("Product updated successfully.");
+                } else {
+                    resultMessageArea.setText("Failed to update product. Product code not found.");
+                }
+    
+                connection.close();
             } else {
-                statement.setNull(3, Types.DECIMAL);
+                resultMessageArea.setText("No fields to update.");
             }
-    
-            statement.setString(4, productCode);
-    
-            int rowsAffected = statement.executeUpdate();
-    
-            if (rowsAffected > 0) {
-                resultMessageArea.setText("Product updated successfully.");
-            } else {
-                resultMessageArea.setText("Failed to update product. Product code not found.");
-            }
-    
-            connection.close();
-        } catch (SQLException ex) {
+        } catch (SQLException | NumberFormatException ex) {
             ex.printStackTrace();
             resultMessageArea.setText("An error occurred while updating the product.");
         }
     }
+    
+    
+    
+    
+    
+    
+    
+
+    
     
 
 
