@@ -351,22 +351,27 @@ int selectedRow = table.getSelectedRow();
             JOptionPane.showMessageDialog(frame, "Please select an employee to delete.", "No Selection", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+    
         int employeeNumber = (int) table.getValueAt(selectedRow, 0);
-
+    
         if (hasReports(employeeNumber)) {
             JOptionPane.showMessageDialog(frame, "This employee has other employees reporting to them. Please change the reporting structure before deleting.", "Cannot Delete", JOptionPane.ERROR_MESSAGE);
             return;
-}
-
+        }
+    
         int dialogResult = JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete the selected employee?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
-
+    
         if (dialogResult == JOptionPane.YES_OPTION) {
+            // If customers has the targeted employee as a SalesRep, this sets the salesRepNumber to NULL
             try {
-                PreparedStatement ps = connection.prepareStatement("DELETE FROM employees WHERE employeeNumber = ?");
+                PreparedStatement ps = connection.prepareStatement("UPDATE customers SET salesRepEmployeeNumber = NULL WHERE salesRepEmployeeNumber = ?");
+                ps.setInt(1, employeeNumber);
+                ps.executeUpdate();
+                // Then, delete the employee
+                ps = connection.prepareStatement("DELETE FROM employees WHERE employeeNumber = ?");
                 ps.setInt(1, employeeNumber);
                 int rowsAffected = ps.executeUpdate();
-
+    
                 if (rowsAffected > 0) {
                     JOptionPane.showMessageDialog(frame, "Employee deleted successfully!");
                     refreshTable();
@@ -374,13 +379,15 @@ int selectedRow = table.getSelectedRow();
                     JOptionPane.showMessageDialog(frame, "Failed to delete the employee. Please try again.");
                 }
             } catch (SQLException e) {
-        JOptionPane.showMessageDialog(frame, "Error: " + e.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-    } 
-    refreshTable();
+                JOptionPane.showMessageDialog(frame, "Error: " + e.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            } finally {
+                // Always try to refresh the table to reflect changes
+                refreshTable();
+            }
         }
-    
     }
+    
     private void populateReportsToDropdown() {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName FROM employees");
