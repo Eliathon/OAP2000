@@ -1,67 +1,127 @@
 package com.oap200.app.views;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.math.BigDecimal;
 
-public class OrderManagementPanel extends JFrame {
+public class OrderManagementPanel {
+
     private JFrame frame;
-    private JPanel panel;
-    private JTable table;
-    private Connection connection;
-    private JButton viewButton;
-    private JButton createButton;
-    private JButton updateButton;
+    private JButton viewButton; 
+    private JButton addButton;  
+    private JButton updateButton; 
     private JButton deleteButton;
-    private JTextField orderNumberField, orderDateField, requiredDateField, shippedDateField, statusField, commentsField, customerNumberField;
-    private JTextField orderNumberField, productCodeField, quantityOrderedField, priceEachField, OrderLineNumberField; 
-  
-    public OrderManagementPanel() {
-        // Set up your JFrame and components here
 
-        // Create action listeners for buttons
+    private JTextField orderNumberField;
+    private JTextField orderDateField;
+    private JTextField requiredDateField;
+    private JTextField shippedDateField;
+    private JTextField status;
+    private JTextArea comments;
+    private JTextField customerNumber;
+    private JTable resultTable;
+
+    public void start() {
+
+        frame = new JFrame("Order Management");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1100, 600); // Increase height and width to place elements
+        frame.setLayout(new BorderLayout());
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setLayout(new FlowLayout());
+
+        viewButton = new JButton("View Orders");
         viewButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                // Implement the View functionality to fetch and display orders
+                viewOrder();
             }
         });
 
-        createButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Implement the Create functionality to add a new order
-            }
-        });
-
-        updateButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Implement the Update functionality to edit an existing order
-            }
-        });
-
-        deleteButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Implement the Delete functionality to remove an order
-            }
-        });
-
-        // Set up the database connection
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/yourdb", "username", "password");
-            // Use 'connection' to execute database queries
-        } catch (SQLException e) {
-            e.printStackTrace();
+        {
+            addButton = new JButton("addOrders");
+            addButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    addOrder();
+                }
+            });
         }
+    
+    {
+        updateButton = new JButton("updateOrders");
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateOrder();
+            }
+        });
+    }
+    {
+        deleteButton = new JButton("deleteOrders");
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteOrder();
+            }
+        });
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new OrderManagementPanel().setVisible(true);
+        topPanel.add(viewButton);
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.setVisible(true);
+
+        topPanel.add(addButton);
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.setVisible(true);
+
+        topPanel.add(updateButton);
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.setVisible(true);
+
+        topPanel.add(deleteButton);
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.setVisible(true);
+
+
+    }
+      
+    private void viewOrder() {
+        String searchQuery = orderNumberField.getText();
+    
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM orders WHERE orderNumber LIKE '%" + searchQuery + "%'");
+    
+            // Opprett et dataobjekt for tabellen
+            DefaultTableModel tableModel = new DefaultTableModel();
+            tableModel.addColumn("Order Number"); // Legg til kolonner etter behov
+    
+            // Fyll tabellen med data fra resultatsettet
+            while (resultSet.next()) {
+                String orderNumber = resultSet.getString("orderNumber");
+                tableModel.addRow(new Object[]{orderNumber}); // Legg til rad med data
             }
-        });
+    
+            // Oppdater JTable med det nye datamodellen
+            resultTable.setModel(tableModel);
+    
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    
+    }
+   
+    public static void main(String[] args) {
+        OrderManagementPanel orderManagementPanel = new OrderManagementPanel();
+        orderManagementPanel.start();
     }
 }
