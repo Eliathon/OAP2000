@@ -30,7 +30,7 @@ public class OrderManagementPanel {
 
         frame = new JFrame("Order Management");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1100, 600); // Økt høyden for å plassere flere komponenter
+        frame.setSize(1100, 600); // Increase height and width to place elements
         frame.setLayout(new BorderLayout());
 
         JPanel topPanel = new JPanel(new BorderLayout());
