@@ -74,7 +74,7 @@ public class EmployeeManagement {
         JPanel employeeInputPanel = new JPanel();
         employeeInputPanel.setLayout(new BoxLayout(employeeInputPanel, BoxLayout.Y_AXIS));
     
-        // This function will help in creating separate panels for label and input fields
+        // Creates separate panels for label and input fields
         employeeIdField = new JTextField(10);
         employeeInputPanel.add(createLabeledField("Employee ID:", employeeIdField));
         firstNameField = new JTextField(10);
