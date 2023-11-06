@@ -12,10 +12,10 @@ import java.math.BigDecimal;
 public class OrderManagementPanel {
 
     private JFrame frame;
-    private JButton viewButton; // Knapp for å vise produkter
-    private JButton addButton;  // Knapp for å legge til produkt
-    private JButton deleteButton;  // Knapp for å slette produkt
-    private JButton updateButton;
+    private JButton viewButton; 
+    private JButton addButton;  
+    private JButton updateButton; 
+    private JButton deleteButton;
 
     private JTextField orderNumberField;
     private JTextField orderDateField;
@@ -44,11 +44,54 @@ public class OrderManagementPanel {
             }
         });
 
+        {
+            addButton = new JButton("addOrders");
+            addButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    addOrder();
+                }
+            });
+        }
+    
+    {
+        updateButton = new JButton("updateOrders");
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateOrder();
+            }
+        });
+    }
+    {
+        deleteButton = new JButton("deleteOrders");
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteOrder();
+            }
+        });
+    }
+
         topPanel.add(viewButton);
         frame.add(topPanel, BorderLayout.NORTH);
+        frame.setVisible(true);
+
+        topPanel.add(addButton);
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.setVisible(true);
+
+        topPanel.add(updateButton);
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.setVisible(true);
+
+        topPanel.add(deleteButton);
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.setVisible(true);
 
 
     }
+      
     private void viewOrder() {
         String searchQuery = orderNumberField.getText();
     
@@ -74,8 +117,9 @@ public class OrderManagementPanel {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    
     }
-
+   
     public static void main(String[] args) {
         OrderManagementPanel orderManagementPanel = new OrderManagementPanel();
         orderManagementPanel.start();
