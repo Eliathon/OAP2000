@@ -26,7 +26,7 @@ public class PaymentManagement {
     private JTextField amountField;
     private JTextField paymentsField;
     private JTable resultTable;
-
+    private JPanel mainPanel;
 
 
 
@@ -58,6 +58,8 @@ public void start() {
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setSize(1100, 600); // Økt høyden for å plassere flere komponenter
     frame.setLayout(new BorderLayout());
+
+    mainPanel = new JPanel(new BorderLayout());
 
     textAreaScrollPane = new JScrollPane(textArea);
     textAreaScrollPane.setPreferredSize(new Dimension(800, 100));
@@ -136,18 +138,27 @@ public void start() {
         buttonPanel.add(updateButton);
 
 
-
-        topPanel.add(viewButton, BorderLayout.NORTH);
+topPanel.add(viewButton, BorderLayout.NORTH);
 topPanel.add(addButton, BorderLayout.NORTH);
 topPanel.add(deleteButton, BorderLayout.NORTH);
 topPanel.add(updateButton, BorderLayout.NORTH);
 
 
 
+
+
 centerPanel.add(resultMessageArea, BorderLayout.CENTER);
 bottomPanel.add(resultTable, BorderLayout.SOUTH);
-
 centerPanel.add(textAreaScrollPane, BorderLayout.CENTER);
+
+mainPanel.add(customerNumberLabel);
+    mainPanel.add(customerNumberField);
+    mainPanel.add(checkNumberLabel);
+    mainPanel.add(checkNumberField);
+    mainPanel.add(paymentDateLabel);
+    mainPanel.add(paymentDateField);
+    mainPanel.add(amountLabel);
+    mainPanel.add(amountField);
 
     frame.add(topPanel, BorderLayout.NORTH);
         frame.add(centerPanel, BorderLayout.CENTER);
@@ -156,7 +167,7 @@ centerPanel.add(textAreaScrollPane, BorderLayout.CENTER);
         frame.setVisible(true);
 
 
-
+        
 
 
 
