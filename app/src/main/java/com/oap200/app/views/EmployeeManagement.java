@@ -98,7 +98,7 @@ reportsToComboBox = new JComboBox<>(employeesList);
 
 employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
 
-        jobTitleField = new JTextField(10);
+        jobTitleField = new JTextField(10); 
         employeeInputPanel.add(createLabeledField("Job Title:", jobTitleField));
 
         accessLevelField = new JTextField(1);
