@@ -27,7 +27,7 @@ public class UserConfig {
         return passwordHash;
     }
 
-    // Factory method to create a UserConfig from a JSON object
+    // Method to create a UserConfig from a JSON object
     public static UserConfig fromJson(JSONObject userObject) {
         String base64Username = userObject.getString("username");
         String username = new String(Base64.getDecoder().decode(base64Username), StandardCharsets.UTF_8);

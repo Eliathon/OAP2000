@@ -44,7 +44,7 @@ public class ConfigLoader {
         }
     }
 
-    // New method to check if the username already exists
+    // Method to check if the username already exists
     private boolean usernameExists(String username) throws IOException {
         JSONArray usersArray = loadUsers();
         for (int i = 0; i < usersArray.length(); i++) {
