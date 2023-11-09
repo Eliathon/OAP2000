@@ -62,22 +62,32 @@ public class EmployeeManagement {
         frame.setLayout(new BorderLayout());
     
         JPanel inputPanel = new JPanel(new BorderLayout());
+        inputPanel.setOpaque(true);
+        inputPanel.setBackground(Color.LIGHT_GRAY); 
     
         JPanel searchPanel = new JPanel(new FlowLayout());
+        searchPanel.setOpaque(true);
+        searchPanel.setBackground(Color.LIGHT_GRAY);
         employeeNumberSearchField = new JTextField(10);
         JButton employeeNumberSearchButton = new JButton("Search by Employee Number");
         searchField = new JTextField(15);
         searchButton = new JButton("Search by Last Name");
     
+        
+
         searchPanel.add(new JLabel("Employee Number:"));
         searchPanel.add(employeeNumberSearchField);
         searchPanel.add(employeeNumberSearchButton);
         searchPanel.add(new JLabel("Last Name:"));
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
-    
+
+        
         JPanel employeeInputPanel = new JPanel();
         employeeInputPanel.setLayout(new BoxLayout(employeeInputPanel, BoxLayout.Y_AXIS));
+        employeeInputPanel.setOpaque(true);
+        employeeInputPanel.setBackground(Color.LIGHT_GRAY);
+
     
         // Creates separate panels for label and input fields
         employeeIdField = new JTextField(10);
@@ -105,6 +115,9 @@ employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
         employeeInputPanel.add(createLabeledField("Access Level:", accessLevelField));
     
         JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.setOpaque(true);
+        buttonPanel.setBackground(Color.LIGHT_GRAY);
+        
         addButton = new JButton("Add");
         updateButton = new JButton("Update");
         deleteButton = new JButton("Delete");
