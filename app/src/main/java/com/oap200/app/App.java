@@ -1,3 +1,5 @@
+// Created by Sindre
+
 package com.oap200.app;
 
 import com.oap200.app.views.LoginPanel;
