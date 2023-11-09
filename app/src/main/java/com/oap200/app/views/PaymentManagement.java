@@ -1,6 +1,5 @@
 package com.oap200.app.views;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -115,8 +114,7 @@ public class PaymentManagement extends JPanel {
 
                 String paymentInfo = String.format(
                         "Customer Number: %d, Check Number: %s, Payment Date: %s, Amount: %.2f\n",
-                        customerNumber, checkNumber, paymentDateStr, amount
-                );
+                        customerNumber, checkNumber, paymentDateStr, amount);
 
                 textArea.append(paymentInfo);
             }
