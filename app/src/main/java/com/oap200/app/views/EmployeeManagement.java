@@ -155,6 +155,24 @@ employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
         }
     }
 
+    private void clearInputFields() {
+        employeeNumberSearchField.setText("");
+        searchField.setText("");
+        employeeIdField.setText("");
+        firstNameField.setText("");
+        lastNameField.setText("");
+        extensionField.setText("");
+        emailField.setText("");
+        officeCodeField.setText("");
+        accessLevelField.setText("");
+       // Resets the input panels, to not show any data
+        reportsToComboBox.setSelectedIndex(-1); // Resets the JComboBox to have no selection
+        jobTitleField.setText("");
+        // Similarly, clear or reset other fields
+        
+    }
+    
+
     private void searchEmployeeByNumber(String empNumber) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName, extension, email, officeCode, reportsTo, jobTitle, accessLevel FROM employees WHERE employeeNumber LIKE ?");
@@ -163,6 +181,7 @@ employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
             populateTableFromResultSet(rs);
         } catch (SQLException e) {
             e.printStackTrace();
+            clearInputFields();
         }
     }
 
@@ -174,6 +193,7 @@ employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
             populateTableFromResultSet(rs);
         } catch (SQLException e) {
             e.printStackTrace();
+            clearInputFields();
         }
     }
 
@@ -241,6 +261,7 @@ employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
                 JOptionPane.showMessageDialog(frame, "Employee added successfully!");
                 refreshTable();
                 populateReportsToDropdown(); //Shows the newly added employees to the dropdown table
+                clearInputFields();
             } else {
                 JOptionPane.showMessageDialog(frame, "Failed to add the employee. Please try again.");
             }
@@ -263,20 +284,15 @@ String reportsTo = ((String) reportsToComboBox.getSelectedItem()).split(" - ")[0
 String jobTitle = jobTitleField.getText().trim();
 String accessLevel = accessLevelField.getText().trim();
 
+
 if (employeeId.isEmpty()) {
     JOptionPane.showMessageDialog(frame, "Employee ID is required");
 return;
-}
-//Checks if a row in the table is selected
-int selectedRow = table.getSelectedRow();
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(frame, "Please select an employee to update.", "No Selection", JOptionPane.ERROR_MESSAGE);
-        return;}
-
-    
-
+}   
     StringBuilder sql = new StringBuilder("UPDATE employees SET ");
     List<Object> parameters = new ArrayList<>();
+
+
 
     if (!firstName.isEmpty()) {
         sql.append("firstName=?, ");
@@ -317,10 +333,12 @@ int selectedRow = table.getSelectedRow();
     }
 
     // Remove trailing comma and space
-    sql = new StringBuilder(sql.substring(0, sql.length() - 2));
-    sql.append(" WHERE employeeNumber=?");
-    parameters.add(Integer.parseInt(employeeId));
-
+    if (sql.toString().endsWith(", ")){
+        sql = new StringBuilder(sql.substring(0, sql.length() - 2));
+    }
+      sql.append("WHERE employeeNumber=?");
+      parameters.add(Integer.parseInt(employeeId));
+    
     try {
         PreparedStatement ps = connection.prepareStatement(sql.toString());
         for (int i = 0; i < parameters.size(); i++) {
@@ -329,9 +347,11 @@ int selectedRow = table.getSelectedRow();
     
         int result = ps.executeUpdate();
     
+        
         if (result > 0) {
             JOptionPane.showMessageDialog(frame, "Employee was updated successfully");
             refreshTable(); 
+            clearInputFields();
         } else {
             JOptionPane.showMessageDialog(frame, "No employee was updated, please check the employee ID and try again.", "Update Failed", JOptionPane.ERROR_MESSAGE);
         }
@@ -396,6 +416,7 @@ private void deleteEmployee() {
                     get(); // Call get to ensure any exceptions are caught
                     JOptionPane.showMessageDialog(frame, "Employee deleted successfully!");
                     refreshTable();
+                    clearInputFields();
                 } catch (InterruptedException | ExecutionException e) {
                     Throwable cause = e.getCause();
                     JOptionPane.showMessageDialog(frame, "Error: " + cause.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
