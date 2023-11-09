@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.util.ArrayList;
 import java.math.BigDecimal;
 
 public class ProductManagementPanel {
@@ -34,6 +35,7 @@ public class ProductManagementPanel {
     private JTextArea resultMessageArea;
     private JScrollPane messageScrollPane;
 
+    private JComboBox<String> productLineComboBox;
     private JComboBox<String> operationDropdown;
 
     public void start() {
@@ -44,7 +46,7 @@ public class ProductManagementPanel {
 
         resultTable = new JTable();
         JScrollPane tableScrollPane = new JScrollPane(resultTable);
-        tableScrollPane.setPreferredSize(new Dimension(800, 400));
+        tableScrollPane.setPreferredSize(new Dimension(1900, 600));
 
         resultMessageArea = new JTextArea();
         resultMessageArea.setEditable(false);
@@ -54,6 +56,15 @@ public class ProductManagementPanel {
         JPanel menuPanel = new JPanel();
         String[] options = { "Update", "Add", "View", "Delete" };
         JComboBox<String> optionsComboBox = new JComboBox<>(options);
+
+        productLineComboBox = new JComboBox<>(getProductLines().toArray(new String[0]));
+        productLineComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedProductLine = (String) productLineComboBox.getSelectedItem();
+                // Gjør noe med den valgte produktlinjen
+            }
+        });
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setLayout(new FlowLayout());
@@ -155,21 +166,6 @@ public class ProductManagementPanel {
                         labelPanel.add(productCodeLabel);
                         fieldPanel.add(productCodeField);
 
-                        labelPanel.add(productNameLabel);
-                        fieldPanel.add(productNameField);
-
-                        labelPanel.add(productLineLabel);
-                        fieldPanel.add(productLineField);
-
-                        labelPanel.add(productScaleLabel);
-                        fieldPanel.add(productScaleField);
-
-                        labelPanel.add(productVendorLabel);
-                        fieldPanel.add(productVendorField);
-
-                        labelPanel.add(productDescriptionLabel);
-                        fieldPanel.add(descriptionScrollPane);
-
                         labelPanel.add(quantityInStockLabel);
                         fieldPanel.add(quantityInStockField);
 
@@ -184,8 +180,9 @@ public class ProductManagementPanel {
 
                         topPanel.add(updateButton, BorderLayout.WEST);
                         topPanel.add(menuPanel, BorderLayout.NORTH);
+                        topPanel.add(viewButton, BorderLayout.WEST);
+                        bottomPanel.add(messageScrollPane, BorderLayout.NORTH);
                         bottomPanel.add(tableScrollPane, BorderLayout.CENTER);
-                        bottomPanel.add(messageScrollPane, BorderLayout.SOUTH);
 
                         break;
 
@@ -196,8 +193,8 @@ public class ProductManagementPanel {
                         topPanel.add(productNameLabel, BorderLayout.WEST);
                         topPanel.add(productNameField, BorderLayout.WEST);
 
-                        labelPanel.add(productLineLabel);
-                        fieldPanel.add(productLineField);
+                        labelPanel.add(new JLabel("Product Line:"));
+                        fieldPanel.add(productLineComboBox);
 
                         labelPanel.add(productScaleLabel);
                         fieldPanel.add(productScaleField);
@@ -284,41 +281,62 @@ public class ProductManagementPanel {
 
     private void updateProduct() {
         String productCode = productCodeField.getText();
-        String productName = productNameField.getText();
-        String productLine = productLineField.getText();
-        String productScale = productScaleField.getText();
-        String productVendor = productVendorField.getText();
-        String productDescription = productDescriptionArea.getText();
-        int quantityInStock = Integer.parseInt(quantityInStockField.getText());
-        BigDecimal buyPrice = new BigDecimal(buyPriceField.getText());
-        BigDecimal MSRP = new BigDecimal(MSRPField.getText());
+        BigDecimal buyPrice = null;
+        BigDecimal MSRP = null;
+        Integer quantityInStock = null;
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root",
-                    "");
-            PreparedStatement statement = connection.prepareStatement(
-                    "UPDATE products SET productName=?, productLine=?, productScale=?, " +
-                            "productVendor=?, productDescription=?, quantityInStock=?, buyPrice=?, MSRP=? WHERE productCode=?");
-            statement.setString(1, productName);
-            statement.setString(2, productLine);
-            statement.setString(3, productScale);
-            statement.setString(4, productVendor);
-            statement.setString(5, productDescription);
-            statement.setInt(6, quantityInStock);
-            statement.setBigDecimal(7, buyPrice);
-            statement.setBigDecimal(8, MSRP);
-            statement.setString(9, productCode);
-
-            int rowsAffected = statement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                resultMessageArea.setText("Product updated successfully.");
-            } else {
-                resultMessageArea.setText("Failed to update product. Product code not found.");
+            if (!buyPriceField.getText().isEmpty()) {
+                buyPrice = new BigDecimal(buyPriceField.getText());
             }
 
-            connection.close();
-        } catch (SQLException ex) {
+            if (!MSRPField.getText().isEmpty()) {
+                MSRP = new BigDecimal(MSRPField.getText());
+            }
+
+            if (!quantityInStockField.getText().isEmpty()) {
+                quantityInStock = Integer.parseInt(quantityInStockField.getText());
+            }
+
+            if (buyPrice != null || MSRP != null || quantityInStock != null) {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root",
+                        "");
+                PreparedStatement statement = connection.prepareStatement(
+                        "UPDATE products SET buyPrice = IFNULL(?, buyPrice), MSRP = IFNULL(?, MSRP), quantityInStock = IFNULL(?, quantityInStock) WHERE productCode = ?");
+
+                if (buyPrice != null) {
+                    statement.setBigDecimal(1, buyPrice);
+                } else {
+                    statement.setNull(1, Types.DECIMAL);
+                }
+
+                if (MSRP != null) {
+                    statement.setBigDecimal(2, MSRP);
+                } else {
+                    statement.setNull(2, Types.DECIMAL);
+                }
+
+                if (quantityInStock != null) {
+                    statement.setInt(3, quantityInStock);
+                } else {
+                    statement.setNull(3, Types.INTEGER);
+                }
+
+                statement.setString(4, productCode);
+
+                int rowsAffected = statement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    resultMessageArea.setText("Product updated successfully.");
+                } else {
+                    resultMessageArea.setText("Failed to update product. Product code not found.");
+                }
+
+                connection.close();
+            } else {
+                resultMessageArea.setText("No fields to update.");
+            }
+        } catch (SQLException | NumberFormatException ex) {
             ex.printStackTrace();
             resultMessageArea.setText("An error occurred while updating the product.");
         }
@@ -336,12 +354,30 @@ public class ProductManagementPanel {
 
             // Opprett et dataobjekt for tabellen
             DefaultTableModel tableModel = new DefaultTableModel();
-            tableModel.addColumn("Product Name"); // Legg til kolonner etter behov
+            tableModel.addColumn("Product Code");
+            tableModel.addColumn("Product Name");
+            tableModel.addColumn("Product Line");
+            tableModel.addColumn("Product Scale");
+            tableModel.addColumn("Product Vendor");
+            tableModel.addColumn("Product Description");
+            tableModel.addColumn("quantityInStock");
+            tableModel.addColumn("buyPrice");
+            tableModel.addColumn("MSRP");
 
             // Fyll tabellen med data fra resultatsettet
             while (resultSet.next()) {
+                String productCode = resultSet.getString("productCode");
                 String productName = resultSet.getString("productName");
-                tableModel.addRow(new Object[] { productName }); // Legg til rad med data
+                String productLine = resultSet.getString("productLine");
+                String productScale = resultSet.getString("productScale");
+                String productVendor = resultSet.getString("productVendor");
+                String productDescription = resultSet.getString("productDescription");
+                String quantityInStock = resultSet.getString("quantityInStock");
+                String buyPrice = resultSet.getString("buyPrice");
+                String MSRP = resultSet.getString("MSRP");
+
+                tableModel.addRow(new Object[] { productCode, productName, productLine, productScale, productVendor,
+                        productDescription, quantityInStock, buyPrice, MSRP });
             }
 
             // Oppdater JTable med det nye datamodellen
@@ -356,7 +392,7 @@ public class ProductManagementPanel {
     private void addProduct() {
         String productCode = productCodeField.getText();
         String productName = productNameField.getText();
-        String productLine = productLineField.getText();
+        String productLine = (String) productLineComboBox.getSelectedItem(); // Henter valgt produktlinje fra ComboBox
         String productScale = productScaleField.getText();
         String productVendor = productVendorField.getText();
         String productDescription = productDescriptionArea.getText();
@@ -367,19 +403,35 @@ public class ProductManagementPanel {
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root",
                     "");
-            PreparedStatement statement = connection
-                    .prepareStatement("INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            statement.setString(1, productCode);
-            statement.setString(2, productName);
-            statement.setString(3, productLine);
-            statement.setString(4, productScale);
-            statement.setString(5, productVendor);
-            statement.setString(6, productDescription);
-            statement.setInt(7, quantityInStock);
-            statement.setBigDecimal(8, buyPrice);
-            statement.setBigDecimal(9, MSRP);
 
-            int rowsAffected = statement.executeUpdate();
+            // Sjekk om produktlinjen allerede eksisterer
+            PreparedStatement checkProductLineStatement = connection
+                    .prepareStatement("SELECT * FROM productlines WHERE productLine = ?");
+            checkProductLineStatement.setString(1, productLine);
+            ResultSet resultSet = checkProductLineStatement.executeQuery();
+
+            if (!resultSet.next()) {
+                // Produktlinjen eksisterer ikke, legg den til først
+                PreparedStatement addProductLineStatement = connection
+                        .prepareStatement("INSERT INTO productlines (productLine) VALUES (?)");
+                addProductLineStatement.setString(1, productLine);
+                addProductLineStatement.executeUpdate();
+            }
+
+            // Legg til produktet
+            PreparedStatement addProductStatement = connection
+                    .prepareStatement("INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            addProductStatement.setString(1, productCode);
+            addProductStatement.setString(2, productName);
+            addProductStatement.setString(3, productLine);
+            addProductStatement.setString(4, productScale);
+            addProductStatement.setString(5, productVendor);
+            addProductStatement.setString(6, productDescription);
+            addProductStatement.setInt(7, quantityInStock);
+            addProductStatement.setBigDecimal(8, buyPrice);
+            addProductStatement.setBigDecimal(9, MSRP);
+
+            int rowsAffected = addProductStatement.executeUpdate();
 
             if (rowsAffected > 0) {
                 resultMessageArea.setText("Product added successfully.");
@@ -388,10 +440,9 @@ public class ProductManagementPanel {
             }
 
             connection.close();
-        } catch (SQLException ex) {
+        } catch (SQLException | NumberFormatException ex) {
             ex.printStackTrace();
         }
-
     }
 
     private void deleteProduct() {
@@ -415,6 +466,28 @@ public class ProductManagementPanel {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private ArrayList<String> getProductLines() {
+        ArrayList<String> productLines = new ArrayList<>();
+
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root",
+                    "");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT DISTINCT productLine FROM products");
+
+            while (resultSet.next()) {
+                String productLine = resultSet.getString("productLine");
+                productLines.add(productLine);
+            }
+
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return productLines;
     }
 
     public static void main(String[] args) {

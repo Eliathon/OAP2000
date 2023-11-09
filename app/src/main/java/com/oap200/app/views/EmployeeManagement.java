@@ -1,12 +1,19 @@
 // Created by Kristian
 
+
+//Fordele tilgang blant employees
+
 package com.oap200.app.views;
 
 import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
+
 import javax.swing.table.DefaultTableModel;
+import java.util.List;
 
 public class EmployeeManagement {
     private JComboBox<String> reportsToComboBox;
@@ -14,7 +21,7 @@ public class EmployeeManagement {
     private JFrame frame;
     private Connection connection;
     private JTable table;
-    private JTextField employeeIdField, employeeNumberSearchField, searchField, firstNameField, lastNameField, extensionField, emailField, officeCodeField, reportsToField, jobTitleField;
+    private JTextField employeeIdField, employeeNumberSearchField, searchField, firstNameField, lastNameField, extensionField, emailField, officeCodeField, jobTitleField, accessLevelField;
     private JButton addButton, updateButton, deleteButton, refreshButton, searchButton;
 
     public EmployeeManagement() {
@@ -55,24 +62,34 @@ public class EmployeeManagement {
         frame.setLayout(new BorderLayout());
     
         JPanel inputPanel = new JPanel(new BorderLayout());
+        inputPanel.setOpaque(true);
+        inputPanel.setBackground(Color.LIGHT_GRAY); 
     
         JPanel searchPanel = new JPanel(new FlowLayout());
+        searchPanel.setOpaque(true);
+        searchPanel.setBackground(Color.LIGHT_GRAY);
         employeeNumberSearchField = new JTextField(10);
         JButton employeeNumberSearchButton = new JButton("Search by Employee Number");
         searchField = new JTextField(15);
         searchButton = new JButton("Search by Last Name");
     
+        
+
         searchPanel.add(new JLabel("Employee Number:"));
         searchPanel.add(employeeNumberSearchField);
         searchPanel.add(employeeNumberSearchButton);
         searchPanel.add(new JLabel("Last Name:"));
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
-    
+
+        
         JPanel employeeInputPanel = new JPanel();
         employeeInputPanel.setLayout(new BoxLayout(employeeInputPanel, BoxLayout.Y_AXIS));
+        employeeInputPanel.setOpaque(true);
+        employeeInputPanel.setBackground(Color.LIGHT_GRAY);
+
     
-        // This function will help in creating separate panels for label and input fields
+        // Creates separate panels for label and input fields
         employeeIdField = new JTextField(10);
         employeeInputPanel.add(createLabeledField("Employee ID:", employeeIdField));
         firstNameField = new JTextField(10);
@@ -91,10 +108,16 @@ reportsToComboBox = new JComboBox<>(employeesList);
 
 employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
 
-        jobTitleField = new JTextField(10);
+        jobTitleField = new JTextField(10); 
         employeeInputPanel.add(createLabeledField("Job Title:", jobTitleField));
+
+        accessLevelField = new JTextField(1);
+        employeeInputPanel.add(createLabeledField("Access Level:", accessLevelField));
     
         JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.setOpaque(true);
+        buttonPanel.setBackground(Color.LIGHT_GRAY);
+        
         addButton = new JButton("Add");
         updateButton = new JButton("Update");
         deleteButton = new JButton("Delete");
@@ -137,7 +160,7 @@ employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
 
     private void refreshTable() {
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName, extension, email, officeCode, reportsTo, jobTitle FROM employees");
+            PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName, extension, email, officeCode, reportsTo, jobTitle, accessLevel FROM employees");
             ResultSet rs = ps.executeQuery();
             populateTableFromResultSet(rs);
         } catch (SQLException e) {
@@ -145,25 +168,45 @@ employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
         }
     }
 
+    private void clearInputFields() {
+        employeeNumberSearchField.setText("");
+        searchField.setText("");
+        employeeIdField.setText("");
+        firstNameField.setText("");
+        lastNameField.setText("");
+        extensionField.setText("");
+        emailField.setText("");
+        officeCodeField.setText("");
+        accessLevelField.setText("");
+       // Resets the input panels, to not show any data
+        reportsToComboBox.setSelectedIndex(-1); // Resets the JComboBox to have no selection
+        jobTitleField.setText("");
+        // Similarly, clear or reset other fields
+        
+    }
+    
+
     private void searchEmployeeByNumber(String empNumber) {
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName, extension, email, officeCode, reportsTo, jobTitle FROM employees WHERE employeeNumber LIKE ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName, extension, email, officeCode, reportsTo, jobTitle, accessLevel FROM employees WHERE employeeNumber LIKE ?");
             ps.setString(1, "%" + empNumber + "%");
             ResultSet rs = ps.executeQuery();
             populateTableFromResultSet(rs);
         } catch (SQLException e) {
             e.printStackTrace();
+            clearInputFields();
         }
     }
 
     private void searchEmployeeByLastName(String lastName) {
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName, extension, email, officeCode, reportsTo, jobTitle FROM employees WHERE lastName LIKE ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName, extension, email, officeCode, reportsTo, jobTitle, accessLevel FROM employees WHERE lastName LIKE ?");
             ps.setString(1, "%" + lastName + "%");
             ResultSet rs = ps.executeQuery();
             populateTableFromResultSet(rs);
         } catch (SQLException e) {
             e.printStackTrace();
+            clearInputFields();
         }
     }
 
@@ -177,6 +220,7 @@ employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
         columnNames.add("Office Code");
         columnNames.add("Reports To");
         columnNames.add("Job Title");
+        columnNames.add("accessLevel");
 
         Vector<Vector<Object>> data = new Vector<>();
         while (rs.next()) {
@@ -189,6 +233,7 @@ employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
             row.add(rs.getInt("officeCode"));
             row.add(rs.getString("reportsTo"));
             row.add(rs.getString("jobTitle"));
+            row.add(rs.getInt("accessLevel"));
             data.add(row);
         }
 
@@ -204,14 +249,15 @@ employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
         String officeCode = officeCodeField.getText().trim();
         String reportsTo = ((String) reportsToComboBox.getSelectedItem()).split(" - ")[0];
         String jobTitle = jobTitleField.getText().trim();
+        String accessLevel = accessLevelField.getText().trim();
         
-        if (employeeId.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || extension.isEmpty() || email.isEmpty() || officeCode.isEmpty() || reportsTo.isEmpty() || jobTitle.isEmpty()) {
+        if (employeeId.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || extension.isEmpty() || email.isEmpty() || officeCode.isEmpty() || reportsTo.isEmpty() || jobTitle.isEmpty() || accessLevel.isEmpty()) {
             JOptionPane.showMessageDialog(frame, "All fields are required.");
             return;
         }
 
         try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO employees (employeeNumber, firstName, lastName, extension, email, officeCode, reportsTo, jobTitle) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO employees (employeeNumber, firstName, lastName, extension, email, officeCode, reportsTo, jobTitle, accessLevel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             ps.setInt(1, Integer.parseInt(employeeId));
             ps.setString(2, firstName);
             ps.setString(3, lastName);
@@ -220,12 +266,15 @@ employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
             ps.setString(6, officeCode);
             ps.setString(7, reportsTo);
             ps.setString(8, jobTitle);
+            ps.setString(9, accessLevel);
 
             int result = ps.executeUpdate();
 
             if (result > 0) {
                 JOptionPane.showMessageDialog(frame, "Employee added successfully!");
                 refreshTable();
+                populateReportsToDropdown(); //Shows the newly added employees to the dropdown table
+                clearInputFields();
             } else {
                 JOptionPane.showMessageDialog(frame, "Failed to add the employee. Please try again.");
             }
@@ -246,43 +295,86 @@ String email = emailField.getText().trim();
 String officeCode = officeCodeField.getText().trim();
 String reportsTo = ((String) reportsToComboBox.getSelectedItem()).split(" - ")[0];
 String jobTitle = jobTitleField.getText().trim();
+String accessLevel = accessLevelField.getText().trim();
 
-if (employeeId.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || extension.isEmpty() || email.isEmpty() || officeCode.isEmpty() || reportsTo.isEmpty() || jobTitle.isEmpty()) {
-    JOptionPane.showMessageDialog(frame, "All fields are required.");
+
+if (employeeId.isEmpty()) {
+    JOptionPane.showMessageDialog(frame, "Employee ID is required");
 return;
-}
-//Checks if a row in the table is selected
-int selectedRow = table.getSelectedRow();
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(frame, "Please select an employee to update.", "No Selection", JOptionPane.ERROR_MESSAGE);
-        return;}
+}   
+    StringBuilder sql = new StringBuilder("UPDATE employees SET ");
+    List<Object> parameters = new ArrayList<>();
 
 
-        //Uses employeeNumber of the selected row to update the correspong record in the database
-    try{
-        PreparedStatement ps = connection.prepareStatement("UPDATE employees SET firstName=?, lastName=?, extension=?, email=?, officeCode=?, reportsTo=?, jobTitle=? WHERE employeeNumber=?");
-    ps.setString(1, firstName);
-    ps.setString(2, lastName);
-    ps.setString(3, extension);
-    ps.setString(4, email);
-    ps.setString(5, officeCode);
-    ps.setString(6, reportsTo);
-    ps.setString(7, jobTitle);
-    ps.setInt(8, Integer.parseInt(employeeId));
 
-    int result = ps.executeUpdate();
-
-    if (result > 0) {
-        JOptionPane.showMessageDialog(frame, "Employee was updated successfully");
-        refreshTable();
-    } else {
-        JOptionPane.showMessageDialog(frame, "Update of employee failed. Please try again.");
+    if (!firstName.isEmpty()) {
+        sql.append("firstName=?, ");
+        parameters.add(firstName);
     }
-} catch (SQLException e) {
-    JOptionPane.showMessageDialog(frame, "Error" + e.getMessage());
-    e.printStackTrace();
-}
+    if (!lastName.isEmpty()) {
+        sql.append("lastName=?, ");
+        parameters.add(lastName);
     }
+    if (!extension.isEmpty()) {
+        sql.append("extension=?, ");
+        parameters.add(extension);
+    }
+    if (!email.isEmpty()) {
+        sql.append("email=?, ");
+        parameters.add(email);
+    }
+    if (!officeCode.isEmpty()) {
+        sql.append("officeCode=?, ");
+        parameters.add(officeCode);
+    }
+    if (!reportsTo.isEmpty()) {
+        sql.append("reportsTo=?, ");
+        parameters.add(reportsTo);
+    }
+    if (!jobTitle.isEmpty()) {
+        sql.append("jobTitle=?, ");
+        parameters.add(jobTitle);
+    }
+    if (!accessLevel.isEmpty()){
+        sql.append("accessLevel=?, ");
+        parameters.add(accessLevel);
+    }
+    
+    if (parameters.isEmpty()) {
+        JOptionPane.showMessageDialog(frame, "No fields to update.");
+        return;
+    }
+
+    // Remove trailing comma and space
+    if (sql.toString().endsWith(", ")){
+        sql = new StringBuilder(sql.substring(0, sql.length() - 2));
+    }
+      sql.append("WHERE employeeNumber=?");
+      parameters.add(Integer.parseInt(employeeId));
+    
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql.toString());
+        for (int i = 0; i < parameters.size(); i++) {
+            ps.setObject(i + 1, parameters.get(i)); // Set the parameters for PreparedStatement
+        }
+    
+        int result = ps.executeUpdate();
+    
+        
+        if (result > 0) {
+            JOptionPane.showMessageDialog(frame, "Employee was updated successfully");
+            refreshTable(); 
+            clearInputFields();
+        } else {
+            JOptionPane.showMessageDialog(frame, "No employee was updated, please check the employee ID and try again.", "Update Failed", JOptionPane.ERROR_MESSAGE);
+        }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(frame, "Error: " + e.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    } 
+    
+    }
+    
     
 
     
@@ -301,41 +393,53 @@ int selectedRow = table.getSelectedRow();
         return false;
     }
     
-    private void deleteEmployee() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(frame, "Please select an employee to delete.", "No Selection", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+private void deleteEmployee() {
+    int selectedRow = table.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(frame, "Please select an employee to delete.", "No Selection", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
 
-        int employeeNumber = (int) table.getValueAt(selectedRow, 0);
+    int employeeNumber = (int) table.getValueAt(selectedRow, 0);
 
-        if (hasReports(employeeNumber)) {
-            JOptionPane.showMessageDialog(frame, "This employee has other employees reporting to them. Please change the reporting structure before deleting.", "Cannot Delete", JOptionPane.ERROR_MESSAGE);
-            return;
-}
+    if (hasReports(employeeNumber)) {
+        JOptionPane.showMessageDialog(frame, "This employee has other employees reporting to them. Please change the reporting structure before deleting.", "Cannot Delete", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
 
-        int dialogResult = JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete the selected employee?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+    int dialogResult = JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete the selected employee?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
 
-        if (dialogResult == JOptionPane.YES_OPTION) {
-            try {
-                PreparedStatement ps = connection.prepareStatement("DELETE FROM employees WHERE employeeNumber = ?");
+    if (dialogResult == JOptionPane.YES_OPTION) {
+        new SwingWorker<Void, Void>() {
+            protected Void doInBackground() throws SQLException {
+                // Perform the long-running deletion in the background.
+                PreparedStatement ps = connection.prepareStatement("UPDATE customers SET salesRepEmployeeNumber = NULL WHERE salesRepEmployeeNumber = ?");
                 ps.setInt(1, employeeNumber);
-                int rowsAffected = ps.executeUpdate();
+                ps.executeUpdate();
+                
+                ps = connection.prepareStatement("DELETE FROM employees WHERE employeeNumber = ?");
+                ps.setInt(1, employeeNumber);
+                ps.executeUpdate();
 
-                if (rowsAffected > 0) {
+                return null;
+            }
+
+            protected void done() {
+                try {
+                    get(); // Call get to ensure any exceptions are caught
                     JOptionPane.showMessageDialog(frame, "Employee deleted successfully!");
                     refreshTable();
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Failed to delete the employee. Please try again.");
+                    clearInputFields();
+                } catch (InterruptedException | ExecutionException e) {
+                    Throwable cause = e.getCause();
+                    JOptionPane.showMessageDialog(frame, "Error: " + cause.getMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
+                    cause.printStackTrace();
                 }
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(frame, "Error: " + e.getMessage());
-                e.printStackTrace();
             }
-        }
-    
+        }.execute();
     }
+}
+
     private void populateReportsToDropdown() {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT employeeNumber, firstName, lastName FROM employees");
@@ -345,14 +449,15 @@ int selectedRow = table.getSelectedRow();
                 String firstName = rs.getString("firstName");
                 String lastName = rs.getString("lastName");
                 Employee employee = new Employee(employeeNumber, firstName, lastName);
-                reportsToDropdown.addItem(employee);
+                reportsToComboBox.addItem(employee.toString());
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     
-    // You'll also need a simple Employee class to store and display employee details:
+    
     class Employee {
         private int employeeNumber;
         private String firstName;
