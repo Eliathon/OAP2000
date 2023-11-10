@@ -20,7 +20,6 @@ public class ProductManagementPanel {
     private JButton addButton;  // Knapp for å legge til produkt
     private JButton deleteButton;  // Knapp for å slette produkt
     private JButton updateButton;
-    private JTextArea resultTextArea;
     private JTable resultTable;
 
     private JTextField productNameField;
@@ -37,10 +36,12 @@ public class ProductManagementPanel {
     private JScrollPane messageScrollPane;
 
     private JComboBox<String> productLineComboBox;
-    private JComboBox<String> operationDropdown;
+    private JComboBox<String> filterComboBox; // New ComboBox for filtering by product line
    
 
     public void start() {
+        
+
         frame = new JFrame("Product Management");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1100, 600); // Økt høyden for å plassere flere komponenter
@@ -60,11 +61,27 @@ public class ProductManagementPanel {
         JPanel menuPanel = new JPanel();
         String[] options = {"Update", "Add", "View", "Delete"};
         JComboBox<String> optionsComboBox = new JComboBox<>(options);
+        optionsComboBox.setSelectedIndex(2);
+
+        JPanel filterPanel = new JPanel(new BorderLayout());
+        filterComboBox = new JComboBox<>(getProductLines().toArray(new String[0]));
+        filterComboBox.insertItemAt("All", 0); // Add an "All" option at the beginning
+        filterComboBox.setSelectedIndex(0); // Set "All" as the default filter
+        filterComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewProducts(); // Trigger a refresh when the filter changes
+            }
+        });
+
+        
+        
 
         productLineComboBox = new JComboBox<>(getProductLines().toArray(new String[0]));
         productLineComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                
                 String selectedProductLine = (String) productLineComboBox.getSelectedItem();
                 // Gjør noe med den valgte produktlinjen
             }
@@ -75,6 +92,7 @@ public class ProductManagementPanel {
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setLayout(new FlowLayout());
+        
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setLayout(new FlowLayout());
@@ -142,8 +160,13 @@ public class ProductManagementPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 viewProducts();
+                
             }
         });
+
+       
+
+         
 
         addButton = new JButton("Add Product");
         addButton.addActionListener(new ActionListener() {
@@ -158,6 +181,7 @@ public class ProductManagementPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 deleteProduct();
+                repaintTable();  //
             }
         });
 
@@ -166,6 +190,12 @@ public class ProductManagementPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 updateProduct();
+                repaintTable();
+                
+                
+                
+                
+            
             }
         });
         buttonPanel.add(updateButton);
@@ -176,43 +206,54 @@ public class ProductManagementPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedOption = (String) optionsComboBox.getSelectedItem();
+
+                productNameField.setText("");
+                productCodeField.setText("");
+                productScaleField.setText("");
+                productVendorField.setText("");
+                productDescriptionArea.setText("");
+                quantityInStockField.setText("");
+                buyPriceField.setText("");
+                MSRPField.setText("");
+
                 topPanel.removeAll();
                 labelPanel.removeAll();
                 fieldPanel.removeAll();
                 bottomPanel.removeAll();
+
                 resetTable();
                 resetView();
+                viewProducts();
+                resetFilterPanel();
                 
-               
                 
-                
-
               
         
                 switch (selectedOption) {
                     case "Update":
                        
+                    
+                    
+        labelPanel.add(productCodeLabel);
+        fieldPanel.add(productCodeField);
 
-                        labelPanel.add(productCodeLabel);
-    fieldPanel.add(productCodeField);
+        labelPanel.add(quantityInStockLabel);
+        fieldPanel.add(quantityInStockField);
 
-    labelPanel.add(quantityInStockLabel);
-    fieldPanel.add(quantityInStockField);
+        labelPanel.add(buyPriceLabel);
+        fieldPanel.add(buyPriceField);
 
-    labelPanel.add(buyPriceLabel);
-    fieldPanel.add(buyPriceField);
+        labelPanel.add(MSRPLabel);
+        fieldPanel.add(MSRPField);
 
-    labelPanel.add(MSRPLabel);
-    fieldPanel.add(MSRPField);
+        centerPanel.add(labelPanel, BorderLayout.WEST);
+        centerPanel.add(fieldPanel, BorderLayout.WEST);
 
-    centerPanel.add(labelPanel, BorderLayout.WEST);
-    centerPanel.add(fieldPanel, BorderLayout.WEST);
-
-    topPanel.add(updateButton, BorderLayout.WEST);
-    topPanel.add(menuPanel, BorderLayout.NORTH);
-    topPanel.add(viewButton, BorderLayout.WEST);
-    bottomPanel.add(messageScrollPane, BorderLayout.NORTH);
-    bottomPanel.add(tableScrollPane, BorderLayout.CENTER);
+        topPanel.add(updateButton, BorderLayout.WEST);
+        topPanel.add(menuPanel, BorderLayout.NORTH);
+        topPanel.add(viewButton, BorderLayout.WEST);
+        bottomPanel.add(messageScrollPane, BorderLayout.NORTH);
+        bottomPanel.add(tableScrollPane, BorderLayout.CENTER);
     
 
                     break;
@@ -252,11 +293,13 @@ public class ProductManagementPanel {
         topPanel.add(menuPanel, BorderLayout.NORTH);
 
         bottomPanel.add(messageScrollPane, BorderLayout.SOUTH);
+        bottomPanel.add(tableScrollPane, BorderLayout.SOUTH);
 
      
 
                         break;
                     case "View":
+                    
         topPanel.add(productCodeLabel, BorderLayout.WEST);
         topPanel.add(productCodeField, BorderLayout.WEST);
 
@@ -265,8 +308,17 @@ public class ProductManagementPanel {
         topPanel.add(viewButton, BorderLayout.WEST);
         topPanel.add(menuPanel, BorderLayout.NORTH);
 
+
+        
+        filterPanel.add(new JLabel("Filter by Product Line: "), BorderLayout.WEST);
+        filterPanel.add(filterComboBox, BorderLayout.CENTER);
+
+        bottomPanel.add(filterPanel, BorderLayout.NORTH);
+
       
         bottomPanel.add(tableScrollPane, BorderLayout.SOUTH);
+
+       
         
        
                        
@@ -276,7 +328,8 @@ public class ProductManagementPanel {
         topPanel.add(productCodeField, BorderLayout.WEST);
         topPanel.add(deleteButton, BorderLayout.WEST);
         topPanel.add(menuPanel, BorderLayout.NORTH);
-        bottomPanel.add(messageScrollPane, BorderLayout.SOUTH);
+        bottomPanel.add(messageScrollPane, BorderLayout.CENTER);
+        bottomPanel.add(tableScrollPane, BorderLayout.SOUTH);
 
         
 
@@ -298,10 +351,24 @@ public class ProductManagementPanel {
             }
         });
 
-        
+        viewProducts();  //
 
         menuPanel.add(optionsComboBox, BorderLayout.EAST);
         topPanel.add(menuPanel, BorderLayout.NORTH);
+
+        topPanel.add(productCodeLabel, BorderLayout.WEST);
+        topPanel.add(productCodeField, BorderLayout.WEST);
+
+        topPanel.add(productNameLabel, BorderLayout.WEST);
+        topPanel.add(productNameField, BorderLayout.WEST); 
+        topPanel.add(viewButton, BorderLayout.WEST);
+
+        filterPanel.add(new JLabel("Filter by Product Line: "), BorderLayout.WEST);
+        filterPanel.add(filterComboBox, BorderLayout.CENTER);
+        bottomPanel.add(filterPanel, BorderLayout.NORTH);
+        bottomPanel.add(tableScrollPane, BorderLayout.SOUTH);
+        
+        
         
         
         
@@ -313,6 +380,11 @@ public class ProductManagementPanel {
 
         
     }
+    
+    private void repaintTable() {
+        //
+    }
+    
     private void resetView() {
         DefaultTableModel tableModel = (DefaultTableModel) resultTable.getModel();
         tableModel.setRowCount(0); // Tømmer alle rader fra tabellen
@@ -324,13 +396,32 @@ public class ProductManagementPanel {
         tableModel.setRowCount(0); // Tømmer alle rader fra tabellen
     }
 
+    
+    private void resetFilterPanel() {
+        // Clear or reset any components in your filter panel
+        // For example:
+        productCodeField.setText("");
+        productNameField.setText("");
+        // Reset other filter components as needed
+    
+        // Set the filter combobox to "all"
+        filterComboBox.setSelectedItem("All");
+    }
+    
+    
 
+    
 
+    
+
+   
     private void updateProduct() {
         String productCode = productCodeField.getText();
         BigDecimal buyPrice = null;
         BigDecimal MSRP = null;
         Integer quantityInStock = null;
+        
+        
     
         try {
             if (!buyPriceField.getText().isEmpty()) {
@@ -378,39 +469,45 @@ public class ProductManagementPanel {
                 } else {
                     resultMessageArea.setText("Failed to update product. Product code not found.");
                 }
-    
+
+
                 connection.close();
             } else {
                 resultMessageArea.setText("No fields to update.");
             }
+            
         } catch (SQLException | NumberFormatException ex) {
             ex.printStackTrace();
             resultMessageArea.setText("An error occurred while updating the product.");
         }
+        
     }
     
-    
-    
-    
-    
-    
-    
-
-    
-    
-
-
-    
-
     private void viewProducts() {
         String searchQuery = productNameField.getText();
+        String productCode = productCodeField.getText();
+        String selectedProductLine = (String) filterComboBox.getSelectedItem();
     
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM products WHERE productName LIKE '%" + searchQuery + "%'");
     
-            // Opprett et dataobjekt for tabellen
+            String query = "SELECT * FROM products WHERE 1=1";
+    
+            if (!searchQuery.isEmpty()) {
+                query += " AND productName LIKE '%" + searchQuery + "%'";
+            }
+    
+            if (!productCode.isEmpty()) {
+                query += " AND productCode = '" + productCode + "'";
+            }
+    
+            if (!selectedProductLine.equals("All")) {
+                query += " AND productLine = '" + selectedProductLine + "'";
+            }
+    
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+    
             DefaultTableModel tableModel = new DefaultTableModel();
             tableModel.addColumn("Product Code");
             tableModel.addColumn("Product Name");
@@ -422,9 +519,9 @@ public class ProductManagementPanel {
             tableModel.addColumn("buyPrice");
             tableModel.addColumn("MSRP");
     
-            // Fyll tabellen med data fra resultatsettet
             while (resultSet.next()) {
-                String productCode = resultSet.getString("productCode");
+                // Fyll tabellen med data fra resultatsettet
+                String productCodeResult = resultSet.getString("productCode");
                 String productName = resultSet.getString("productName");
                 String productLine = resultSet.getString("productLine");
                 String productScale = resultSet.getString("productScale");
@@ -434,17 +531,20 @@ public class ProductManagementPanel {
                 String buyPrice = resultSet.getString("buyPrice");
                 String MSRP = resultSet.getString("MSRP");
     
-                tableModel.addRow(new Object[]{productCode, productName, productLine, productScale, productVendor, productDescription, quantityInStock, buyPrice, MSRP});
+                tableModel.addRow(new Object[]{productCodeResult, productName, productLine, productScale, productVendor, productDescription, quantityInStock, buyPrice, MSRP});
             }
     
-            // Oppdater JTable med det nye datamodellen
             resultTable.setModel(tableModel);
-    
             connection.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
+    
+    
+    
+    
+    
     
         
 
