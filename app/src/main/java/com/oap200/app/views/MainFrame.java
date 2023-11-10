@@ -4,7 +4,6 @@ package com.oap200.app.views;
 
 import javax.swing.*;
 
-import com.oap200.app.models.OrdersDAO;
 import com.oap200.app.utils.ButtonBuilder;
 
 import java.awt.BorderLayout;
@@ -17,7 +16,6 @@ import java.util.prefs.Preferences;
 public class MainFrame extends JFrame {
 
     private JTextArea textArea;
-    private OrderManagementPanel orderPanel; // Declare the OrderManagementPanel
     private Preferences prefs = Preferences.userNodeForPackage(MainFrame.class);
     private final String X_POS_KEY = "xPos";
     private final String Y_POS_KEY = "yPos";
@@ -31,9 +29,6 @@ public class MainFrame extends JFrame {
         setLayout(new BorderLayout());
 
         textArea = new JTextArea();
-        orderPanel = new OrderManagementPanel(); // Initialize the OrderManagementPanel
-        add(new JScrollPane(textArea), BorderLayout.CENTER);
-        add(orderPanel, BorderLayout.SOUTH); // Add the panel to the MainFrame
 
         initPosition();
 
@@ -48,15 +43,8 @@ public class MainFrame extends JFrame {
             new ProductManagementPanel().start();
         });
 
-        JButton orderButton = ButtonBuilder.createStyledButton("Order Management", () -> {
-            OrdersDAO dao = new OrdersDAO();
-            List<String> ordersList = dao.fetchOrders();
-            orderPanel.displayOrders(ordersList); // Display orders in the orderPanel
-        });
-
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(productButton);
-        topPanel.add(orderButton); // Added both buttons to the same top panel
 
         add(topPanel, BorderLayout.NORTH);
 
