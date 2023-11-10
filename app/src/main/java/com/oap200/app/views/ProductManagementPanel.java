@@ -50,6 +50,7 @@ public class ProductManagementPanel {
         resultTable = new JTable();
         JScrollPane tableScrollPane = new JScrollPane(resultTable);
         tableScrollPane.setPreferredSize(new Dimension(1900, 600));
+        resultTable.setBackground(Color.lightGray);
        
         resultMessageArea = new JTextArea();
         resultMessageArea.setEditable(false);
@@ -62,6 +63,7 @@ public class ProductManagementPanel {
         String[] options = {"Update", "Add", "View", "Delete"};
         JComboBox<String> optionsComboBox = new JComboBox<>(options);
         optionsComboBox.setSelectedIndex(2);
+        menuPanel.setBackground(Color.gray);
 
         JPanel filterPanel = new JPanel(new BorderLayout());
         filterComboBox = new JComboBox<>(getProductLines().toArray(new String[0]));
@@ -92,10 +94,12 @@ public class ProductManagementPanel {
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setLayout(new FlowLayout());
+        topPanel.setBackground(Color.GRAY);
         
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setLayout(new FlowLayout());
+        centerPanel.setBackground(Color.lightGray);
 
         JPanel labelPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
         labelPanel.setPreferredSize(new Dimension(150, 200));
@@ -108,6 +112,7 @@ public class ProductManagementPanel {
 
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setLayout(new FlowLayout());
+        bottomPanel.setBackground(Color.gray);
 
        
        
