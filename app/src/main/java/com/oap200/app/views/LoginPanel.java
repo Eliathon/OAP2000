@@ -29,6 +29,9 @@ public class LoginPanel extends JFrame {
         passwordField = new JPasswordField(15);
         loginButton = new JButton("Login");
 
+        // Set the login button as the default button
+        getRootPane().setDefaultButton(loginButton);
+
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(3, 2));
         panel.add(new JLabel("Username:"));
@@ -65,6 +68,14 @@ public class LoginPanel extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String username = userField.getText();
                 char[] password = passwordField.getPassword();
+
+                if (!isPasswordComplex(password)) {
+                    JOptionPane.showMessageDialog(LoginPanel.this,
+                            "Password must be at least 8 characters long and include a mix of uppercase, lowercase, numbers, and symbols.",
+                            "Password Complexity Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
                 // Instantiate ConfigLoader with correct file path
                 ConfigLoader configLoader = new ConfigLoader(configFilePath);
@@ -106,6 +117,15 @@ public class LoginPanel extends JFrame {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private boolean isPasswordComplex(char[] password) {
+        String passwordStr = new String(password);
+        return passwordStr.matches("(?=.*[0-9])" + // At least one digit
+                "(?=.*[a-z])" + // At least one lower case letter
+                "(?=.*[A-Z])" + // At least one upper case letter
+                "(?=.*[@#$%^&+=])" + // At least one special character
+                "(?=\\S+$).{8,}"); // At least 8 characters
     }
 
     public static void main(String[] args) {

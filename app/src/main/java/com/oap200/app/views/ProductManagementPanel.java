@@ -24,7 +24,6 @@ public class ProductManagementPanel {
 
     private JTextField productNameField;
     private JTextField productCodeField; // Legg til et felt for produktkoden
-    private JTextField productLineField; // Legg til et felt for produktlinjen
     private JTextField productScaleField; // Legg til et felt for produktskalaen
     private JTextField productVendorField; // Legg til et felt for produktselgeren
     private JTextArea productDescriptionArea; // Legg til et område for produktbeskrivelsen
@@ -84,8 +83,7 @@ public class ProductManagementPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 
-                String selectedProductLine = (String) productLineComboBox.getSelectedItem();
-                // Gjør noe med den valgte produktlinjen
+                
             }
         });
 
@@ -128,10 +126,6 @@ public class ProductManagementPanel {
         JLabel productCodeLabel = new JLabel("Product Code:");
         productCodeField = new JTextField();
         productCodeField.setPreferredSize(new Dimension(200, 30));
-
-
-        JLabel productLineLabel = new JLabel("Product Line:");
-        productLineField = new JTextField();
         
 
         JLabel productScaleLabel = new JLabel("Product Scale:");
@@ -186,7 +180,7 @@ public class ProductManagementPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 deleteProduct();
-                repaintTable();  //
+                
             }
         });
 
@@ -195,7 +189,7 @@ public class ProductManagementPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 updateProduct();
-                repaintTable();
+                
                 
                 
                 
@@ -386,9 +380,7 @@ public class ProductManagementPanel {
         
     }
     
-    private void repaintTable() {
-        //
-    }
+    
     
     private void resetView() {
         DefaultTableModel tableModel = (DefaultTableModel) resultTable.getModel();
@@ -400,6 +392,28 @@ public class ProductManagementPanel {
         DefaultTableModel tableModel = (DefaultTableModel) resultTable.getModel();
         tableModel.setRowCount(0); // Tømmer alle rader fra tabellen
     }
+
+    private void refreshTable() {
+        try {
+            // Clear existing search/filter conditions
+            productNameField.setText("");
+            productCodeField.setText("");
+            filterComboBox.setSelectedItem("All");
+    
+            // Call the viewProducts() method to refresh the table
+            viewProducts();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            resultMessageArea.setText("An error occurred while refreshing the table: " + ex.getMessage());
+        }
+    }
+    
+    
+    
+        
+    
+
+    
 
     
     private void resetFilterPanel() {
@@ -471,6 +485,7 @@ public class ProductManagementPanel {
     
                 if (rowsAffected > 0) {
                     resultMessageArea.setText("Product updated successfully.");
+                    refreshTable();
                 } else {
                     resultMessageArea.setText("Failed to update product. Product code not found.");
                 }
@@ -503,8 +518,9 @@ public class ProductManagementPanel {
             }
     
             if (!productCode.isEmpty()) {
-                query += " AND productCode = '" + productCode + "'";
+                query += " AND productCode LIKE '%" + productCode + "%'";
             }
+            
     
             if (!selectedProductLine.equals("All")) {
                 query += " AND productLine = '" + selectedProductLine + "'";
@@ -595,6 +611,7 @@ public class ProductManagementPanel {
     
             if (rowsAffected > 0) {
                 resultMessageArea.setText("Product added successfully.");
+                refreshTable();
             } else {
                 resultMessageArea.setText("Failed to add product.");
             }
@@ -619,6 +636,7 @@ public class ProductManagementPanel {
 
             if (rowsAffected > 0) {
                 resultMessageArea.setText("Product deleted successfully.");
+                refreshTable();
             } else {
                 resultMessageArea.setText("Product with code " + productCode + " not found.");
             }

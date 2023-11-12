@@ -61,6 +61,8 @@ public class EmployeeManagement {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
     
+        frame.getContentPane().setBackground(Color.LIGHT_GRAY);
+
         JPanel inputPanel = new JPanel(new BorderLayout());
         inputPanel.setOpaque(true);
         inputPanel.setBackground(Color.LIGHT_GRAY); 
@@ -117,7 +119,7 @@ employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.setOpaque(true);
         buttonPanel.setBackground(Color.LIGHT_GRAY);
-        
+
         addButton = new JButton("Add");
         updateButton = new JButton("Update");
         deleteButton = new JButton("Delete");
