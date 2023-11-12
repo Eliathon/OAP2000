@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "MainFrame",
+      "request": "launch",
+      "mainClass": "com.oap200.app.views.MainFrame",
+      "projectName": "app"
+    },
+    {
+      "type": "java",
       "name": "OrderManagementPanel",
       "request": "launch",
       "mainClass": "com.oap200.app.views.OrderManagementPanel",
