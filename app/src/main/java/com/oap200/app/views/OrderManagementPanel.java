@@ -18,10 +18,12 @@ public class OrderManagementPanel {
     private JFrame frame;
     private JPanel panel;
     private JTable resultTable;
+
     private JButton viewButton;
     private JButton addButton;
     private JButton updateButton;
     private JButton deleteButton;
+   
     private JTextField orderNumberField;
     private JTextField orderDateField;
     private JTextField requiredDateField;
