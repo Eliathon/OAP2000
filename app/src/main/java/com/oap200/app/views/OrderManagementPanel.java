@@ -42,6 +42,7 @@ public class OrderManagementPanel {
         });
     }
 
+    
     private void createAndShowGUI() {
         frame = new JFrame("Order Management");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -52,7 +53,7 @@ public class OrderManagementPanel {
         JPanel viewPanel = new JPanel();
         viewPanel.add(new JLabel("View Orders Content"));
         tabbedPane.addTab("View Orders", viewPanel);
-    
+      
         // Add Order Tab
         JPanel addPanel = new JPanel();
         addPanel.add(new JLabel("Add Order Content"));
@@ -73,7 +74,31 @@ public class OrderManagementPanel {
         frame.setVisible(true);
     }
 
+    private JPanel createViewPanel() {
+        JPanel viewPanel = new JPanel(new BorderLayout());
     
+        resultTable = new JTable();
+        JScrollPane tableScrollPane = new JScrollPane(resultTable);
+        tableScrollPane.setPreferredSize(new Dimension(500, 300));
+    
+        viewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewOrder();
+            }
+        });
+    
+        JPanel inputPanel = new JPanel();
+        inputPanel.add(new JLabel("Enter Order Number:"));
+        orderNumberField = new JTextField(10);
+        inputPanel.add(orderNumberField);
+        inputPanel.add(viewButton);
+    
+        viewPanel.add(inputPanel, BorderLayout.NORTH);
+        viewPanel.add(tableScrollPane, BorderLayout.CENTER);
+    
+        return viewPanel;
+    }
 
     private JPanel createAddPanel() {
         JPanel addPanel = new JPanel();
@@ -105,6 +130,16 @@ public class OrderManagementPanel {
 
         addPanel.add(new JLabel("Customer Number"));
         addPanel.add(customerNumberField);
+
+        JPanel inputPanel = new JPanel();
+        inputPanel.add(new JLabel("Enter Order Number:"));
+        orderNumberField = new JTextField(10);
+        inputPanel.add(orderNumberField);
+        inputPanel.add(viewButton);
+    
+        addPanel.add(inputPanel, BorderLayout.NORTH);
+        
+    
 
         JButton addButton = new JButton("Add Order");
         addButton.addActionListener(new ActionListener() {
@@ -194,7 +229,7 @@ public class OrderManagementPanel {
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM orders WHERE orderNumber = '" + searchQuery + "'");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM orders WHERE orderNumber LIKE '%" + searchQuery + "%");
 
         DefaultTableModel tableModel = new DefaultTableModel();
         tableModel.addColumn("Order Number");
