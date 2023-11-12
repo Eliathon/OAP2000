@@ -15,8 +15,13 @@ import java.math.BigDecimal;
 
 public class OrderManagementPanel {
 
-   private JFrame frame;
+    private JFrame frame;
+    private JPanel panel;
     private JTable resultTable;
+    private JButton viewButton;
+    private JButton addButton;
+    private JButton updateButton;
+    private JButton deleteButton;
     private JTextField orderNumberField;
     private JTextField orderDateField;
     private JTextField requiredDateField;
@@ -25,6 +30,8 @@ public class OrderManagementPanel {
     private JTextArea commentsDescriptionArea;
     private JTextField customerNumberField;
     private JTextArea resultMessageArea;
+
+    private Connection connection;
 
     public void start() {
         SwingUtilities.invokeLater(new Runnable() {
@@ -66,45 +73,38 @@ public class OrderManagementPanel {
         frame.setVisible(true);
     }
 
-    private JPanel createViewPanel() {
-        JPanel viewPanel = new JPanel(new BorderLayout());
-
-        resultTable = new JTable();
-        JScrollPane tableScrollPane = new JScrollPane(resultTable);
-        tableScrollPane.setPreferredSize(new Dimension(1900, 600));
-
-        resultMessageArea = new JTextArea();
-        resultMessageArea.setEditable(false);
-        JScrollPane messageScrollPane = new JScrollPane(resultMessageArea);
-        messageScrollPane.setPreferredSize(new Dimension(800, 100));
-
-        JPanel panel = new JPanel();
-        panel.add(new JLabel("Order Number"));
-        panel.add(orderNumberField);
-        panel.add(new JButton(new AbstractAction("View Orders") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                viewOrder();
-            }
-        }));
-
-        viewPanel.add(panel, BorderLayout.NORTH);
-        viewPanel.add(tableScrollPane, BorderLayout.CENTER);
-        viewPanel.add(messageScrollPane, BorderLayout.SOUTH);
-
-        return viewPanel;
-    }
+    
 
     private JPanel createAddPanel() {
         JPanel addPanel = new JPanel();
-        // Add components for adding orders
-        // ...
+        orderNumberField = new JTextField(10);
+        orderDateField = new JTextField(10);
+        requiredDateField = new JTextField();
+        shippedDateField = new JTextField();
+        statusField = new JTextField();
+        commentsDescriptionArea = new JTextArea();
+        customerNumberField = new JTextField();
 
         addPanel.add(new JLabel("Order Number"));
         addPanel.add(orderNumberField);
+
         addPanel.add(new JLabel("Order Date"));
         addPanel.add(orderDateField);
-        // Add other components...
+
+        addPanel.add(new JLabel("Required Date"));
+        addPanel.add(requiredDateField);
+
+        addPanel.add(new JLabel("Shipped Date"));
+        addPanel.add(shippedDateField);
+
+        addPanel.add(new JLabel("Status"));
+        addPanel.add(statusField);
+
+        addPanel.add(new JLabel("Order Comments"));
+        addPanel.add(commentsDescriptionArea);
+
+        addPanel.add(new JLabel("Customer Number"));
+        addPanel.add(customerNumberField);
 
         JButton addButton = new JButton("Add Order");
         addButton.addActionListener(new ActionListener() {
@@ -120,14 +120,35 @@ public class OrderManagementPanel {
 
     private JPanel createUpdatePanel() {
         JPanel updatePanel = new JPanel();
-        // Add components for updating orders
-        // ...
+        orderNumberField = new JTextField(10);
+        orderDateField = new JTextField(10);
+        requiredDateField = new JTextField();
+        shippedDateField = new JTextField();
+        statusField = new JTextField();
+        commentsDescriptionArea = new JTextArea();
+        customerNumberField = new JTextField();
 
         updatePanel.add(new JLabel("Order Number"));
         updatePanel.add(orderNumberField);
+
         updatePanel.add(new JLabel("Order Date"));
         updatePanel.add(orderDateField);
-        // Add other components...
+
+        updatePanel.add(new JLabel("Required Date"));
+        updatePanel.add(requiredDateField);
+
+        updatePanel.add(new JLabel("Shipped Date"));
+        updatePanel.add(shippedDateField);
+
+        updatePanel.add(new JLabel("Status"));
+        updatePanel.add(statusField);
+
+        updatePanel.add(new JLabel("Order Comments"));
+        updatePanel.add(commentsDescriptionArea);
+
+        updatePanel.add(new JLabel("Customer Number"));
+        updatePanel.add(customerNumberField);
+        
 
         JButton updateButton = new JButton("Update Order");
         updateButton.addActionListener(new ActionListener() {
@@ -143,10 +164,16 @@ public class OrderManagementPanel {
 
     private JPanel createDeletePanel() {
         JPanel deletePanel = new JPanel();
-        // Add components for deleting orders
-        // ...
+        orderNumberField = new JTextField(10);
+        orderDateField = new JTextField(10);
+        requiredDateField = new JTextField();
+        shippedDateField = new JTextField();
+        statusField = new JTextField();
+        commentsDescriptionArea = new JTextArea();
+        customerNumberField = new JTextField();
 
         deletePanel.add(new JLabel("Order Number"));
+        orderNumberField = new JTextField(10);
         deletePanel.add(orderNumberField);
 
         JButton deleteButton = new JButton("Delete Order");
@@ -163,120 +190,82 @@ public class OrderManagementPanel {
 
     private void viewOrder() {
         String searchQuery = orderNumberField.getText();
-
-        DefaultTableModel tableModel = (DefaultTableModel) resultTable.getModel();
-        tableModel.setRowCount(0);
-
+    
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classi", "root", "");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM orders WHERE orderNumber LIKE '%" + searchQuery + "%'");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM orders WHERE orderNumber = '" + searchQuery + "'");
 
-            while (resultSet.next()) {
-                String orderNumber = resultSet.getString("orderNumber");
-                String orderDate = resultSet.getString("orderDate");
-                String requiredDate = resultSet.getString("requiredDate");
-                String shippedDate = resultSet.getString("shippedDate");
-                String status = resultSet.getString("Status");
-                String customerNumber = resultSet.getString("customerNumber");
-                String comments = resultSet.getString("commentsDescription");
-                tableModel.addRow(new Object[]{orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber});
-            }
+        DefaultTableModel tableModel = new DefaultTableModel();
+        tableModel.addColumn("Order Number");
+        tableModel.addColumn("Order Date");
+        tableModel.addColumn("Required Date");
+        tableModel.addColumn("Shipped Date");
+        tableModel.addColumn("Status");
+        tableModel.addColumn("Comments");
+        tableModel.addColumn("Customer Number");
 
-            connection.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        while (resultSet.next()) {
+            String orderNumber = resultSet.getString("orderNumber");
+            String orderDate = resultSet.getString("orderDate");
+            String requiredDate = resultSet.getString("requiredDate");
+            String shippedDate = resultSet.getString("shippedDate");
+            String status = resultSet.getString("status");
+            String comments = resultSet.getString("comments");
+            String customerNumber = resultSet.getString("customerNumber");
+
+            tableModel.addRow(new Object[]{orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber});
+
         }
+    
+        resultTable.setModel(tableModel);
+
+        connection.close();
+    }   catch (SQLException ex) {
+            ex.printStackTrace();
     }
-
-
+    }
 
     private void addOrder() {
-        // Create a dialog for adding an order
-        JDialog addOrderDialog = new JDialog(frame, "Add Order", true);
-        addOrderDialog.setSize(400, 300);
-        addOrderDialog.setLayout(new BorderLayout());
+        String orderNumber = orderNumberField.getText();
+        String orderDate = orderDateField.getText();
+        // Get other input fields...
     
-        // Create input fields
-        JTextField orderNumberInput = new JTextField(20);
-        JTextField orderDateInput = new JTextField(20);
-        JTextField requiredDateInput = new JTextField(20);
-        JTextField shippedDateInput = new JTextField(20);
-        JTextField statusInput = new JTextField(20);
-        JTextField customerNumberInput = new JTextField(20);
-        JTextArea commentsInput = new JTextArea(4, 20);
-        commentsInput.setLineWrap(true);
-        JScrollPane commentsScrollPane = new JScrollPane(commentsInput);
+        // Validate input fields if needed
     
-        // Create labels for input fields
-        JLabel orderNumberLabel = new JLabel("Order Number:");
-        JLabel orderDateLabel = new JLabel("Order Date:");
-        JLabel requiredDateLabel = new JLabel("Required Date:");
-        JLabel shippedDateLabel = new JLabel("Shipped Date:");
-        JLabel statusLabel = new JLabel("Order Status:");
-        JLabel customerNumberLabel = new JLabel("Customer Number:");
-        JLabel commentsLabel = new JLabel("Comments:");
+        // Perform the database insertion
+        // ...
     
-        // Create a button to add the order
-        JButton addButton = new JButton("Add Order");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Retrieve values from input fields
-                String orderNumber = orderNumberInput.getText();
-                String orderDate = orderDateInput.getText();
-                String requiredDate = requiredDateInput.getText();
-                String shippedDate = shippedDateInput.getText();
-                String status = statusInput.getText();
-                String customerNumber = customerNumberInput.getText();
-                String comments = commentsInput.getText();
-    
-                // Perform validation and insertion logic here
-                // ...
-    
-                // Close the dialog
-                addOrderDialog.dispose();
-            }
-        });
-    
-        // Create a panel to hold input components
-        JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new GridLayout(8, 2));
-        inputPanel.add(orderNumberLabel);
-        inputPanel.add(orderNumberInput);
-        inputPanel.add(orderDateLabel);
-        inputPanel.add(orderDateInput);
-        inputPanel.add(requiredDateLabel);
-        inputPanel.add(requiredDateInput);
-        inputPanel.add(shippedDateLabel);
-        inputPanel.add(shippedDateInput);
-        inputPanel.add(statusLabel);
-        inputPanel.add(statusInput);
-        inputPanel.add(customerNumberLabel);
-        inputPanel.add(customerNumberInput);
-        inputPanel.add(commentsLabel);
-        inputPanel.add(commentsScrollPane);
-        inputPanel.add(new JLabel()); // Placeholder for layout
-    
-        // Add components to the dialog
-        addOrderDialog.add(inputPanel, BorderLayout.CENTER);
-        addOrderDialog.add(addButton, BorderLayout.SOUTH);
-    
-        // Make the dialog visible
-        addOrderDialog.setVisible(true);
+        // Update the result message or any other UI component
+        resultMessageArea.setText("Order added successfully!");
     }
     
-        
-    
-
     private void updateOrder() {
-        // Implement the updateOrder method
+        String orderNumber = orderNumberField.getText();
+        String updateOrderDate = orderDateField.getText();
+        // Get other updated fields...
+    
+        // Validate input fields if needed
+    
+        // Perform the database update
+        // ...
+    
+        // Update the result message or any other UI component
+        resultMessageArea.setText("Order updated successfully!");
     }
-
+    
     private void deleteOrder() {
-        // Implement the deleteOrder method
+        String orderNumber = orderNumberField.getText();
+    
+        // Validate input if needed
+    
+        // Perform the database deletion
+        // ...
+    
+        // Update the result message or any other UI component
+        resultMessageArea.setText("Order deleted successfully!");
     }
-
+    
     public static void main(String[] args) {
         new OrderManagementPanel().start();
     }
