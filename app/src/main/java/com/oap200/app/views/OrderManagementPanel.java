@@ -55,9 +55,6 @@ public class OrderManagementPanel {
                 viewOrder();
             }
         });
-<<<<<<< HEAD
-    
-=======
 
         {
             addButton = new JButton("Add Order");
@@ -72,7 +69,6 @@ public class OrderManagementPanel {
             });
         }
 
->>>>>>> e29216e5731ec3c3a53cfd09e60d7e871b8c1f3e
         JPanel inputPanel = new JPanel();
         inputPanel.add(new JLabel("Enter Order Number:"));
         orderNumberField = new JTextField(10);
