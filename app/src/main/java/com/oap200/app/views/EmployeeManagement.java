@@ -73,7 +73,7 @@ public class EmployeeManagement {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
     
-        frame.getContentPane().setBackground(Color.GRAY);
+        frame.getContentPane().setBackground(new Color(153, 179, 255));
 
         JPanel inputPanel = new JPanel(new BorderLayout());
         inputPanel.setOpaque(true);
