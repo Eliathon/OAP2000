@@ -13,6 +13,9 @@ import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.table.DefaultTableModel;
+
+import org.w3c.dom.css.RGBColor;
+
 import java.util.List;
 
 public class EmployeeManagement {
@@ -61,15 +64,16 @@ public class EmployeeManagement {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
     
-        frame.getContentPane().setBackground(Color.LIGHT_GRAY);
+        frame.getContentPane().setBackground(Color.GRAY);
 
         JPanel inputPanel = new JPanel(new BorderLayout());
         inputPanel.setOpaque(true);
-        inputPanel.setBackground(Color.LIGHT_GRAY); 
+        inputPanel.setBackground(Color.BLACK); 
     
         JPanel searchPanel = new JPanel(new FlowLayout());
         searchPanel.setOpaque(true);
-        searchPanel.setBackground(Color.LIGHT_GRAY);
+        searchPanel.setBackground(new Color(153, 179, 255));
+
         employeeNumberSearchField = new JTextField(10);
         JButton employeeNumberSearchButton = new JButton("Search by Employee Number");
         searchField = new JTextField(15);
@@ -92,6 +96,7 @@ public class EmployeeManagement {
 
     
         // Creates separate panels for label and input fields
+
         employeeIdField = new JTextField(10);
         employeeInputPanel.add(createLabeledField("Employee ID:", employeeIdField));
         firstNameField = new JTextField(10);
