@@ -53,7 +53,6 @@ private JPanel viewPanel() {
                 viewOrder();
             }
         });
-<<<<<<< HEAD
 
         {
             addButton = new JButton("Add Order");
@@ -67,8 +66,6 @@ private JPanel viewPanel() {
                }
             });
         }
-=======
->>>>>>> 6c2a4e2177e8b97ae03d41dfc2ac4cf51143f4ac
     
         JPanel inputPanel = new JPanel();
         inputPanel.add(new JLabel("Enter Order Number:"));
