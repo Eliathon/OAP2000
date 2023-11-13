@@ -1,13 +1,10 @@
-// Created by Sindre
+// Created by Sindre and Johnny
 
 package com.oap200.app.views;
 
 import javax.swing.*;
-
 import com.oap200.app.utils.ButtonBuilder;
-
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
@@ -27,27 +24,49 @@ public class MainFrame extends JFrame {
         setTitle("Swing MainFrame");
         setSize(400, 300);
         setLayout(new BorderLayout());
-
+    
         textArea = new JTextArea();
-
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        add(scrollPane, BorderLayout.CENTER);
+    
         initPosition();
-
+    
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 storePosition();
             }
         });
-
+    
         JButton productButton = ButtonBuilder.createStyledButton("Product Management", () -> {
             new ProductManagementPanel().start();
         });
+        JButton orderButton = ButtonBuilder.createStyledButton("Order Management", () -> {
+            new OrderManagementPanel().start();
+        });
+        JButton employeeButton = ButtonBuilder.createStyledButton("Employee Management", () -> {
+            new EmployeeManagement().start();
+        });
+        JButton paymentButton = ButtonBuilder.createStyledButton("Payment Management", () -> {
+            new PaymentManagement().start();
+        });
+        JButton reportsButton = ButtonBuilder.createStyledButton("Reports", null); // No action defined yet
+        JButton notificationsButton = ButtonBuilder.createStyledButton("Notifications & Alerts", null); // No action defined yet
 
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.add(productButton);
+        JPanel topPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
 
+        topPanel.add(productButton, gbc);
+        topPanel.add(orderButton, gbc);
+        topPanel.add(employeeButton, gbc);
+        topPanel.add(paymentButton, gbc);
+        topPanel.add(reportsButton, gbc);
+        topPanel.add(notificationsButton, gbc);
         add(topPanel, BorderLayout.NORTH);
-
+    
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
@@ -85,5 +104,15 @@ public class MainFrame extends JFrame {
         for (String email : emails) {
             textArea.append(email + "\n");
         }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            MainFrame mainFrame = new MainFrame();
+            mainFrame.setVisible(true);
+        });
+    }
+
+    public void start() {
     }
 }

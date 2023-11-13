@@ -14,17 +14,17 @@ import java.math.BigDecimal;
 
 
 public class ProductManagementPanel {
-
     private JFrame frame;
+     private Timer inactivityTimer;
+    private JButton backButton; // Button to go back to MainFrame
     private JButton viewButton; // Knapp for å vise produkter
     private JButton addButton;  // Knapp for å legge til produkt
     private JButton deleteButton;  // Knapp for å slette produkt
     private JButton updateButton;
     private JTable resultTable;
-
+    private JButton logoutButton; // Button for logging out
     private JTextField productNameField;
     private JTextField productCodeField; // Legg til et felt for produktkoden
-    private JTextField productLineField; // Legg til et felt for produktlinjen
     private JTextField productScaleField; // Legg til et felt for produktskalaen
     private JTextField productVendorField; // Legg til et felt for produktselgeren
     private JTextArea productDescriptionArea; // Legg til et område for produktbeskrivelsen
@@ -46,7 +46,26 @@ public class ProductManagementPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1100, 600); // Økt høyden for å plassere flere komponenter
         frame.setLayout(new BorderLayout());
-
+   //   Johnny Initializing of the "Back button"
+   backButton = new JButton("Back");
+   backButton.addActionListener(new ActionListener() {
+       @Override
+       public void actionPerformed(ActionEvent e) {
+           frame.dispose();
+           MainFrame mainFrame = new MainFrame();
+           mainFrame.start(); // Redirecting to main frame
+       }
+   });
+   logoutButton = new JButton("Log Out");
+logoutButton.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // Logic to log out the user
+        frame.dispose();
+        System.exit(0);// Program Shuts of
+     
+    }
+});
         resultTable = new JTable();
         JScrollPane tableScrollPane = new JScrollPane(resultTable);
         tableScrollPane.setPreferredSize(new Dimension(1900, 600));
@@ -84,8 +103,7 @@ public class ProductManagementPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 
-                String selectedProductLine = (String) productLineComboBox.getSelectedItem();
-                // Gjør noe med den valgte produktlinjen
+                
             }
         });
 
@@ -93,6 +111,8 @@ public class ProductManagementPanel {
         
 
         JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(backButton, BorderLayout.WEST); // "Back" button 
+        topPanel.add(logoutButton, BorderLayout.EAST); // Add the "Log Out" button to the top-right corner
         topPanel.setLayout(new FlowLayout());
         topPanel.setBackground(Color.GRAY);
         
@@ -128,10 +148,6 @@ public class ProductManagementPanel {
         JLabel productCodeLabel = new JLabel("Product Code:");
         productCodeField = new JTextField();
         productCodeField.setPreferredSize(new Dimension(200, 30));
-
-
-        JLabel productLineLabel = new JLabel("Product Line:");
-        productLineField = new JTextField();
         
 
         JLabel productScaleLabel = new JLabel("Product Scale:");
@@ -186,7 +202,7 @@ public class ProductManagementPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 deleteProduct();
-                repaintTable();  //
+                
             }
         });
 
@@ -195,7 +211,7 @@ public class ProductManagementPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 updateProduct();
-                repaintTable();
+                
                 
                 
                 
@@ -386,9 +402,7 @@ public class ProductManagementPanel {
         
     }
     
-    private void repaintTable() {
-        //
-    }
+    
     
     private void resetView() {
         DefaultTableModel tableModel = (DefaultTableModel) resultTable.getModel();
@@ -400,6 +414,28 @@ public class ProductManagementPanel {
         DefaultTableModel tableModel = (DefaultTableModel) resultTable.getModel();
         tableModel.setRowCount(0); // Tømmer alle rader fra tabellen
     }
+
+    private void refreshTable() {
+        try {
+            // Clear existing search/filter conditions
+            productNameField.setText("");
+            productCodeField.setText("");
+            filterComboBox.setSelectedItem("All");
+    
+            // Call the viewProducts() method to refresh the table
+            viewProducts();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            resultMessageArea.setText("An error occurred while refreshing the table: " + ex.getMessage());
+        }
+    }
+    
+    
+    
+        
+    
+
+    
 
     
     private void resetFilterPanel() {
@@ -471,6 +507,7 @@ public class ProductManagementPanel {
     
                 if (rowsAffected > 0) {
                     resultMessageArea.setText("Product updated successfully.");
+                    refreshTable();
                 } else {
                     resultMessageArea.setText("Failed to update product. Product code not found.");
                 }
@@ -503,8 +540,9 @@ public class ProductManagementPanel {
             }
     
             if (!productCode.isEmpty()) {
-                query += " AND productCode = '" + productCode + "'";
+                query += " AND productCode LIKE '%" + productCode + "%'";
             }
+            
     
             if (!selectedProductLine.equals("All")) {
                 query += " AND productLine = '" + selectedProductLine + "'";
@@ -595,6 +633,7 @@ public class ProductManagementPanel {
     
             if (rowsAffected > 0) {
                 resultMessageArea.setText("Product added successfully.");
+                refreshTable();
             } else {
                 resultMessageArea.setText("Failed to add product.");
             }
@@ -619,6 +658,7 @@ public class ProductManagementPanel {
 
             if (rowsAffected > 0) {
                 resultMessageArea.setText("Product deleted successfully.");
+                refreshTable();
             } else {
                 resultMessageArea.setText("Product with code " + productCode + " not found.");
             }
