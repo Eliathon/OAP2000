@@ -23,7 +23,7 @@ public class EmployeeManagement {
     private JTable table;
     private JTextField employeeIdField, employeeNumberSearchField, searchField, firstNameField, lastNameField, extensionField, emailField, officeCodeField, jobTitleField, accessLevelField;
     private JButton addButton, updateButton, deleteButton, refreshButton, searchButton;
-
+  
     public EmployeeManagement() {
         connectDatabase();
         createUI();
@@ -485,5 +485,7 @@ private void deleteEmployee() {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new EmployeeManagement());
+    }
+    public void start() {
     }
 }
