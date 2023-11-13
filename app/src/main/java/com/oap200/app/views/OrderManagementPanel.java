@@ -36,6 +36,8 @@ public class OrderManagementPanel {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+            viewPanel();
+
                 createAndShowGUI();
             }
         });
@@ -53,19 +55,6 @@ private JPanel viewPanel() {
                 viewOrder();
             }
         });
-
-        {
-            addButton = new JButton("Add Order");
-            addButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    addOrder();
-                }
-
-               private void addOrder() {
-               }
-            });
-        }
     
         JPanel inputPanel = new JPanel();
         inputPanel.add(new JLabel("Enter Order Number:"));
