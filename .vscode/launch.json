@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "OrderManagementPanel",
+      "request": "launch",
+      "mainClass": "com.oap200.app.views.OrderManagementPanel",
+      "projectName": "app"
+    },
+    {
+      "type": "java",
       "name": "EmployeeManagement",
       "request": "launch",
       "mainClass": "com.oap200.app.views.EmployeeManagement",
