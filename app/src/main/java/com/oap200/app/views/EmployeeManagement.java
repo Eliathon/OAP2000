@@ -7,14 +7,15 @@ package com.oap200.app.views;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Toolkit;
+import java.awt.Dimension;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
-
 import javax.swing.table.DefaultTableModel;
 
-import org.w3c.dom.css.RGBColor;
+
 
 import java.util.List;
 
@@ -59,8 +60,16 @@ public class EmployeeManagement {
     }
 
     private void createUI() {
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
+
+        int windowWidth = (int) (width * 1);
+        int windowHeight = (int) (height * 1);
+
         frame = new JFrame("Employee Management");
-        frame.setSize(1100, 600);
+        frame.setSize(windowWidth, windowHeight);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
     
