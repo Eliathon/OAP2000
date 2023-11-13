@@ -40,11 +40,16 @@ public class ProductManagementPanel {
    
 
     public void start() {
-        
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
+
+        int windowWidth = (int) (width * 1);
+        int windowHeight = (int) (height * 1);
 
         frame = new JFrame("Product Management");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1100, 600); // Økt høyden for å plassere flere komponenter
+        frame.setSize(windowWidth, windowHeight); // Økt høyden for å plassere flere komponenter
         frame.setLayout(new BorderLayout());
    //   Johnny Initializing of the "Back button"
    backButton = new JButton("Back");
@@ -211,11 +216,7 @@ logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 updateProduct();
-                
-                
-                
-                
-                
+             
             
             }
         });
@@ -429,13 +430,6 @@ logoutButton.addActionListener(new ActionListener() {
             resultMessageArea.setText("An error occurred while refreshing the table: " + ex.getMessage());
         }
     }
-    
-    
-    
-        
-    
-
-    
 
     
     private void resetFilterPanel() {
