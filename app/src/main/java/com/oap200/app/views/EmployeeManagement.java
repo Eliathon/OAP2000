@@ -7,12 +7,16 @@ package com.oap200.app.views;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Toolkit;
+import java.awt.Dimension;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
-
 import javax.swing.table.DefaultTableModel;
+
+
+
 import java.util.List;
 
 public class EmployeeManagement {
@@ -56,20 +60,29 @@ public class EmployeeManagement {
     }
 
     private void createUI() {
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
+
+        int windowWidth = (int) (width * 1);
+        int windowHeight = (int) (height * 1);
+
         frame = new JFrame("Employee Management");
-        frame.setSize(1100, 600);
+        frame.setSize(windowWidth, windowHeight);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
     
-        frame.getContentPane().setBackground(Color.LIGHT_GRAY);
+        frame.getContentPane().setBackground(Color.GRAY);
 
         JPanel inputPanel = new JPanel(new BorderLayout());
         inputPanel.setOpaque(true);
-        inputPanel.setBackground(Color.LIGHT_GRAY); 
+        inputPanel.setBackground(Color.BLACK); 
     
         JPanel searchPanel = new JPanel(new FlowLayout());
         searchPanel.setOpaque(true);
-        searchPanel.setBackground(Color.LIGHT_GRAY);
+        searchPanel.setBackground(new Color(153, 179, 255));
+
         employeeNumberSearchField = new JTextField(10);
         JButton employeeNumberSearchButton = new JButton("Search by Employee Number");
         searchField = new JTextField(15);
@@ -92,6 +105,7 @@ public class EmployeeManagement {
 
     
         // Creates separate panels for label and input fields
+
         employeeIdField = new JTextField(10);
         employeeInputPanel.add(createLabeledField("Employee ID:", employeeIdField));
         firstNameField = new JTextField(10);

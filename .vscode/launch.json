@@ -8,6 +8,8 @@
       "type": "java",
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
       "name": "MainFrame",
       "request": "launch",
       "mainClass": "com.oap200.app.views.MainFrame",
@@ -16,6 +18,7 @@
     {
       "type": "java",
 >>>>>>> 6c2a4e2177e8b97ae03d41dfc2ac4cf51143f4ac
+>>>>>>> 9d33bea65e77507e64266ed3c1575d13f20fa17c
       "name": "OrderManagementPanel",
       "request": "launch",
       "mainClass": "com.oap200.app.views.OrderManagementPanel",
