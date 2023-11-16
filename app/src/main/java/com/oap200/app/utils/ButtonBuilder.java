@@ -31,4 +31,34 @@ public class ButtonBuilder {
         });
         return button;
     }
+  // BlueBackButton is created by Johnny
+    public static JButton createBlueBackButton(Runnable action) {
+        JButton backButton = new JButton("BACK");
+        backButton.setForeground(Color.WHITE); // Set text color to white
+        backButton.setBackground(Color.BLUE); // Set background color to blue
+        backButton.setBorderPainted(false); // Remove border
+        backButton.setPreferredSize(new Dimension(90, 20)); // Set a specific size
+        backButton.addActionListener(e -> {
+            if (action != null) {
+                action.run();
+            }
+        });
+        return backButton;
+    }
+// Red Logout Button is created by Johnny
+    public static JButton createRedLogoutButton(Runnable action) {
+        JButton backButton = new JButton("Logout");
+        backButton.setForeground(Color.WHITE); // Set text color to white
+        backButton.setBackground(Color.RED); // Set background color to red
+        backButton.setBorderPainted(false); // Remove border
+        backButton.setPreferredSize(new Dimension(100, 20)); // Set a specific size
+        backButton.addActionListener(e -> {
+            if (action != null) {
+                action.run();
+            }
+        });
+        return backButton;
+    }
+
 }
+
