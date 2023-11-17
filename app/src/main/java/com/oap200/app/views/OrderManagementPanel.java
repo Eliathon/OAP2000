@@ -1,4 +1,4 @@
-// Created by Patrik
+//*  Created by Patrik*//
 
 package com.oap200.app.views;
 
@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
 import java.math.BigDecimal;
+
 
 public class OrderManagementPanel {
 
@@ -42,49 +43,37 @@ public class OrderManagementPanel {
         });
     }
 
-    private JPanel viewPanel() {
-        JPanel viewPanel = new JPanel(new BorderLayout());
-        viewButton = new JButton("View Order");
-        resultTable = new JTable();
-        JScrollPane tableScrollPane = new JScrollPane(resultTable);
-        tableScrollPane.setPreferredSize(new Dimension(500, 300));
+	private JPanel viewPanel() {
+		JPanel viewPanel = new JPanel(new BorderLayout());
+		viewButton = new JButton("View Order");
+		resultTable = new JTable();
+		JScrollPane tableScrollPane = new JScrollPane(resultTable);
+		tableScrollPane.setPreferredSize(new Dimension(500, 300));
 
-        viewButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                viewOrder();
-            }
-        });
+		viewButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				viewOrder();
+			}
+		});
 
-        {
-            addButton = new JButton("Add Order");
-            addButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    addOrder();
-                }
+		JPanel inputPanel = new JPanel();
+		inputPanel.add(new JLabel("Enter Order Number:"));
+		orderNumberField = new JTextField(10);
+		inputPanel.add(orderNumberField);
+		inputPanel.add(viewButton);
 
-                private void addOrder() {
-                }
-            });
-        }
+		viewPanel.add(inputPanel, BorderLayout.NORTH);
+		viewPanel.add(tableScrollPane, BorderLayout.CENTER);
 
-        JPanel inputPanel = new JPanel();
-        inputPanel.add(new JLabel("Enter Order Number:"));
-        orderNumberField = new JTextField(10);
-        inputPanel.add(orderNumberField);
-        inputPanel.add(viewButton);
+		return viewPanel;
+	}
 
-        viewPanel.add(inputPanel, BorderLayout.NORTH);
-        viewPanel.add(tableScrollPane, BorderLayout.CENTER);
-
-        return viewPanel;
-    }
 
     private JPanel addPanel() {
         JPanel addPanel = new JPanel();
         addButton = new JButton("Add Order");
-        addButton.addActionListener(new ActionListener() {
+         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 addOrder();
@@ -120,6 +109,7 @@ public class OrderManagementPanel {
 
         addPanel.add(new JLabel("Customer Number"));
         addPanel.add(customerNumberField);
+
 
         return addPanel;
     }
@@ -163,6 +153,8 @@ public class OrderManagementPanel {
 
         updatePanel.add(new JLabel("Customer Number"));
         updatePanel.add(customerNumberField);
+        
+   
 
         return updatePanel;
     }
@@ -190,49 +182,115 @@ public class OrderManagementPanel {
         orderNumberField = new JTextField(10);
         deletePanel.add(orderNumberField);
 
+
         return deletePanel;
     }
-
+    
     private void createAndShowGUI() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
+
+        int windowWidth = (int) (width * 1); 
+        int windowHeight = (int) (height * 1);
         frame = new JFrame("Order Management");
+        frame.setSize(windowWidth, windowHeight);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        
         JTabbedPane tabbedPane = new JTabbedPane();
-
+    
         // View Orders Tab
         JPanel viewPanel = new JPanel();
-        viewPanel.add(new JLabel("View"));
+        viewPanel.add(new JLabel("Order Number"));
         tabbedPane.addTab("View Orders", viewPanel);
+       
+        JTextField searchTextField = new JTextField(10);
+        JButton searchButton = new JButton("View All Orders");
+    
+        viewPanel.add(searchTextField, BorderLayout.WEST);
+        viewPanel.add(searchButton, BorderLayout.NORTH);
 
+    
+    
         // Add Order Tab
         JPanel addPanel = new JPanel();
         tabbedPane.addTab("Add Order", addPanel);
-        JLabel orderNumberLabel = new JLabel("Add");
+        
+        JLabel orderNumberLabel = new JLabel("Order Number");
+        JTextField orderNumberField = new JTextField(7);
         addPanel.add(orderNumberLabel);
+        addPanel.add(orderNumberField);
+       
+        JLabel orderDateLabel = new JLabel("Order Date");;
+        JTextField orderDateField = new JTextField(10);
+        addPanel.add(orderDateLabel);
+        addPanel.add(orderDateField);
+        
+        JLabel requiredDateLabel = new JLabel("Required Date");;
+        JTextField requiredDateField = new JTextField(10);
+        addPanel.add(requiredDateLabel);
+        addPanel.add(requiredDateField);
+        
 
-        // Update Order Tab
+        JLabel shippedDateLabel = new JLabel("Shipped Date");;
+        JTextField shippedDateField = new JTextField(10);
+        addPanel.add(shippedDateLabel);
+        addPanel.add(shippedDateField);
+
+        JLabel statusLabel = new JLabel("Order Status");;
+        JTextField statusField = new JTextField(10);
+        addPanel.add(statusLabel);
+        addPanel.add(statusField);
+
+        JLabel commentsLabel = new JLabel("Order Comments");
+        JTextField commentsField = new JTextField(10);
+        addPanel.add(commentsLabel);
+        addPanel.add(commentsField);
+        
+        JLabel customerNumberLabel = new JLabel("Custer Number");
+        JTextField customerNumberField = new JTextField(10);
+        addPanel.add(customerNumberLabel);
+        addPanel.add(customerNumberField);
+        
+        JButton anotherButton = new JButton("Add Order");
+        addPanel.add(anotherButton);
+
+     // Update Order Tab
         JPanel updatePanel = new JPanel();
         updatePanel.add(new JLabel("Update"));
         tabbedPane.addTab("Update Order", updatePanel);
+        
+        JTextField updateTextField = new JTextField(10);
+        JButton updateButton = new JButton("Update Order");
+
+        updatePanel.add(updateTextField);
+        updatePanel.add(updateButton);
 
         // Delete Order Tab
         JPanel deletePanel = new JPanel();
         deletePanel.add(new JLabel("Delete"));
         tabbedPane.addTab("Delete Order", deletePanel);
 
+        JTextField deleteTextField = new JTextField(10);
+        JButton deleteButton = new JButton("Delete Order");
+
+        deletePanel.add(deleteTextField);
+        deletePanel.add(deleteButton);
+    
         frame.add(tabbedPane);
         frame.setSize(1100, 600);
         frame.setVisible(true);
 
+
     }
+
 
     private void viewOrder() {
         String searchQuery = orderNumberField.getText();
 
-        // Validate input fiels
+            // Validate input fiels
         if (searchQuery.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Enter a valid Order Number to seach", "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Enter a valid Order Number to seach", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         try {
@@ -242,39 +300,37 @@ public class OrderManagementPanel {
             preparedStatement.setString(1, "%" + searchQuery + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            DefaultTableModel tableModel = new DefaultTableModel();
-            tableModel.addColumn("Order Number");
-            tableModel.addColumn("Order Date");
-            tableModel.addColumn("Required Date");
-            tableModel.addColumn("Shipped Date");
-            tableModel.addColumn("Status");
-            tableModel.addColumn("Comments");
-            tableModel.addColumn("Customer Number");
+        DefaultTableModel tableModel = new DefaultTableModel();
+        tableModel.addColumn("Order Number");
+        tableModel.addColumn("Order Date");
+        tableModel.addColumn("Required Date");
+        tableModel.addColumn("Shipped Date");
+        tableModel.addColumn("Status");
+        tableModel.addColumn("Comments");
+        tableModel.addColumn("Customer Number");
 
-            while (resultSet.next()) {
-                String orderNumber = resultSet.getString("orderNumber");
-                String orderDate = resultSet.getString("orderDate");
-                String requiredDate = resultSet.getString("requiredDate");
-                String shippedDate = resultSet.getString("shippedDate");
-                String status = resultSet.getString("status");
-                String comments = resultSet.getString("comments");
-                String customerNumber = resultSet.getString("customerNumber");
+        while (resultSet.next()) {
+            String orderNumber = resultSet.getString("orderNumber");
+            String orderDate = resultSet.getString("orderDate");
+            String requiredDate = resultSet.getString("requiredDate");
+            String shippedDate = resultSet.getString("shippedDate");
+            String status = resultSet.getString("status");
+            String comments = resultSet.getString("comments");
+            String customerNumber = resultSet.getString("customerNumber");
 
-                tableModel.addRow(new Object[] { orderNumber, orderDate, requiredDate, shippedDate, status, comments,
-                        customerNumber });
+            tableModel.addRow(new Object[]{orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber});
 
-            }
-
-            resultTable.setModel(tableModel);
-
-            resultSet.close();
-            preparedStatement.close();
-            connection.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(frame, "Error while retrieving orders from database", "Database error",
-                    JOptionPane.ERROR_MESSAGE);
         }
+    
+        resultTable.setModel(tableModel);
+
+        resultSet.close();
+        preparedStatement.close();
+        connection.close();
+    }   catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Error while retrieving orders from database", "Database error", JOptionPane.ERROR_MESSAGE);
+    }
     }
 
     private void addOrder() {
@@ -286,26 +342,23 @@ public class OrderManagementPanel {
         String status = statusField.getText();
         String comments = commentsDescriptionArea.getText();
         String customerNumber = customerNumberField.getText();
-
-        // Validate input fields
-        if (orderNumber.isEmpty() || orderDate.isEmpty() || requiredDate.isEmpty() || shippedDate.isEmpty()
-                || status.isEmpty() || comments.isEmpty() || customerNumber.isEmpty()) {
+    
+        // Validate input fields 
+        if (orderNumber.isEmpty() || orderDate.isEmpty() || requiredDate.isEmpty() || shippedDate.isEmpty() || status.isEmpty() || comments.isEmpty() || customerNumber.isEmpty()) {
             JOptionPane.showMessageDialog(frame, "Fill out all fields", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        // Log order details for debugging
-        System.out.println("Adding Order - Order Number: " + orderNumber + ", OrderDate: " + orderDate
-                + ", RequiredDate: " + requiredDate + ", ShippedDate: " + shippedDate + ", Status: " + status
-                + ", Comments: " + comments + ", CustomerNumber: " + customerNumber);
+            //Log order details for debugging
+        System.out.println("Adding Order - Order Number: " + orderNumber + ", OrderDate: " + orderDate + ", RequiredDate: " + requiredDate + ", ShippedDate: " + shippedDate + ", Status: " + status + ", Comments: " + comments + ", CustomerNumber: " + customerNumber);
 
-        // Perform the database insertion
+         // Perform the database insertion
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
             String sql = "INSERT INTO orders (orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setString(1, orderNumber);
-            preparedStatement.setString(2, orderDate);
+            preparedStatement.setString(2, orderDate); 
             preparedStatement.setString(3, requiredDate);
             preparedStatement.setString(4, shippedDate);
             preparedStatement.setString(5, status);
@@ -321,48 +374,72 @@ public class OrderManagementPanel {
                 System.out.println("Failed to add order!");
                 resultMessageArea.setText("Failed to add order!");
             }
-
+        
             preparedStatement.close();
             connection.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(frame, "Error while adding new order to the database", "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Error while adding new order to the database", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+        
+    
     private void updateOrder() {
         String orderNumber = orderNumberField.getText();
         String updateOrderDate = orderDateField.getText();
         String updatestatus = statusField.getText();
         String updatecomments = commentsDescriptionArea.getText();
         String updateCustomerNumber = customerNumberField.getText();
-
+    
         // Validate input fields if needed
-
+     if (orderNumber.isEmpty() || orderDate.isEmpty() || requiredDate.isEmpty() || shippedDate.isEmpty() || status.isEmpty() || comments.isEmpty() || customerNumber.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "Fill out all fields", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         // Perform the database update
-        // ...
-
-        System.out.println(
-                "Updating Order - Order Number: " + orderNumber + ", OrderDate: " + updateOrderDate + ", Status: "
-                        + updatestatus + ", Comments: " + updatecomments + ", CustomerNumber: " + updateCustomerNumber);
+        System.out.println("Updating Order - Order Number: " + orderNumber + ", OrderDate: " + updateOrderDate + ", Status: " + updatestatus + ", Comments: " + updatecomments + ", CustomerNumber: " + updateCustomerNumber);
         // Update the result message or any other UI component
         resultMessageArea.setText("Order updated successfully!");
-    }
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
+            String sql = "INSERT INTO orders (orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, orderNumber);
+            preparedStatement.setString(2, orderDate); 
+            preparedStatement.setString(3, requiredDate);
+            preparedStatement.setString(4, shippedDate);
+            preparedStatement.setString(5, status);
+            preparedStatement.setString(6, comments);
+            preparedStatement.setString(7, customerNumber);
 
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Order added successfully!");
+                resultMessageArea.setText("Order added successfully!");
+            } else {
+                System.out.println("Failed to add order!");
+                resultMessageArea.setText("Failed to add order!");
+            }
+        
+        preparedStatement.close();
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Error while updating order to the database", "Error", JOptionPane.ERROR_MESSAGE);
+        }} 
+        }  
     private void deleteOrder() {
         String orderNumber = orderNumberField.getText();
-
+       
         // Validate input if needed
-
         // Perform the database deletion
         // ...
-
+        
         System.out.println("Deleting Order - Order Number: " + orderNumber);
         // Update the result message or any other UI component
         resultMessageArea.setText("Order deleted successfully!");
     }
-
+    
     public static void main(String[] args) {
         new OrderManagementPanel().start();
     }
