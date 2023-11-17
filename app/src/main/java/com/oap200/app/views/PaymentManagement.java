@@ -118,8 +118,7 @@ paymentDateField.setPreferredSize(new Dimension(130,35));
 amountField.setPreferredSize(new Dimension(130,35));
 
 
-        JLabel paymentsLabel = new JLabel("Payments Field:");
-        paymentsField = new JTextField();
+      
 
 bottomPanel.add(tableScrollPane, BorderLayout.SOUTH);
 
@@ -203,7 +202,7 @@ mainPanel.add(customerNumberLabel);
 
 
 private void viewPayments() {
-    String searchQuery = paymentsField.getText();
+    String searchQuery = checkNumberField.getText();
 
     try {
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
@@ -397,12 +396,16 @@ private JPanel createInputPanel(String title) {
     panel.add(new JLabel("Customer Number:"));
     panel.add(customerNumberField);
 
-    // Add a JComboBox for Check Numbers
-    checkNumberComboBox = new JComboBox<>();
-
-    populateCheckNumbers(checkNumberComboBox); // Populate the JComboBox with existing check numbers
-    panel.add(new JLabel("Check Number:"));
-    panel.add(checkNumberComboBox);
+    if (title.equals("Update Payments")) {
+        checkNumberComboBox = new JComboBox<>();
+        populateCheckNumbers(checkNumberComboBox); // Populate the JComboBox with existing check numbers
+        panel.add(new JLabel("Check Number:"));
+        panel.add(checkNumberComboBox);
+    } else {
+        // Add the checkNumberField for other panels
+        panel.add(new JLabel("Check Number:"));
+        panel.add(checkNumberField);
+    }
 
     panel.add(new JLabel("Payment Date:"));
     panel.add(paymentDateField);
@@ -411,6 +414,7 @@ private JPanel createInputPanel(String title) {
 
     return panel;
 }
+
 
 private void populateCheckNumbers(JComboBox<String> checkNumberComboBox) {
     try {
