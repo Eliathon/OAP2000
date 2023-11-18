@@ -6,6 +6,24 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ProductManagementPanel",
+            "request": "launch",
+            "mainClass": "com.oap200.app.views.ProductManagementPanel"
+        },
+        {
+            "type": "java",
+            "name": "TabbedCustomerPanel",
+            "request": "launch",
+            "mainClass": "com.oap200.app.tabbedPanels.TabbedCustomerPanel"
+        },
+        {
+            "type": "java",
+            "name": "TabbedPaneExample",
+            "request": "launch",
+            "mainClass": "com.oap200.app.views.TabbedPaneExample"
+        },
+        {
+            "type": "java",
             "name": "OrderManagementPanel",
             "request": "launch",
             "mainClass": "com.oap200.app.views.OrderManagementPanel"

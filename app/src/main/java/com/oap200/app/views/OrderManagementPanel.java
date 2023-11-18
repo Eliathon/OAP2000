@@ -216,41 +216,41 @@ public class OrderManagementPanel {
         JPanel addPanel = new JPanel();
         tabbedPane.addTab("Add Order", addPanel);
         
-        JLabel orderNumberLabel = new JLabel("Order Number");
-        JTextField orderNumberField = new JTextField(7);
-        addPanel.add(orderNumberLabel);
-        addPanel.add(orderNumberField);
+        JLabel orderNumberAddLabel = new JLabel("Order Number");
+        JTextField orderNumberAddField = new JTextField(7);
+        addPanel.add(orderNumberAddLabel);
+        addPanel.add(orderNumberAddField);
        
-        JLabel orderDateLabel = new JLabel("Order Date");;
-        JTextField orderDateField = new JTextField(10);
-        addPanel.add(orderDateLabel);
-        addPanel.add(orderDateField);
+        JLabel orderDateAddLabel = new JLabel("Order Date");;
+        JTextField orderDateAddField = new JTextField(10);
+        addPanel.add(orderDateAddLabel);
+        addPanel.add(orderDateAddField);
         
-        JLabel requiredDateLabel = new JLabel("Required Date");;
-        JTextField requiredDateField = new JTextField(10);
-        addPanel.add(requiredDateLabel);
-        addPanel.add(requiredDateField);
+        JLabel requiredDateAddLabel = new JLabel("Required Date");;
+        JTextField requiredDateAddField = new JTextField(10);
+        addPanel.add(requiredDateAddLabel);
+        addPanel.add(requiredDateAddField);
         
 
-        JLabel shippedDateLabel = new JLabel("Shipped Date");;
-        JTextField shippedDateField = new JTextField(10);
-        addPanel.add(shippedDateLabel);
-        addPanel.add(shippedDateField);
+        JLabel shippedDateAddLabel = new JLabel("Shipped Date");;
+        JTextField shippedDateAddField = new JTextField(10);
+        addPanel.add(shippedDateAddLabel);
+        addPanel.add(shippedDateAddField);
 
-        JLabel statusLabel = new JLabel("Order Status");;
-        JTextField statusField = new JTextField(10);
-        addPanel.add(statusLabel);
-        addPanel.add(statusField);
+        JLabel statusAddLabel = new JLabel("Order Status");;
+        JTextField statusAddField = new JTextField(10);
+        addPanel.add(statusAddLabel);
+        addPanel.add(statusAddField);
 
-        JLabel commentsLabel = new JLabel("Order Comments");
-        JTextField commentsField = new JTextField(10);
-        addPanel.add(commentsLabel);
-        addPanel.add(commentsField);
+        JLabel commentsAddLabel = new JLabel("Order Comments");
+        JTextField commentsAddField = new JTextField(10);
+        addPanel.add(commentsAddLabel);
+        addPanel.add(commentsAddField);
         
-        JLabel customerNumberLabel = new JLabel("Custer Number");
-        JTextField customerNumberField = new JTextField(10);
-        addPanel.add(customerNumberLabel);
-        addPanel.add(customerNumberField);
+        JLabel customerNumberAddLabel = new JLabel("Customer Number");
+        JTextField customerNumberAddField = new JTextField(10);
+        addPanel.add(customerNumberAddLabel);
+        addPanel.add(customerNumberAddField);
         
         JButton anotherButton = new JButton("Add Order");
         addPanel.add(anotherButton);
@@ -260,10 +260,43 @@ public class OrderManagementPanel {
         updatePanel.add(new JLabel("Update"));
         tabbedPane.addTab("Update Order", updatePanel);
         
-        JTextField updateTextField = new JTextField(10);
-        JButton updateButton = new JButton("Update Order");
+        JLabel orderNumberUpdateLabel = new JLabel("Order Number");
+        JTextField orderNumberUpdateField = new JTextField(7);
+        updatePanel.add(orderNumberUpdateLabel);
+        updatePanel.add(orderNumberUpdateField);
+       
+        JLabel orderDateUpdateLabel = new JLabel("Order Date");;
+        JTextField orderDateUpdateField = new JTextField(10);
+        updatePanel.add(orderDateUpdateLabel);
+        updatePanel.add(orderDateUpdateField);
+        
+        JLabel requiredDateUpdateLabel = new JLabel("Required Date");;
+        JTextField requiredDateUpdateField = new JTextField(10);
+        updatePanel.add(requiredDateUpdateLabel);
+        updatePanel.add(requiredDateUpdateField);
+        
 
-        updatePanel.add(updateTextField);
+        JLabel shippedDateUpdateLabel = new JLabel("Shipped Date");;
+        JTextField shippedDateUpdateField = new JTextField(10);
+        updatePanel.add(shippedDateUpdateLabel);
+        updatePanel.add(shippedDateUpdateField);
+
+        JLabel statusUpdateLabel = new JLabel("Order Status");;
+        JTextField statusUpdateField = new JTextField(10);
+        updatePanel.add(statusUpdateLabel);
+        updatePanel.add(statusUpdateField);
+
+        JLabel commentsUpdateLabel = new JLabel("Order Comments");
+        JTextField commentsUpdateField = new JTextField(10);
+        updatePanel.add(commentsUpdateLabel);
+        updatePanel.add(commentsUpdateField);
+        
+        JLabel customerNumberUpdateLabel = new JLabel("Customer Number");
+        JTextField customerNumberUpdateField = new JTextField(10);
+        updatePanel.add(customerNumberUpdateLabel);
+        updatePanel.add(customerNumberUpdateField);
+       
+        JButton updateButton = new JButton("Update Order");
         updatePanel.add(updateButton);
 
         // Delete Order Tab
