@@ -6,6 +6,18 @@
     "configurations": [
         {
             "type": "java",
+            "name": "EmployeeManagement",
+            "request": "launch",
+            "mainClass": "com.oap200.app.views.EmployeeManagement"
+        },
+        {
+            "type": "java",
+            "name": "MainFrame",
+            "request": "launch",
+            "mainClass": "com.oap200.app.views.MainFrame"
+        },
+        {
+            "type": "java",
             "name": "ProductManagementPanel",
             "request": "launch",
             "mainClass": "com.oap200.app.views.ProductManagementPanel"
