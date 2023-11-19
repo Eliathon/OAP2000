@@ -10,7 +10,7 @@ public class DbConnect {
     private String dbUrl = "jdbc:mysql://localhost:3306/classicmodels";
     private String user = "root";
     private String pass = "";
-    private Connection myConnection;
+    private Connection myConnection; 
 
     public DbConnect() throws SQLException, ClassNotFoundException {
         // Load JDBC driver
