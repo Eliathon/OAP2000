@@ -205,11 +205,17 @@ public class OrderManagementPanel {
         tabbedPane.addTab("View Orders", viewPanel);
        
         JTextField searchTextField = new JTextField(10);
-        JButton searchButton = new JButton("View All Orders");
+        JButton viewButton = new JButton("View All Orders");
     
         viewPanel.add(searchTextField, BorderLayout.WEST);
-        viewPanel.add(searchButton, BorderLayout.NORTH);
+        viewPanel.add(viewButton, BorderLayout.NORTH);
 
+        viewButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				viewOrder();
+			}
+		});
     
     
         // Add Order Tab
@@ -252,8 +258,16 @@ public class OrderManagementPanel {
         addPanel.add(customerNumberAddLabel);
         addPanel.add(customerNumberAddField);
         
-        JButton anotherButton = new JButton("Add Order");
-        addPanel.add(anotherButton);
+        JButton addButton = new JButton("Add Order");
+        addPanel.add(addButton);
+
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addOrder();
+            }
+        });
+        addPanel.add(addButton);
 
      // Update Order Tab
         JPanel updatePanel = new JPanel();
@@ -299,6 +313,13 @@ public class OrderManagementPanel {
         JButton updateButton = new JButton("Update Order");
         updatePanel.add(updateButton);
 
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateOrder();
+            }
+        });
+        
         // Delete Order Tab
         JPanel deletePanel = new JPanel();
         deletePanel.add(new JLabel("Delete"));
@@ -316,17 +337,134 @@ public class OrderManagementPanel {
 
         JButton deleteButton = new JButton("Delete Order");
 
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteOrder();
+            }
+        });
+        deletePanel.add(deleteButton);
        
         deletePanel.add(deleteButton);
     
         frame.add(tabbedPane);
         frame.setSize(1100, 600);
         frame.setVisible(true);
+    }
+private Connection getConnection() throws SQLException {
+    String url = "jdbc:mysql://localhost:3306/classicmodels";
+    String Brukernavn = "root";
+    String Passord = "";
+    return DriverManager.getConnection(url, Brukernavn, Passord);
+}
+  
+    
+private void viewOrder() {
+    String query = "SELECT * FROM orders";
 
+    try (Connection connection = getConnection();
+    Statement statement = connection.createStatement();
+    ResultSet resultSet = statement.executeQuery(query)) {
+        while (resultSet.next()) {
+            String orderNumber = resultSet.getString("orderNumber");
+            String orderDate = resultSet.getString("orderDate");
+            String requiredDate = resultSet.getString("requiredDate");
+            String shippedDate = resultSet.getString("shippedDate");
+            String status = resultSet.getString("status");
+            String comments = resultSet.getString("comments");
+            String customerNumber = resultSet.getString("customerNumber");
+            System.out.println(orderNumber + "%" + orderDate + "%" + requiredDate + "%" + shippedDate + "%" + status + "%" + comments + "%" + customerNumber);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
 
+private void addOrder() {
+    String orderNumber = orderNumberField.getText();
+    String orderDate = orderDateField.getText();
+    String requiredDate = requiredDateField.getText();
+    String shippedDate = shippedDateField.getText();
+    String status = statusField.getText();
+    String comments = commentsField.getText();
+    String customerNumber = customerNumberField.getText();
+
+    String query = "INSERT INTO orders (orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber) VALUES (?,?,?,?,?,?,?)";
+
+    try (Connection connection = getConnection(); 
+    PreparedStatement statement = connection.prepareStatement(query)) {
+    
+    statement.setString(1, orderNumber);
+    statement.setString(2, orderDate);
+    statement.setString(3, requiredDate);
+    statement.setString(4, shippedDate);
+    statement.setString(5, status);
+    statement.setString(6, comments);
+    statement.setString(7, customerNumber);
+
+    int rowsInserted = statement.executeUpdate();
+    if (rowsInserted > 0) {
+        System.out.println("A new order has been added!");
+    }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
+ private void updateOrder() {
+    String orderNumber = orderNumberField.getText();
+    String orderDate = orderDateField.getText();
+    String requiredDate = requiredDateField.getText();
+    String shippedDate = shippedDateField.getText();
+    String status = statusField.getText();
+    String comments = commentsField.getText();
+    String customerNumber = customerNumberField.getText();
+
+    String query = "UPDATE orders SET orderDate =?, requiredDate =?, shippedDate =?, status =?, comments =?, customerNumber =? WHERE orderNumber =?";
+
+    try (Connection connection = getConnection();
+    PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setString(1, orderDate);
+        statement.setString(2, requiredDate);
+        statement.setString(3, shippedDate);
+        statement.setString(4, status);
+        statement.setString(5, comments);
+        statement.setString(6, customerNumber);
+        statement.setString(7, orderNumber);
+
+        int rowsUpdated = statement.executeUpdate();
+        if (rowsUpdated > 0) {
+            System.out.println("Order updated successfully!");
+        } else {
+            System.out.println("No order found with the provided order number.");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
+    private void deleteOrder() {
+        String orderNumber = orderNumberField.getText();
+        String customerNumber = customerNumberField.getText();
+
+        String query = "DELETE FROM orders WHERE orderNumber =? AND customerNumber =?";
+        
+        try (Connection connection = getConnection();
+        PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, orderNumber);
+            statement.setString(2, customerNumber);
+
+        int rowsDeleted = statement.executeUpdate();
+        if (rowsDeleted > 0) {
+            System.out.println("Order deleted successfully!");
+        } else {
+            System.out.println("Error deleting order.");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
     }
 
-    
     public static void main(String[] args) {
         new OrderManagementPanel().start();
     }
