@@ -73,7 +73,7 @@ public class EmployeeManagement {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
     
-        frame.getContentPane().setBackground(new Color(153, 179, 255));
+        frame.getContentPane().setBackground(new Color(69, 69, 69));
 
         JPanel inputPanel = new JPanel(new BorderLayout());
         inputPanel.setOpaque(true);
@@ -81,7 +81,7 @@ public class EmployeeManagement {
     
         JPanel searchPanel = new JPanel(new FlowLayout());
         searchPanel.setOpaque(true);
-        searchPanel.setBackground(new Color(153, 179, 255));
+        searchPanel.setBackground(new Color(174, 174, 174));
 
         employeeNumberSearchField = new JTextField(10);
         JButton employeeNumberSearchButton = new JButton("Search by Employee Number");
@@ -256,6 +256,8 @@ employeeInputPanel.add(createLabeledField("Reports To:", reportsToComboBox));
         table.setModel(new DefaultTableModel(data, columnNames));
     }
 
+
+    
     private void addEmployee() {
         String employeeId = employeeIdField.getText().trim();
         String firstName = firstNameField.getText().trim();
