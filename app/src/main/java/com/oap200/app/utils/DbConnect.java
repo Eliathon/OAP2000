@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class DbConnect {
     private String dbUrl = "jdbc:mysql://localhost:3306/classicmodels";
     private String user = "root";
-    private String pass = "";
+    private String pass = "Mirjam4321"; //FIXME: before push delete password
     private Connection myConnection; 
 
     public DbConnect() throws SQLException, ClassNotFoundException {

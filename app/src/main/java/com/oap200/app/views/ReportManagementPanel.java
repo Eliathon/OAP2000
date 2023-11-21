@@ -2,17 +2,21 @@
 package com.oap200.app.views;
 
 import javax.swing.*;
-import com.oap200.app.utils.ButtonBuilder;
+import com.oap200.app.utils.ButtonBuilder; // Importeer de ButtonBuilder klasse
 import java.awt.*;
 
 public class ReportManagementPanel extends JPanel {
     private CardLayout cardLayout;
+    /**
+     * The panel that contains the different report panels.
+     * Uses a CardLayout to switch between panels.
+     */
     private JPanel cardPanel;
 
     // Panels
     private ReportSalesPanel reportSalesPanel;
     private ReportStockPanel reportStockPanel;
-    private ReportPaymentsPanel reportPaymentsPanel; // Nieuwe toevoeging
+    private ReportPaymentsPanel reportPaymentsPanel;
 
     // Main method
     public static void main(String[] args) {
@@ -38,7 +42,7 @@ public class ReportManagementPanel extends JPanel {
         // Initialize panels
         reportSalesPanel = new ReportSalesPanel();
         reportStockPanel = new ReportStockPanel();
-        reportPaymentsPanel = new ReportPaymentsPanel(); // Nieuwe toevoeging
+        reportPaymentsPanel = new ReportPaymentsPanel(); 
 
         // Add panels to card layout
         cardPanel.add(reportSalesPanel, "SalesReport");
@@ -54,20 +58,10 @@ public class ReportManagementPanel extends JPanel {
         JPanel sidebar = new JPanel();
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
 
-        // Ruimte toevoegen aan de bovenkant van de sidebar
         sidebar.add(Box.createVerticalStrut(20));
-
-        // Sales Report knop
         sidebar.add(ButtonBuilder.createStyledButton("Sales Report", () -> cardLayout.show(cardPanel, "SalesReport")));
-
-    
-        // Stock Report knop
         sidebar.add(ButtonBuilder.createStyledButton("Stock Report", () -> cardLayout.show(cardPanel, "StockReport")));
-
-        // Payments Report knop - Nieuwe toevoeging
         sidebar.add(ButtonBuilder.createStyledButton("Payments Report", () -> cardLayout.show(cardPanel, "PaymentsReport")));
-
-        // Meer knoppen kunnen hier worden toegevoegd indien nodig...
 
         return sidebar;
     }

@@ -2,6 +2,7 @@
 package com.oap200.app.views;
 
 import com.oap200.app.utils.DbConnect;
+import com.oap200.app.utils.ButtonBuilder; // Importeer ButtonBuilder
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -44,8 +45,9 @@ public class ReportPaymentsPanel extends JPanel {
         endDateSpinner.setEditor(endDateEditor);
 
         // Initialize table and buttons
-        generateReportButton = new JButton("Generate Payment Report");
-        printButton = new JButton("Print Report");
+        generateReportButton = ButtonBuilder.createStyledButton("Generate Payment Report", this::generateReport);
+        printButton = ButtonBuilder.createStyledButton("Print Report", this::printTable);
+
         
         tableModel = new DefaultTableModel();
         reportTable = new JTable(tableModel);
