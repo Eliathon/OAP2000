@@ -6,9 +6,9 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
-public class TabbedPaneExample extends JFrame {
+public class CustomerPanel extends JFrame {
 
-    public TabbedPaneExample() {
+    public CustomerPanel() {
         // Create the JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
@@ -22,18 +22,16 @@ public class TabbedPaneExample extends JFrame {
         // Add components to panel2...
         tabbedPane.addTab("Add ", null, panel2, "Click to add ");
 
-         // Create the third tab.
+        // Create the third tab.
         JPanel panel3 = new JPanel();
         // Add components to panel1...
-        tabbedPane.addTab("Update ", null, panel3, "Click to update ");     
-        
+        tabbedPane.addTab("Update ", null, panel3, "Click to update ");
+
         // Create the forth.
-        JPanel panel4= new JPanel();
+        JPanel panel4 = new JPanel();
         // Add components to panel1...
-        tabbedPane.addTab("Delete ", null, panel4, "Click to delete ");        
- 
- 
- 
+        tabbedPane.addTab("Delete ", null, panel4, "Click to delete ");
+
         // Similarly, you can add more tabs here.
 
         // Add the tabbedPane to this frame
@@ -43,7 +41,7 @@ public class TabbedPaneExample extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                TabbedPaneExample frame = new TabbedPaneExample();
+                CustomerPanel frame = new CustomerPanel();
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setSize(400, 300); // Set the frame size
                 frame.setVisible(true); // Display the frame

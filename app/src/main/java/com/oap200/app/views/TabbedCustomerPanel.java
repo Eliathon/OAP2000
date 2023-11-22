@@ -1,7 +1,7 @@
 // Created by Johnny
 
+package com.oap200.app.views;
 
-package com.oap200.app.tabbedPanels;
 import javax.swing.*;
 import java.awt.*;
 import com.oap200.app.utils.ButtonBuilder;

@@ -1,4 +1,4 @@
-package com.oap200.app.tabbedPanels;
+package com.oap200.app.views;
 
 import javax.swing.*;
 import java.awt.*;

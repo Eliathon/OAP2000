@@ -39,11 +39,15 @@ public class MainFrame extends JFrame {
             }
         });
 
-        JButton productButton = ButtonBuilder.createStyledButton("Product Management", () -> openProductManagementPanel());
+        JButton productButton = ButtonBuilder.createStyledButton("Product Management",
+                () -> openProductManagementPanel());
         JButton orderButton = ButtonBuilder.createStyledButton("Order Management", () -> openOrderManagementPanel());
-        JButton employeeButton = ButtonBuilder.createStyledButton("Employee Management", () -> openEmployeeManagementPanel());
-        JButton paymentButton = ButtonBuilder.createStyledButton("Payment Management", () -> openPaymentManagementPanel());
-        JButton reportsButton = ButtonBuilder.createStyledButton("Customer Management", () -> openCustomerManagementPanel());
+        JButton employeeButton = ButtonBuilder.createStyledButton("Employee Management",
+                () -> openEmployeeManagementPanel());
+        JButton paymentButton = ButtonBuilder.createStyledButton("Payment Management",
+                () -> openPaymentManagementPanel());
+        JButton reportsButton = ButtonBuilder.createStyledButton("Customer Management",
+                () -> openCustomerManagementPanel());
         JButton notificationsButton = ButtonBuilder.createStyledButton("Notifications & Alerts", null);
 
         JPanel topPanel = new JPanel(new GridBagLayout());
@@ -123,7 +127,7 @@ public class MainFrame extends JFrame {
     private void openOrderManagementPanel() {
         SwingUtilities.invokeLater(() -> {
             JFrame orderFrame = new JFrame("Order Management");
-            orderFrame.setContentPane(new TabbedOrderPanel(orderFrame));
+            orderFrame.setContentPane(new TabbedOrderPanel());
             orderFrame.setSize(600, 400);
             orderFrame.setLocationRelativeTo(null);
             orderFrame.setVisible(true);
@@ -158,5 +162,8 @@ public class MainFrame extends JFrame {
             customerFrame.setLocationRelativeTo(null);
             customerFrame.setVisible(true);
         });
+    }
+
+    public void start() {
     }
 }
