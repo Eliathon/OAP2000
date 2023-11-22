@@ -7,7 +7,17 @@ import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
 import com.oap200.app.utils.ButtonBuilder; // Import the ButtonBuilder class
 
+
+
 public class ProductManagementPanel extends JFrame {
+    private JTextField productNameField;
+    private JTextField productCodeField; // Legg til et felt for produktkoden
+    private JTextField productScaleField; // Legg til et felt for produktskalaen
+    private JTextField productVendorField; // Legg til et felt for produktselgeren
+    private JTextArea productDescriptionArea; // Legg til et område for produktbeskrivelsen
+    private JTextField quantityInStockField; // Legg til et felt for antall på lager
+    private JTextField buyPriceField; // Legg til et felt for kjøpsprisen
+    private JTextField MSRPField; // Legg til et felt for MSRP
 
     private static final String PREF_X = "window_x";
     private static final String PREF_Y = "window_y";
@@ -34,6 +44,48 @@ public class ProductManagementPanel extends JFrame {
         JPanel centerPanel = new JPanel(new BorderLayout());
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
         JPanel topPanel = new JPanel(new BorderLayout());
+
+        JPanel labelPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
+        labelPanel.setPreferredSize(new Dimension(150, 200));
+
+        JPanel fieldPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
+        fieldPanel.setPreferredSize(new Dimension(350, 200));
+
+        //Defining labels for the text inputs and size
+        JLabel productNameLabel = new JLabel("Product Name:");
+        productNameField = new JTextField();
+        productNameField.setPreferredSize(new Dimension(200, 30));
+
+        JLabel productCodeLabel = new JLabel("Product Code:");
+        productCodeField = new JTextField();
+        productCodeField.setPreferredSize(new Dimension(200, 30));
+        
+
+        JLabel productScaleLabel = new JLabel("Product Scale:");
+        productScaleField = new JTextField();
+        
+
+        JLabel productVendorLabel = new JLabel("Product Vendor:");
+        productVendorField = new JTextField();
+        
+
+        JLabel productDescriptionLabel = new JLabel("Product Description:");
+        productDescriptionArea = new JTextArea();
+        productDescriptionArea.setLineWrap(true);
+        JScrollPane descriptionScrollPane = new JScrollPane(productDescriptionArea);
+
+
+        JLabel quantityInStockLabel = new JLabel("Quantity In Stock:");
+        quantityInStockField = new JTextField();
+
+
+        JLabel buyPriceLabel = new JLabel("Buy Price:");
+        buyPriceField = new JTextField();
+
+
+        JLabel MSRPLabel = new JLabel("MSRP:");
+        MSRPField = new JTextField();
+
 
           // Create and add the 'Back' button
     JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
@@ -77,7 +129,36 @@ public class ProductManagementPanel extends JFrame {
 
         // Create the second tab for adding products.
         JPanel panel2 = new JPanel(new BorderLayout());
-        panel2.add(addButton, BorderLayout.CENTER);  // Add the addButton to panel2
+        // Legg til etiketter og tekstfelt for hvert produktattributt i panel2
+        labelPanel.add(new JLabel("Product Code:"));
+        fieldPanel.add(productCodeField);
+
+        labelPanel.add(new JLabel("Product Name:"));
+        fieldPanel.add(productNameField);
+
+        labelPanel.add(new JLabel("Product Scale:"));
+        fieldPanel.add(productScaleField);
+
+        labelPanel.add(new JLabel("Product Vendor:"));
+        fieldPanel.add(productVendorField);
+
+        labelPanel.add(new JLabel("Product Description:"));
+        fieldPanel.add(descriptionScrollPane);
+
+        labelPanel.add(new JLabel("Quantity In Stock:"));
+        fieldPanel.add(quantityInStockField);
+
+        labelPanel.add(new JLabel("Buy Price:"));
+        fieldPanel.add(buyPriceField);
+
+        labelPanel.add(new JLabel("MSRP:"));
+        fieldPanel.add(MSRPField);
+
+        // Legg til etiketter og tekstfelt i panel2
+        panel2.add(labelPanel, BorderLayout.WEST);
+        panel2.add(fieldPanel, BorderLayout.CENTER);
+        panel2.add(addButton, BorderLayout.SOUTH);  // Legg til addButton i panel2
+
         tabbedPane.addTab("Add Products", null, panel2, "Click to add");
          
         // Create the first tab for viewing payments.
