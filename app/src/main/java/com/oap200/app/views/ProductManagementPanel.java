@@ -65,6 +65,26 @@ public class ProductManagementPanel extends JFrame {
     // Define the action to be performed when the 'Back' button is clicked
     // Example: System.out.println("Logout button clicked");      
     });
+    // Create and add the View button
+    JButton viewButton = ButtonBuilder.createActionButton(() -> {
+    // Define the action to be performed when the 'Back' button is clicked
+    // Example: System.out.println("Logout button clicked");      
+    });
+    // Create and add the View button
+    JButton addButton = ButtonBuilder.createActionButton(() -> {
+    // Define the action to be performed when the 'Back' button is clicked
+    // Example: System.out.println("Logout button clicked");      
+    });
+    // Create and add the View button
+    JButton deleteButton = ButtonBuilder.createActionButton(() -> {
+    // Define the action to be performed when the 'Back' button is clicked
+    // Example: System.out.println("Logout button clicked");      
+    });
+    // Create and add the View button
+    JButton updateButton = ButtonBuilder.createActionButton(() -> {
+    // Define the action to be performed when the 'Back' button is clicked
+    // Example: System.out.println("Logout button clicked");      
+    });
         
         
     // Create a panel to hold the back button
