@@ -7,9 +7,9 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
-import javax.swing.JButton;
+
 import com.oap200.app.tabbedPanels.TabbedOrderPanel;
-import com.oap200.app.utils.ButtonBuilder;
+import com.oap200.utils.ButtonBuilder;
 
 public class OrderManagementPanel extends JFrame {
     
@@ -34,7 +34,7 @@ public class OrderManagementPanel extends JFrame {
 
      // Create the JTabbedPane
     JTabbedPane tabbedPane = new JTabbedPane();
-
+ 
     // Create the first tab.
     JPanel panel1 = new JPanel();
     // Add components to panel1...
@@ -69,17 +69,37 @@ public class OrderManagementPanel extends JFrame {
     // Define the action to be performed when the 'Back' button is clicked
     // Example: System.out.println("Logout button clicked");      
     });
-        
+    
+    JButton viewButton = ButtonBuilder.createActionButton(() -> {
+        // Define the action to be performed when the 'Back' button is clicked
+        // Example: System.out.println("Logout button clicked");      
+
+    });
+        // Create and add the View button
+    JButton addButton = ButtonBuilder.createActionButton(() -> {
+        // Define the action to be performed when the 'Back' button is clicked
+        // Example: System.out.println("Logout button clicked");      
+    });
+        // Create and add the View button
+    JButton deleteButton = ButtonBuilder.createActionButton(() -> {
+        // Define the action to be performed when the 'Back' button is clicked
+        // Example: System.out.println("Logout button clicked");      
+     });
+        // Create and add the View button
+    JButton updateButton = ButtonBuilder.createActionButton(() -> {
+        // Define the action to be performed when the 'Back' button is clicked
+        // Example: System.out.println("Logout button clicked");      
+    });
         
     // Create a panel to hold the back button
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
     buttonPanel.setOpaque(false); // Set panel transparent
     buttonPanel.add(backButton);
     buttonPanel.add(logoutButton);
+    buttonPanel.add(viewButton);
     // Add the button panel to the top panel
     topPanel.add(buttonPanel, BorderLayout.EAST);
     topPanel.add(tabbedPane, BorderLayout.CENTER);
-
     // Add the top panel to the frame
     getContentPane().add(topPanel, BorderLayout.NORTH);
     }
