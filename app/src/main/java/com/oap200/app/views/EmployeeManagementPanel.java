@@ -1,4 +1,4 @@
-// Created by Johnny
+// Created by Kristian
 package com.oap200.app.views;
 
 import javax.swing.*;
