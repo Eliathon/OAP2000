@@ -1,6 +1,7 @@
 // Created by Dirkje J. van der Poel
 package com.oap200.app.views;
 
+import com.oap200.app.Interfaces.ReportGenerator;
 import com.oap200.app.utils.DbConnect;
 import com.oap200.app.utils.PrintManager;
 import com.oap200.app.utils.ButtonBuilder; // Importeer ButtonBuilder
@@ -13,9 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.awt.*;
-import java.awt.print.PrinterException;
 
-public class ReportPaymentsPanel extends JPanel {
+public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
     private JButton generateReportButton, printButton;
     private JTable reportTable;
     private DefaultTableModel tableModel;
@@ -79,55 +79,57 @@ public class ReportPaymentsPanel extends JPanel {
        printButton.addActionListener(e -> PrintManager.printTable(reportTable));
 
     }
+@Override
+public void generateReport() {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    String startDate = dateFormat.format(startDateSpinner.getValue());
+    String endDate = dateFormat.format(endDateSpinner.getValue());
 
-    private void generateReport() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String startDate = dateFormat.format(startDateSpinner.getValue());
-        String endDate = dateFormat.format(endDateSpinner.getValue());
+    DefaultTableModel tableModel = (DefaultTableModel) reportTable.getModel();
+    tableModel.setRowCount(0); // Clear existing rows
 
-        DefaultTableModel tableModel = (DefaultTableModel) reportTable.getModel();
-        tableModel.setRowCount(0);  // Clear existing rows
-    
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-    
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+
+    try {
+        DbConnect dbConnect = new DbConnect();
+        conn = dbConnect.getConnection();
+
+        String sql = "SELECT customerNumber, checkNumber, paymentDate, amount " +
+                     "FROM payments WHERE paymentDate BETWEEN ? AND ? " +
+                     "ORDER BY paymentDate DESC;";
+
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, startDate);
+        pstmt.setString(2, endDate);
+
+        rs = pstmt.executeQuery();
+
+        while (rs.next()) {
+            tableModel.addRow(new Object[]{
+                rs.getInt("customerNumber"),
+                rs.getString("checkNumber"),
+                rs.getDate("paymentDate"),
+                rs.getDouble("amount")
+            });
+        }
+    } catch (SQLException | ClassNotFoundException ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error accessing the database: " + ex.getMessage(),
+                                      "Database error", JOptionPane.ERROR_MESSAGE);
+    } finally {
         try {
-            DbConnect dbConnect = new DbConnect();
-            conn = dbConnect.getConnection();
-            
-    
-            String sql = "SELECT customerNumber, checkNumber, paymentDate, amount " +
-                         "FROM payments WHERE paymentDate BETWEEN ? AND ? " +
-                         "ORDER BY paymentDate DESC;";
-    
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, startDate);
-            pstmt.setString(2, endDate);
-    
-            rs = pstmt.executeQuery();
-   
-            while (rs.next()) {
-                tableModel.addRow(new Object[]{
-                    rs.getInt("customerNumber"),
-                    rs.getString("checkNumber"),
-                    rs.getDate("paymentDate"),
-                    rs.getDouble("amount")
-                });
-            }
-        } catch (SQLException | ClassNotFoundException ex) {
+            if (rs != null) rs.close();
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
+        } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error accessing the database: " + ex.getMessage(),
-                                          "Database error", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
         }
     }
 }
+}
+
+     
+
 
