@@ -1,5 +1,3 @@
-// Created by Patrik
-
 package com.oap200.app.views;
 
 import javax.swing.*;
@@ -32,81 +30,89 @@ public class OrderManagementPanel extends JFrame {
     }
  });
 
- // Set up the layout for the frame
-        setLayout(new BorderLayout());
+// Set up the layout for the frame
+    setLayout(new BorderLayout());
 
-        JPanel centerPanel = new JPanel(new BorderLayout());
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-        JPanel topPanel = new JPanel(new BorderLayout());
+    JPanel centerPanel = new JPanel(new BorderLayout());
+    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+    JPanel topPanel = new JPanel(new BorderLayout());
 
-          // Create and add the 'Back' button
+     // Create and add the 'Back' button
     JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
-        // Define the action to be performed when the 'Back' button is clicked
-        // Example: System.out.println("Back button clicked");
-        });
-        // Create and add the Logout button
-        JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
+    // Define the action to be performed when the 'Back' button is clicked
+    // Example: System.out.println("Back button clicked");
+    });
+    // Create and add the Logout button
+    JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
+    // Define the action to be performed when the 'Back' button is clicked
+    // Example: System.out.println("Logout button clicked");      
+    });
+    
+    JButton viewButton = ButtonBuilder.createViewButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
         // Example: System.out.println("Logout button clicked");      
-        });
+
+    });
         // Create and add the View button
-        JButton viewButton = ButtonBuilder.createViewButton(() -> {
+    JButton addButton = ButtonBuilder.createAddButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
         // Example: System.out.println("Logout button clicked");      
-        });
+    });
         // Create and add the View button
-        JButton addButton = ButtonBuilder.createAddButton(() -> {
+    JButton deleteButton = ButtonBuilder.createDeleteButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
         // Example: System.out.println("Logout button clicked");      
-        });
+     });
         // Create and add the View button
-        JButton deleteButton = ButtonBuilder.createDeleteButton(() -> {
+    JButton updateButton = ButtonBuilder.createUpdateButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
         // Example: System.out.println("Logout button clicked");      
-        });
-        // Create and add the View button
-        JButton updateButton = ButtonBuilder.createUpdateButton(() -> {
-        // Define the action to be performed when the 'Back' button is clicked
-        // Example: System.out.println("Logout button clicked");      
-        });
-            
+    });
 
-        // Create the JTabbedPane
-        JTabbedPane tabbedPane = new JTabbedPane();
 
-            // Create the first tab for viewing products.
-        JPanel panel1 = new JPanel(new BorderLayout());
-        panel1.add(viewButton, BorderLayout.CENTER);  // Add the viewButton to panel1
-        tabbedPane.addTab("View Products", null, panel1, "Click to view");
+     // Create the JTabbedPane
+    JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Create the second tab for adding products.
-        JPanel panel2 = new JPanel(new BorderLayout());
-        panel2.add(addButton, BorderLayout.CENTER);  // Add the addButton to panel2
-        tabbedPane.addTab("Add Products", null, panel2, "Click to add");
-         
-        // Create the first tab for viewing payments.
-        JPanel panel3 = new JPanel(new BorderLayout());
-        panel3.add(updateButton, BorderLayout.CENTER);  // Add the addButton to panel2
-        tabbedPane.addTab("Update Products", null, panel3, "Click to Update");
+    // Create the first tab.
+    JPanel panel1 = new JPanel(new BorderLayout());
+    panel1.add(viewButton, BorderLayout.CENTER);
+    // Add components to panel1...
+    tabbedPane.addTab("View Order", null, panel1, "Click to view");
 
-        JPanel panel4 = new JPanel(new BorderLayout());
-        panel4.add(deleteButton, BorderLayout.CENTER);  // Add the addButton to panel2
-        tabbedPane.addTab("Delete Products", null, panel4, "Click to Delete");
-              
-        buttonPanel.setOpaque(true);
-        buttonPanel.add(backButton);
-        buttonPanel.add(logoutButton);
+    // Create the second tab.
+    JPanel panel2 = new JPanel(new BorderLayout());
+    panel2.add(addButton, BorderLayout.CENTER);
+    // Add components to panel2...
+    tabbedPane.addTab("Add Order", null, panel2, "Click to add ");
 
-        topPanel.add(buttonPanel, BorderLayout.EAST);
-        topPanel.add(tabbedPane, BorderLayout.CENTER);
+    // Create the third tab.
+    JPanel panel3 = new JPanel(new BorderLayout());
+    panel3.add(updateButton, BorderLayout.CENTER);
+    // Add components to panel3...
+    tabbedPane.addTab("Update Order", null, panel3, "Click to update ");
 
-        getContentPane().add(topPanel, BorderLayout.NORTH);
+    // Create the fourth tab.
+    JPanel panel4 = new JPanel(new BorderLayout());
+    panel4.add(deleteButton, BorderLayout.CENTER);
+    // Add components to panel4...
+    tabbedPane.addTab("Delete Order", null, panel4, "Click to delete ");
+     
+    // Create a panel to hold the back button
+    buttonPanel.setOpaque(false); // Set panel transparent
+    buttonPanel.add(backButton);
+    buttonPanel.add(logoutButton);
+    // Add the button panel to the top panel
+    topPanel.add(buttonPanel, BorderLayout.EAST);
+    topPanel.add(tabbedPane, BorderLayout.CENTER);
+
+    // Add the top panel to the frame
+    getContentPane().add(topPanel, BorderLayout.NORTH);
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                TabbedOrderPanel frame = new TabbedOrderPanel();
+                OrderManagementPanel frame = new OrderManagementPanel();
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setSize(900, 600); // Set the frame size
                 frame.setVisible(true); // Display the frame
