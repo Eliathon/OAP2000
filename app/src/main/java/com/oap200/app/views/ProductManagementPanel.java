@@ -15,14 +15,19 @@ import java.math.BigDecimal;
 
 public class ProductManagementPanel {
     private JFrame frame;
+
      private Timer inactivityTimer;
+
     private JButton backButton; // Button to go back to MainFrame
     private JButton viewButton; // Knapp for å vise produkter
     private JButton addButton;  // Knapp for å legge til produkt
     private JButton deleteButton;  // Knapp for å slette produkt
     private JButton updateButton;
+
     private JTable resultTable;
+
     private JButton logoutButton; // Button for logging out
+
     private JTextField productNameField;
     private JTextField productCodeField; // Legg til et felt for produktkoden
     private JTextField productScaleField; // Legg til et felt for produktskalaen
@@ -37,6 +42,10 @@ public class ProductManagementPanel {
 
     private JComboBox<String> productLineComboBox;
     private JComboBox<String> filterComboBox; // New ComboBox for filtering by product line
+    
+    public JButton getViewButton() {
+        return viewButton;
+    }
    
 
     public void start() {
@@ -49,7 +58,8 @@ public class ProductManagementPanel {
 
         frame = new JFrame("Product Management");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(windowWidth, windowHeight); // Økt høyden for å plassere flere komponenter
+        frame.setSize(windowWidth, windowHeight);
+
         frame.setLayout(new BorderLayout());
    //   Johnny Initializing of the "Back button"
    backButton = new JButton("Back");

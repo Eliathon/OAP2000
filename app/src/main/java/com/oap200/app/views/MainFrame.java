@@ -1,5 +1,4 @@
 // Created by Sindre and Johnny
-
 package com.oap200.app.views;
 
 import javax.swing.*;
@@ -9,6 +8,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.prefs.Preferences;
+import com.oap200.app.tabbedPanels.*;
+// Import for TabbedPanels
 
 public class MainFrame extends JFrame {
 
@@ -24,50 +25,46 @@ public class MainFrame extends JFrame {
         setTitle("Swing MainFrame");
         setSize(400, 300);
         setLayout(new BorderLayout());
-    
+
         textArea = new JTextArea();
         JScrollPane scrollPane = new JScrollPane(textArea);
         add(scrollPane, BorderLayout.CENTER);
-    
+
         initPosition();
-    
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 storePosition();
             }
         });
-    
-        JButton productButton = ButtonBuilder.createStyledButton("Product Management", () -> {
-            new ProductManagementPanel().start();
-        });
-        JButton orderButton = ButtonBuilder.createStyledButton("Order Management", () -> {
-            new OrderManagementPanel().start();
-        });
-        JButton employeeButton = ButtonBuilder.createStyledButton("Employee Management", () -> {
-            new EmployeeManagement().start();
-        });
-        JButton paymentButton = ButtonBuilder.createStyledButton("Payment Management", () -> {
-            new PaymentManagement().start();
-        });
-        JButton reportsButton = ButtonBuilder.createStyledButton("Reports", null); // No action defined yet
-        JButton notificationsButton = ButtonBuilder.createStyledButton("Notifications & Alerts", null); // No action defined yet
+
+        JButton productButton = ButtonBuilder.createStyledButton("Product Management", () -> openProductManagementPanel());
+        JButton orderButton = ButtonBuilder.createStyledButton("Order Management", () -> openOrderManagementPanel());
+        JButton employeeButton = ButtonBuilder.createStyledButton("Employee Management", () -> openEmployeeManagementPanel());
+        JButton paymentButton = ButtonBuilder.createStyledButton("Payment Management", () -> openPaymentManagementPanel());
+        JButton reportsButton = ButtonBuilder.createStyledButton("Customer Management", () -> openCustomerManagementPanel());
+        JButton notificationsButton = ButtonBuilder.createStyledButton("Notifications & Alerts", null);
 
         JPanel topPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
 
         topPanel.add(productButton, gbc);
+        gbc.gridx++;
         topPanel.add(orderButton, gbc);
+        gbc.gridx++;
         topPanel.add(employeeButton, gbc);
+        gbc.gridx++;
         topPanel.add(paymentButton, gbc);
+        gbc.gridx++;
         topPanel.add(reportsButton, gbc);
+        gbc.gridx++;
         topPanel.add(notificationsButton, gbc);
         add(topPanel, BorderLayout.NORTH);
-    
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private void initPosition() {
@@ -113,6 +110,53 @@ public class MainFrame extends JFrame {
         });
     }
 
-    public void start() {
+    private void openProductManagementPanel() {
+        SwingUtilities.invokeLater(() -> {
+            JFrame productFrame = new JFrame("Product Management");
+            productFrame.setContentPane(new TabbedProductPanel());
+            productFrame.setSize(600, 400);
+            productFrame.setLocationRelativeTo(null);
+            productFrame.setVisible(true);
+        });
+    }
+
+    private void openOrderManagementPanel() {
+        SwingUtilities.invokeLater(() -> {
+            JFrame orderFrame = new JFrame("Order Management");
+            orderFrame.setContentPane(new TabbedOrderPanel(orderFrame));
+            orderFrame.setSize(600, 400);
+            orderFrame.setLocationRelativeTo(null);
+            orderFrame.setVisible(true);
+        });
+    }
+
+    private void openEmployeeManagementPanel() {
+        SwingUtilities.invokeLater(() -> {
+            JFrame employeeFrame = new JFrame("Employee Management");
+            employeeFrame.setContentPane(new TabbedEmployeePanel());
+            employeeFrame.setSize(600, 400);
+            employeeFrame.setLocationRelativeTo(null);
+            employeeFrame.setVisible(true);
+        });
+    }
+
+    private void openPaymentManagementPanel() {
+        SwingUtilities.invokeLater(() -> {
+            JFrame paymentFrame = new JFrame("Payment Management");
+            paymentFrame.setContentPane(new TabbedPaymentPanel());
+            paymentFrame.setSize(600, 400);
+            paymentFrame.setLocationRelativeTo(null);
+            paymentFrame.setVisible(true);
+        });
+    }
+
+    private void openCustomerManagementPanel() {
+        SwingUtilities.invokeLater(() -> {
+            JFrame customerFrame = new JFrame("Customer Management");
+            customerFrame.setContentPane(new TabbedCustomerPanel());
+            customerFrame.setSize(600, 400);
+            customerFrame.setLocationRelativeTo(null);
+            customerFrame.setVisible(true);
+        });
     }
 }
