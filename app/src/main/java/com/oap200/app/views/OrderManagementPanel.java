@@ -8,7 +8,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
 
-import com.oap200.app.tabbedPanels.TabbedCustomerPanel;
 import com.oap200.app.tabbedPanels.TabbedOrderPanel;
 import com.oap200.app.utils.ButtonBuilder;
 
@@ -19,7 +18,7 @@ public class OrderManagementPanel extends JFrame {
 
    public OrderManagementPanel() {
    // Load the last window position
-      Preferences prefs = Preferences.userNodeForPackage(TabbedCustomerPanel.class);
+      Preferences prefs = Preferences.userNodeForPackage(TabbedOrderPanel.class);
       int x = prefs.getInt(PREF_X, 50); // Default x position
       int y = prefs.getInt(PREF_Y, 50); // Default y position
       setLocation(x, y);
