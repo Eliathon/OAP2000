@@ -59,6 +59,20 @@ public class ButtonBuilder {
         });
         return backButton;
     }
+    // Red Logout Button is created by Sebastian
+    public static JButton createActionButton(Runnable action) {
+        JButton actionButton = new JButton("View");
+        actionButton.setForeground(Color.WHITE); // Set text color to white
+        actionButton.setBackground(Color.GREEN); // Set background color to red
+        actionButton.setBorderPainted(false); // Remove border
+        actionButton.setPreferredSize(new Dimension(100, 20)); // Set a specific size
+        actionButton.addActionListener(e -> {
+            if (action != null) {
+                action.run();
+            }
+        });
+        return actionButton;
+    }
 
 }
 
