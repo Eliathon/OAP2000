@@ -28,34 +28,14 @@ public class PaymentManagement extends JFrame {
             }
         });
 
-        // Create the JTabbedPane
-        JTabbedPane tabbedPane = new JTabbedPane();
-
-        // Create the first tab for viewing payments.
-        JPanel panel1 = new JPanel();
-        // Add components to panel1 related to viewing payments...
-        tabbedPane.addTab("View Payments", null, panel1, "Click to view");
-
-         // Create the first tab for viewing payments.
-        JPanel panel2 = new JPanel();
-        // Add components to panel1 related to viewing payments...
-        tabbedPane.addTab("Add Payments", null, panel2, "Click to view");
-         
-        // Create the first tab for viewing payments.
-        JPanel panel3 = new JPanel();
-        // Add components to panel1 related to viewing payments...
-        tabbedPane.addTab("Delete Payments", null, panel3, "Click to view");
-
- 
-        JPanel panel4 = new JPanel();
-        
-        tabbedPane.addTab("Update Payments", null, panel4, "Click to view");
-
         // Set up the layout for the frame
         setLayout(new BorderLayout());
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
         JPanel topPanel = new JPanel(new BorderLayout());
 
-        // Create and add the 'Back' button
+          // Create and add the 'Back' button
     JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
         // Example: System.out.println("Back button clicked");
@@ -66,29 +46,50 @@ public class PaymentManagement extends JFrame {
         // Example: System.out.println("Logout button clicked");      
         });
         // Create and add the View button
-        JButton viewButton = ButtonBuilder.createActionButton(() -> {
+        JButton viewButton = ButtonBuilder.createViewButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
         // Example: System.out.println("Logout button clicked");      
         });
         // Create and add the View button
-        JButton addButton = ButtonBuilder.createActionButton(() -> {
+        JButton addButton = ButtonBuilder.createAddButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
         // Example: System.out.println("Logout button clicked");      
         });
         // Create and add the View button
-        JButton deleteButton = ButtonBuilder.createActionButton(() -> {
+        JButton deleteButton = ButtonBuilder.createDeleteButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
         // Example: System.out.println("Logout button clicked");      
         });
         // Create and add the View button
-        JButton updateButton = ButtonBuilder.createActionButton(() -> {
+        JButton updateButton = ButtonBuilder.createUpdateButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
         // Example: System.out.println("Logout button clicked");      
         });
             
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-        buttonPanel.setOpaque(false);
+        // Create the JTabbedPane
+        JTabbedPane tabbedPane = new JTabbedPane();
+
+            // Create the first tab for viewing products.
+        JPanel panel1 = new JPanel(new BorderLayout());
+        panel1.add(viewButton, BorderLayout.CENTER);  // Add the viewButton to panel1
+        tabbedPane.addTab("View Payments", null, panel1, "Click to view");
+
+        // Create the second tab for adding products.
+        JPanel panel2 = new JPanel(new BorderLayout());
+        panel2.add(addButton, BorderLayout.CENTER);  // Add the addButton to panel2
+        tabbedPane.addTab("Add Payments", null, panel2, "Click to add");
+         
+        // Create the first tab for viewing payments.
+        JPanel panel3 = new JPanel(new BorderLayout());
+        panel3.add(updateButton, BorderLayout.CENTER);  // Add the addButton to panel2
+        tabbedPane.addTab("Update Payments", null, panel3, "Click to Update");
+
+        JPanel panel4 = new JPanel(new BorderLayout());
+        panel4.add(deleteButton, BorderLayout.CENTER);  // Add the addButton to panel2
+        tabbedPane.addTab("Delete Payments", null, panel4, "Click to Delete");
+              
+        buttonPanel.setOpaque(true);
         buttonPanel.add(backButton);
         buttonPanel.add(logoutButton);
 
@@ -100,7 +101,7 @@ public class PaymentManagement extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            PaymentManagement frame = new PaymentManagement();
+            ProductManagementPanel frame = new ProductManagementPanel();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(900, 600); // Set the frame size
             frame.setVisible(true); // Display the frame
