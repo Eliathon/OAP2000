@@ -11,9 +11,15 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
 import java.math.BigDecimal;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.prefs.Preferences;
+import com.oap200.app.utils.ButtonBuilder; // Import the ButtonBuilder class
 
 public class ProductManagementPanel {
     private JFrame frame;
+
+    private Timer inactivityTimer;
 
     private JButton backButton; // Button to go back to MainFrame
     private JButton viewButton; // Knapp for å vise produkter
@@ -195,10 +201,11 @@ public class ProductManagementPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 updateProduct();
+
             }
         });
-
         buttonPanel.add(updateButton);
+
         optionsComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -246,7 +253,9 @@ public class ProductManagementPanel {
                         topPanel.add(viewButton, BorderLayout.WEST);
                         bottomPanel.add(messageScrollPane, BorderLayout.NORTH);
                         bottomPanel.add(tableScrollPane, BorderLayout.CENTER);
+
                         break;
+
                     case "Add":
                         topPanel.add(productCodeLabel, BorderLayout.WEST);
                         topPanel.add(productCodeField, BorderLayout.WEST);
@@ -282,6 +291,7 @@ public class ProductManagementPanel {
 
                         bottomPanel.add(messageScrollPane, BorderLayout.SOUTH);
                         bottomPanel.add(tableScrollPane, BorderLayout.SOUTH);
+
                         break;
                     case "View":
 
@@ -299,6 +309,7 @@ public class ProductManagementPanel {
                         bottomPanel.add(filterPanel, BorderLayout.NORTH);
 
                         bottomPanel.add(tableScrollPane, BorderLayout.SOUTH);
+
                         break;
                     case "Delete":
                         topPanel.add(productCodeLabel, BorderLayout.WEST);
@@ -307,6 +318,7 @@ public class ProductManagementPanel {
                         topPanel.add(menuPanel, BorderLayout.NORTH);
                         bottomPanel.add(messageScrollPane, BorderLayout.CENTER);
                         bottomPanel.add(tableScrollPane, BorderLayout.SOUTH);
+
                         break;
                 }
                 topPanel.revalidate();
@@ -617,5 +629,16 @@ public class ProductManagementPanel {
     public static void main(String[] args) {
         ProductManagementPanel productManagementPanel = new ProductManagementPanel();
         productManagementPanel.start();
+    }
+}
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                ProductManagementPanel frame = new ProductManagementPanel();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setSize(900, 600); // Set the frame size
+                frame.setVisible(true); // Display the frame
+            }
+        });
     }
 }
