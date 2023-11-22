@@ -101,7 +101,7 @@ public class PaymentManagement extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            ProductManagementPanel frame = new ProductManagementPanel();
+            PaymentManagement frame = new PaymentManagement();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(900, 600); // Set the frame size
             frame.setVisible(true); // Display the frame
