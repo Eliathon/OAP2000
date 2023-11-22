@@ -63,18 +63,63 @@ public class ButtonBuilder {
     }
 
     // Red Logout Button is created by Sebastian
-    public static JButton createActionButton(Runnable action) {
-        JButton actionButton = new JButton("View");
-        actionButton.setForeground(Color.WHITE); // Set text color to white
-        actionButton.setBackground(Color.GREEN); // Set background color to red
-        actionButton.setBorderPainted(false); // Remove border
-        actionButton.setPreferredSize(new Dimension(100, 20)); // Set a specific size
-        actionButton.addActionListener(e -> {
+    public static JButton createUpdateButton(Runnable action) {
+        JButton updateButton = new JButton("Update");
+        updateButton.setForeground(Color.WHITE); // Set text color to white
+        updateButton.setBackground(Color.BLACK); // Set background color to red
+        updateButton.setBorderPainted(false); // Remove border
+        updateButton.setPreferredSize(new Dimension(100, 20)); // Set a specific size
+        updateButton.addActionListener(e -> {
             if (action != null) {
                 action.run();
             }
         });
-        return actionButton;
+        return updateButton;
+    }
+
+     // Red Logout Button is created by Sebastian
+    public static JButton createViewButton(Runnable action) {
+        JButton viewButton = new JButton("View");
+        viewButton.setForeground(Color.WHITE); // Set text color to white
+        viewButton.setBackground(Color.BLACK); // Set background color to red
+        viewButton.setBorderPainted(false); // Remove border
+        viewButton.setPreferredSize(new Dimension(100, 20)); // Set a specific size
+        viewButton.addActionListener(e -> {
+            if (action != null) {
+                action.run();
+            }
+        });
+        return viewButton;
+    }
+
+     // Red Logout Button is created by Sebastian
+    public static JButton createAddButton(Runnable action) {
+        JButton addButton = new JButton("Add");
+        addButton.setForeground(Color.WHITE); // Set text color to white
+        addButton.setBackground(Color.BLACK); // Set background color to red
+        addButton.setBorderPainted(false); // Remove border
+        addButton.setPreferredSize(new Dimension(100, 20)); // Set a specific size
+        addButton.addActionListener(e -> {
+            if (action != null) {
+                action.run();
+            }
+        });
+        return addButton;
+    }
+
+     // Red Logout Button is created by Sebastian
+    public static JButton createDeleteButton(Runnable action) {
+        JButton deleteButton = new JButton("Delete");
+        deleteButton.setForeground(Color.WHITE); // Set text color to white
+        deleteButton.setBackground(Color.BLACK); // Set background color to red
+        deleteButton.setBorderPainted(false); // Remove border
+        deleteButton.setPreferredSize(new Dimension(100, 20)); // Set a specific size
+        deleteButton.addActionListener(e -> {
+            if (action != null) {
+                action.run();
+            }
+        });
+        return deleteButton;
     }
 
 }
