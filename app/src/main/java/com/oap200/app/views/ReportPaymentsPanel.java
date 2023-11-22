@@ -2,7 +2,9 @@
 package com.oap200.app.views;
 
 import com.oap200.app.utils.DbConnect;
+import com.oap200.app.utils.PrintManager;
 import com.oap200.app.utils.ButtonBuilder; // Importeer ButtonBuilder
+import com.oap200.app.utils.DateSpinnerFactory;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -30,14 +32,15 @@ public class ReportPaymentsPanel extends JPanel {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2003, Calendar.JANUARY, 1);
         Date initialDate = calendar.getTime();
+
         // Optioneel: Definieer de minimum en maximum datums voor de spinn
         Date earliestDate = calendar.getTime(); // 1 januari 2003
         Date latestDate = new Date(); // 
-        
-        // Initialiseer de JSpinners met het nieuwe SpinnerDateModel
-        startDateSpinner = new JSpinner(new SpinnerDateModel(initialDate,earliestDate, latestDate, Calendar.DAY_OF_MONTH));
-        endDateSpinner = new JSpinner(new SpinnerDateModel(latestDate, earliestDate, latestDate, Calendar.DAY_OF_MONTH));
-       
+
+        // Initialize DateSpinnerFactory spinners
+        startDateSpinner = DateSpinnerFactory.createDateSpinner(initialDate, earliestDate, latestDate);
+        endDateSpinner = DateSpinnerFactory.createDateSpinner(latestDate, earliestDate, latestDate);
+
         // Stel de DateEditor in
         JSpinner.DateEditor startDateEditor = new JSpinner.DateEditor(startDateSpinner, "yyyy-MM-dd");
         JSpinner.DateEditor endDateEditor = new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd");
@@ -46,7 +49,7 @@ public class ReportPaymentsPanel extends JPanel {
 
         // Initialize table and buttons
         generateReportButton = ButtonBuilder.createStyledButton("Generate Payment Report", this::generateReport);
-        printButton = ButtonBuilder.createStyledButton("Print Report", this::printTable);
+        printButton = ButtonBuilder.createStyledButton("Print Report", () -> PrintManager.printTable(reportTable));
 
         
         tableModel = new DefaultTableModel();
@@ -72,7 +75,9 @@ public class ReportPaymentsPanel extends JPanel {
 
     private void addActionsToButtons() {
         generateReportButton.addActionListener(e -> generateReport());
-        printButton.addActionListener(e -> printTable());
+        // Voeg deze regel toe aan je methode voor het instellen van button acties.
+       printButton.addActionListener(e -> PrintManager.printTable(reportTable));
+
     }
 
     private void generateReport() {
@@ -124,14 +129,5 @@ public class ReportPaymentsPanel extends JPanel {
             }
         }
     }
-    
-
-    private void printTable() {
-        try {
-            reportTable.print(); // This will trigger the print dialog
-        } catch (PrinterException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Print error: " + ex.getMessage(), "Print Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
 }
+

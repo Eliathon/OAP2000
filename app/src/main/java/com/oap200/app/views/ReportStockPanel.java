@@ -1,14 +1,14 @@
 // Created by Dirkje J. van der Poel
 package com.oap200.app.views;
 
+import com.oap200.app.utils.DbConnect;
+import com.oap200.app.utils.PrintManager;
+import com.oap200.app.utils.ButtonBuilder; // Import the ButtonBuilder class
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
-
-import com.oap200.app.utils.DbConnect;
-import com.oap200.app.utils.ButtonBuilder; // Import the ButtonBuilder class
 import java.sql.*;
 import java.awt.*;
 import java.awt.print.PrinterException;
@@ -30,7 +30,8 @@ public class ReportStockPanel extends JPanel {
     private void initializeComponents() {
         // Use ButtonBuilder for button creation
         generateReportButton = ButtonBuilder.createStyledButton("Generate Stock Report", this::generateReport);
-        printButton = ButtonBuilder.createStyledButton("Print Report", this::printTable);
+        // Gebruik ButtonBuilder en PrintManager voor de 'Print' knop
+        printButton = ButtonBuilder.createStyledButton("Print Report", () -> PrintManager.printTable(reportTable));
 
         searchField = new JTextField(20); // Width of the search field
         tableModel = new DefaultTableModel();
@@ -78,7 +79,7 @@ public class ReportStockPanel extends JPanel {
 
     private void addActionsToButtons() {
         generateReportButton.addActionListener(e -> generateReport());
-        printButton.addActionListener(e -> printTable());
+        printButton.addActionListener(e -> PrintManager.printTable(reportTable));
     }
 
     private void generateReport() {
@@ -121,20 +122,5 @@ public class ReportStockPanel extends JPanel {
             }
         }
     }
+  }
 
-    private void printTable() {
-        if (isPrinting) {
-            return; // Exit the method if a print task is already in progress
-        }
-
-        try {
-            isPrinting = true; // Set the flag to true, printing starts
-            reportTable.print(); // This will trigger the print dialog
-        } catch (PrinterException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Print error: " + ex.getMessage(), "Print Error", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            isPrinting = false; // Reset the flag when printing is complete
-        }
-    }
-}
