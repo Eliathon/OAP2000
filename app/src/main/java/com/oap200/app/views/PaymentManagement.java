@@ -55,13 +55,37 @@ public class PaymentManagement extends JFrame {
         setLayout(new BorderLayout());
         JPanel topPanel = new JPanel(new BorderLayout());
 
-        // Create and add the 'Back' button and 'Logout' button
-        JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
-            System.out.println("Back button clicked");
+        // Create and add the 'Back' button
+    JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
+        // Define the action to be performed when the 'Back' button is clicked
+        // Example: System.out.println("Back button clicked");
         });
+        // Create and add the Logout button
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
-            System.out.println("Logout button clicked");
+        // Define the action to be performed when the 'Back' button is clicked
+        // Example: System.out.println("Logout button clicked");      
         });
+        // Create and add the View button
+        JButton viewButton = ButtonBuilder.createActionButton(() -> {
+        // Define the action to be performed when the 'Back' button is clicked
+        // Example: System.out.println("Logout button clicked");      
+        });
+        // Create and add the View button
+        JButton addButton = ButtonBuilder.createActionButton(() -> {
+        // Define the action to be performed when the 'Back' button is clicked
+        // Example: System.out.println("Logout button clicked");      
+        });
+        // Create and add the View button
+        JButton deleteButton = ButtonBuilder.createActionButton(() -> {
+        // Define the action to be performed when the 'Back' button is clicked
+        // Example: System.out.println("Logout button clicked");      
+        });
+        // Create and add the View button
+        JButton updateButton = ButtonBuilder.createActionButton(() -> {
+        // Define the action to be performed when the 'Back' button is clicked
+        // Example: System.out.println("Logout button clicked");      
+        });
+            
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
         buttonPanel.setOpaque(false);

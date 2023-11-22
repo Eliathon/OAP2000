@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
-
+import javax.swing.JButton;
 import com.oap200.app.tabbedPanels.TabbedOrderPanel;
 import com.oap200.app.utils.ButtonBuilder;
 
