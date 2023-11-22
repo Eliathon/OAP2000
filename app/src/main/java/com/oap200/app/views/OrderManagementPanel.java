@@ -216,15 +216,18 @@ public class OrderManagementPanel {
         JTabbedPane tabbedPane = new JTabbedPane();
     
         // View Orders Tab
-        JPanel viewPanel = new JPanel();
-        viewPanel.add(new JLabel("Order Number"));
+        JPanel viewPanel = new JPanel(new BorderLayout());
         tabbedPane.addTab("View Orders", viewPanel);
        
-        JTextField searchTextField = new JTextField(10);
         JButton viewButton = new JButton("View All Orders");
+        JTextArea searchTextArea = new JTextArea();
+        searchTextArea.setColumns(100);
+        searchTextArea.setRows(50);
+        
     
-        viewPanel.add(searchTextField, BorderLayout.WEST);
         viewPanel.add(viewButton, BorderLayout.NORTH);
+        viewPanel.add(searchTextArea);
+       
 
         viewButton.addActionListener(new ActionListener() {
 			@Override
