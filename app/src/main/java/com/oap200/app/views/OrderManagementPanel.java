@@ -1,4 +1,6 @@
-//*  Created by Patrik*//
+//  Created by Patrik //
+
+// View, Add, Update and Delete Orders
 
 package com.oap200.app.views;
 
@@ -11,7 +13,6 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
 import java.math.BigDecimal;
-
 
 public class OrderManagementPanel {
 
@@ -42,6 +43,21 @@ public class OrderManagementPanel {
             }
         });
     }
+   
+    private Connection getConnection() throws SQLException {
+    String url = "jdbc:mysql://localhost:3306/classicmodels";
+    String username = "root";
+    String password = "";
+    
+    try {
+        
+        Class.forName("com.mysql.cj.jdbc.Driver");   
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels", "root", "");
+    } catch (ClassNotFoundException |SQLException e) {
+        e.printStackTrace();
+    }
+    return DriverManager.getConnection(url, username, password);
+}  
 
 	private JPanel viewPanel() {
 		JPanel viewPanel = new JPanel(new BorderLayout());
@@ -351,14 +367,8 @@ public class OrderManagementPanel {
         frame.setSize(1100, 600);
         frame.setVisible(true);
     }
-private Connection getConnection() throws SQLException {
-    String url = "jdbc:mysql://localhost:3306/classicmodels";
-    String Brukernavn = "root";
-    String Passord = "";
-    return DriverManager.getConnection(url, Brukernavn, Passord);
-}
-  
-    
+
+
 private void viewOrder() {
     String query = "SELECT * FROM orders";
 
