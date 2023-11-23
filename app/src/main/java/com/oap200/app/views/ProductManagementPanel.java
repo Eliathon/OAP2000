@@ -63,13 +63,13 @@ public class ProductManagementPanel extends JFrame {
 
         // Tab 3: Update Products
         JPanel updatePanel = new JPanel(new BorderLayout());
-        addComponentsToPanel(updatePanel);
+        addComponentsToPanelUpdate(updatePanel);
         updatePanel.add(updateButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Update Products", null, updatePanel, "Click to Update");
 
         // Tab 4: Delete Products
         JPanel deletePanel = new JPanel(new BorderLayout());
-        addComponentsToPanel(deletePanel);
+        addComponentsToPanelDelete(deletePanel);
         deletePanel.add(deleteButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Delete Products", null, deletePanel, "Click to Delete");
 
@@ -147,6 +147,42 @@ public class ProductManagementPanel extends JFrame {
 
         panelView.add(labelPanel, BorderLayout.WEST);
         panelView.add(fieldPanel, BorderLayout.CENTER);
+    }
+
+    private void addComponentsToPanelUpdate(JPanel panelUpdate) {
+        JPanel labelPanel = new JPanel(new GridLayout(8, 1)); // 8 labels
+        JPanel fieldPanel = new JPanel(new GridLayout(8, 1)); // 8 fields
+
+        // Cloning fields for each tab
+        JTextField productCode = new JTextField(10);
+        JTextField quantityInStock = new JTextField(10);
+        JTextField buyPrice = new JTextField(10);
+        JTextField MSRP = new JTextField(10);
+
+        labelPanel.add(new JLabel("Product code:"));
+        fieldPanel.add(productCode);
+        labelPanel.add(new JLabel("Quantity in stock:"));
+        fieldPanel.add(quantityInStock);
+        labelPanel.add(new JLabel("Buy price:"));
+        fieldPanel.add(buyPrice);
+        labelPanel.add(new JLabel("MSRP:"));
+        fieldPanel.add(MSRP);
+
+        panelUpdate.add(labelPanel, BorderLayout.WEST);
+        panelUpdate.add(fieldPanel, BorderLayout.CENTER);
+    }
+
+    private void addComponentsToPanelDelete(JPanel panelDelete) {
+        JPanel labelPanel = new JPanel(new GridLayout(2, 1)); // 8 labels
+        JPanel fieldPanel = new JPanel(new GridLayout(2, 1)); // 8 fields
+
+        JTextField productCode = new JTextField(10);
+
+        labelPanel.add(new JLabel("Product code:"));
+        fieldPanel.add(productCode);
+
+        panelDelete.add(labelPanel, BorderLayout.WEST);
+        panelDelete.add(fieldPanel, BorderLayout.CENTER);
     }
 
     public static void main(String[] args) {
