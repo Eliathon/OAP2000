@@ -47,6 +47,24 @@ public class PaymentManagement extends JFrame {
         JPanel fieldPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
         fieldPanel.setPreferredSize(new Dimension(350, 200));
 
+ //Defining labels for the text inputs and size
+ customerNumberField = new JTextField();
+ customerNumberField.setPreferredSize(new Dimension(200, 30));
+
+ checkNumberField = new JTextField();
+ checkNumberField.setPreferredSize(new Dimension(200, 30));
+ 
+ paymentDateField = new JTextField();
+ paymentDateField.setPreferredSize(new Dimension(200, 30));
+
+amountField = new JTextField();
+amountField.setPreferredSize(new Dimension(200, 30));
+ 
+ 
+
+
+
+
           // Create and add the 'Back' button
     JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
