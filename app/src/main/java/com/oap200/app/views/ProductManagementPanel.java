@@ -48,9 +48,13 @@ public class ProductManagementPanel extends JFrame {
 
         JPanel labelPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
         labelPanel.setPreferredSize(new Dimension(150, 200));
-
         JPanel fieldPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
         fieldPanel.setPreferredSize(new Dimension(350, 200));
+
+        JPanel viewLabelPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
+        viewLabelPanel.setPreferredSize(new Dimension(150, 200));
+        JPanel viewFieldPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
+        viewFieldPanel.setPreferredSize(new Dimension(350, 200));
 
         //Defining labels for the text inputs and size
         productNameField = new JTextField();
@@ -58,28 +62,16 @@ public class ProductManagementPanel extends JFrame {
 
         productCodeField = new JTextField();
         productCodeField.setPreferredSize(new Dimension(200, 30));
-        
-
+    
         productScaleField = new JTextField();
-        
-
         productVendorField = new JTextField();
-        
-
         productDescriptionArea = new JTextArea();
         productDescriptionArea.setLineWrap(true);
         JScrollPane descriptionScrollPane = new JScrollPane(productDescriptionArea);
-
-
         quantityInStockField = new JTextField();
-
-
         buyPriceField = new JTextField();
-
- 
         MSRPField = new JTextField();
-
-
+        
           // Create and add the 'Back' button
     JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
@@ -117,7 +109,16 @@ public class ProductManagementPanel extends JFrame {
 
             // Create the first tab for viewing products.
         JPanel panel1 = new JPanel(new BorderLayout());
-        panel1.add(viewButton, BorderLayout.CENTER);  // Add the viewButton to panel1
+
+        viewLabelPanel.add(new JLabel("Product Code:"));
+        viewFieldPanel.add(productCodeField);
+
+        viewLabelPanel.add(new JLabel("Product Name:"));
+        viewFieldPanel.add(productNameField);
+
+        panel1.add(viewLabelPanel, BorderLayout.WEST);
+        panel1.add(viewFieldPanel, BorderLayout.CENTER);
+        panel1.add(viewButton, BorderLayout.SOUTH);  // Add the viewButton to panel1
         tabbedPane.addTab("View Products", null, panel1, "Click to view");
 
         // Create the second tab for adding products.

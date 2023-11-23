@@ -11,7 +11,15 @@ import com.oap200.app.tabbedPanels.TabbedOrderPanel;
 import com.oap200.app.utils.ButtonBuilder;
 
 public class OrderManagementPanel extends JFrame {
+    private JTextField orderNumberField; // Textfield for Order Number
+    private JTextField orderDateField; // Textfield for Order Date
+    private JTextField requiredDateField; // Textfield for Required Date
+    private JTextField shippedDateField; // Textfield for Shipped Date
+    private JTextField statusField; // Textfield for status
+    private JTextArea  commentsDescriptionArea; // DescriptionArea for Comments
+    private JTextField customerNumberField; // Textfield for Customer Number
     
+
    private static final String PREF_X = "window_x";
    private static final String PREF_Y = "window_y";
 
@@ -37,6 +45,39 @@ public class OrderManagementPanel extends JFrame {
     JPanel centerPanel = new JPanel(new BorderLayout());
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
     JPanel topPanel = new JPanel(new BorderLayout());
+
+    JPanel labelPanel = new JPanel(new GridLayout(0, 1)); // 0 rows, 1 column
+    labelPanel.setPreferredSize(new Dimension(150, 200));
+
+    JPanel fieldPanel = new JPanel(new GridLayout(0, 1)); // 0 rows, 1 column
+    fieldPanel.setPreferredSize(new Dimension(350, 200));
+
+    //Defining labels for the text inputs and size
+    orderNumberField = new JTextField();
+    orderNumberField.setPreferredSize(new Dimension(200, 30));
+
+    orderDateField = new JTextField();
+    orderDateField.setPreferredSize(new Dimension(200, 30));
+    
+
+    requiredDateField = new JTextField();
+    
+
+    shippedDateField = new JTextField();
+    
+
+    commentsDescriptionArea = new JTextArea();
+    commentsDescriptionArea.setLineWrap(true);
+    JScrollPane descriptionScrollPane = new JScrollPane(commentsDescriptionArea);
+
+
+    statusField = new JTextField();
+
+
+    customerNumberField = new JTextField();
+
+
+
 
      // Create and add the 'Back' button
     JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
@@ -82,12 +123,40 @@ public class OrderManagementPanel extends JFrame {
 
     // Create the second tab.
     JPanel panel2 = new JPanel(new BorderLayout());
-    panel2.add(addButton, BorderLayout.CENTER);
-    // Add components to panel2...
+    
+    labelPanel.add(new JLabel("Order Number:"));
+    fieldPanel.add(orderNumberField);
+
+    labelPanel.add(new JLabel("Order Date:"));
+    fieldPanel.add(orderDateField);
+
+    labelPanel.add(new JLabel("Required Date:"));
+    fieldPanel.add(requiredDateField);
+
+    labelPanel.add(new JLabel("Shipped Date:"));
+    fieldPanel.add(shippedDateField);
+
+    labelPanel.add(new JLabel("Status:"));
+    fieldPanel.add(statusField);
+    
+    labelPanel.add(new JLabel("Comments:"));
+    fieldPanel.add(descriptionScrollPane);
+
+    labelPanel.add(new JLabel("Customer Number:"));
+    fieldPanel.add(customerNumberField);
+
+    // Adding labels and textfields in panel2
+    panel2.add(labelPanel, BorderLayout.WEST);
+    panel2.add(fieldPanel, BorderLayout.CENTER);
+    
+    panel2.add(addButton, BorderLayout.SOUTH);  
+    
     tabbedPane.addTab("Add Order", null, panel2, "Click to add ");
 
     // Create the third tab.
     JPanel panel3 = new JPanel(new BorderLayout());
+
+    
     panel3.add(updateButton, BorderLayout.CENTER);
     // Add components to panel3...
     tabbedPane.addTab("Update Order", null, panel3, "Click to update ");
