@@ -111,13 +111,13 @@ private static final String PREF_X = "window_x";
     }
 
     private void viewOrders() {
-        OrdersDAO OrderDAO = new OrdersDAO();
+        OrderDAO OrderDAO = new OrderDAO();
         List<String[]> ordersList = OrderDAO.fetchOrders();
         String[] columnNames = { "Order Number", "Order Date", "Required Date", "Shipped Date", "Status", "Comments",
                 "Customer Number" };
 
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-        for (String[] row : orderslist ) {
+        for (String[] row : orderlist ) {
             model.addRow(row);
         }
         ordersTable.setModel(model);
