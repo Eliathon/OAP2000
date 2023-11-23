@@ -3,6 +3,7 @@ package com.oap200.app.views;
 
 import com.oap200.app.utils.DbConnect;
 import com.oap200.app.utils.PrintManager;
+import com.oap200.app.Interfaces.ReportGenerator;
 import com.oap200.app.utils.ButtonBuilder; // Import the ButtonBuilder class
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -11,15 +12,15 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.sql.*;
 import java.awt.*;
-import java.awt.print.PrinterException;
 
-public class ReportStockPanel extends JPanel {
+
+public class ReportStockPanel extends JPanel implements ReportGenerator{
     private JButton generateReportButton, printButton;
     private JTable reportTable;
     private DefaultTableModel tableModel;
     private JTextField searchField;
     private TableRowSorter<DefaultTableModel> sorter;
-    private boolean isPrinting = false; // Flag to track printing status
+    //private boolean isPrinting = false; // Flag to track printing status
 
     public ReportStockPanel() {
         setLayout(new BorderLayout());
@@ -82,7 +83,8 @@ public class ReportStockPanel extends JPanel {
         printButton.addActionListener(e -> PrintManager.printTable(reportTable));
     }
 
-    private void generateReport() {
+    @Override
+    public void generateReport() {
         DefaultTableModel tableModel = (DefaultTableModel) reportTable.getModel();
         tableModel.setRowCount(0);  // Clear existing rows
     

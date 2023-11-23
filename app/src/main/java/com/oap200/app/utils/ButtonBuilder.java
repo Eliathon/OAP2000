@@ -5,9 +5,9 @@ package com.oap200.app.utils;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
 public class ButtonBuilder {
@@ -122,4 +122,15 @@ public class ButtonBuilder {
         return deleteButton;
     }
 
+    // RadioButton creation method - Created by Dirkje J van der Poel
+    public static JRadioButton createStyledRadioButton(String text, boolean selected) {
+        JRadioButton radioButton = new JRadioButton(text, selected);
+        /*TODO: Here, add any extra styling you need
+         radioButton.setForeground(Color.BLACK);
+         radioButton.setBackground(Color.WHITE);
+         ... other styling or functionalities ...
+        return radioButton;
+        */
+        return radioButton;
+    }
 }
