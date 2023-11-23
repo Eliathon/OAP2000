@@ -117,7 +117,7 @@ private static final String PREF_X = "window_x";
                 "Customer Number" };
 
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-        for (String[] row : orderslist ) {
+        for (String[] row : ordersList ) {
             model.addRow(row);
         }
         ordersTable.setModel(model);
