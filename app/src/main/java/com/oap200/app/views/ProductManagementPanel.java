@@ -75,7 +75,7 @@ public class ProductManagementPanel extends JFrame {
 
         buyPriceField = new JTextField();
 
-
+ 
         MSRPField = new JTextField();
 
 
