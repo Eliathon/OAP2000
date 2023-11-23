@@ -2,11 +2,14 @@
 package com.oap200.app.views;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
 
+import com.oap200.app.models.EmployeeDAO;
 import com.oap200.app.tabbedPanels.TabbedOrderPanel;
 import com.oap200.app.utils.ButtonBuilder;
 
@@ -14,7 +17,9 @@ public class OrderManagementPanel extends JFrame {
    
 private static final String PREF_X = "window_x";
    private static final String PREF_Y = "window_y";
-  
+
+   private JTable ordersTable;
+
    public OrderManagementPanel() {
     initializeFields();
 // Load the last window position
@@ -76,7 +81,7 @@ private static final String PREF_X = "window_x";
         panel4.add(deleteButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Delete Orders", null, panel4, "Click to Delete");
 
-        // Initialize Panels
+       // Initialize Panels
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
         JPanel topPanel = new JPanel(new BorderLayout());
 
@@ -84,10 +89,38 @@ private static final String PREF_X = "window_x";
         buttonPanel.add(backButton);
         buttonPanel.add(logoutButton);
 
+        // Main panel for the frame
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(buttonPanel, BorderLayout.NORTH);
+        mainPanel.add(tabbedPane, BorderLayout.CENTER);
+
+        getContentPane().add(mainPanel, BorderLayout.CENTER);
+
         topPanel.add(buttonPanel, BorderLayout.EAST);
         topPanel.add(tabbedPane, BorderLayout.CENTER);
 
         getContentPane().add(topPanel, BorderLayout.NORTH);
+
+        // Initialize the table
+        ordersTable = new JTable();
+        JScrollPane scrollPane = new JScrollPane(ordersTable);
+        // Correct this line to add the scrollPane to the CENTER instead of EAST
+        panel1.add(scrollPane, BorderLayout.CENTER);
+
+        viewButton.addActionListener(e -> viewOrders());
+    }
+
+    private void viewOrders() {
+        OrdersDAO OrdersDAO = new OrdersDAO();
+        List<String[]> ordersList = OrdersDAO.fetchOrders();
+        String[] columnNames = { "Order Number", "Order Date", "Required Date", "Shipped Date", "Status", "Comments",
+                "Customer Number" };
+
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        for (String[] row : ordersList) {
+            model.addRow(row);
+        }
+        ordersTable.setModel(model);
     }
 
     private void initializeFields() {
@@ -112,7 +145,7 @@ private static final String PREF_X = "window_x";
         JTextField status = new JTextField(10);
         JTextField comments = new JTextField(10);
         JTextField customerNumber = new JTextField(10);
-       
+        
         labelPanel.add(new JLabel("Order Number:"));
         fieldPanel.add(orderNumber);
         labelPanel.add(new JLabel("Order Date:"));
@@ -127,49 +160,50 @@ private static final String PREF_X = "window_x";
         fieldPanel.add(comments);
         labelPanel.add(new JLabel("Customer Number:"));
         fieldPanel.add(customerNumber);
-        
+
         panel.add(labelPanel, BorderLayout.WEST);
         panel.add(fieldPanel, BorderLayout.CENTER);
     }
 
     private void addComponentsToPanelView(JPanel panelView) {
-        JPanel labelPanel = new JPanel(new GridLayout(3, 1)); // 3 labels
-        JPanel fieldPanel = new JPanel(new GridLayout(3, 1)); // 3 fields
+        panelView.setLayout(new BorderLayout());
 
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.3; // Label weight
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+
+        // Adding the "Order Number:" label
+        inputPanel.add(new JLabel("Order Number:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
         JTextField orderNumber = new JTextField(10);
+        inputPanel.add(orderNumber, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0.3; // Reset to label weight
+        // Adding the "Last Name:" label
+        inputPanel.add(new JLabel("Order Date:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
         JTextField orderDate = new JTextField(10);
-        JTextField customerNumber = new JTextField(10);
-        
-        labelPanel.add(new JLabel("Order Number:"));
-        fieldPanel.add(orderNumber);
-        labelPanel.add(new JLabel("Order Date:"));
-        fieldPanel.add(orderDate);
-        labelPanel.add(new JLabel("Customer Number:"));
-        fieldPanel.add(customerNumber);
+        inputPanel.add(orderDate, gbc);
 
-        panelView.add(labelPanel, BorderLayout.WEST);
-        panelView.add(fieldPanel, BorderLayout.CENTER);
+        panelView.add(inputPanel, BorderLayout.NORTH);
+
+        // Now, create the scrollPane with the employeeTable right here:
+        JScrollPane scrollPane = new JScrollPane(ordersTable);
+
+        // Create a container panel for the table to align it to the left
+        JPanel tableContainer = new JPanel(new BorderLayout());
+        tableContainer.add(scrollPane, BorderLayout.CENTER);
+        panelView.add(tableContainer, BorderLayout.CENTER);
     }
-
-    private void addComponentsToPanelAdd(JPanel panelAdd) {
-        JPanel labelPanel = new JPanel(new GridLayout(7, 1)); // 7 labels
-        JPanel fieldPanel = new JPanel(new GridLayout(7, 1)); // 7 fields
-
-        JTextField orderNumber = new JTextField(10);
-        JTextField orderDate = new JTextField(10);
-        JTextField customerNumber = new JTextField(10);
-        
-        labelPanel.add(new JLabel("Order Number:"));
-        fieldPanel.add(orderNumber);
-        labelPanel.add(new JLabel("Order Date:"));
-        fieldPanel.add(orderDate);
-        labelPanel.add(new JLabel("Customer Number:"));
-        fieldPanel.add(customerNumber);
-
-        panelView.add(labelPanel, BorderLayout.WEST);
-        panelView.add(fieldPanel, BorderLayout.CENTER);
-    }
-
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             OrderManagementPanel frame = new OrderManagementPanel();
