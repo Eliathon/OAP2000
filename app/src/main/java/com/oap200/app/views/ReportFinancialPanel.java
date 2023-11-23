@@ -33,6 +33,8 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
     private JButton generateReportButton, saveReportButton;
     private JRadioButton csvRadioButton;
     private JRadioButton txtRadioButton;
+    private JRadioButton yearlyReportRadioButton;
+    private JRadioButton quarterlyReportRadioButton;
     private JComboBox<String> yearComboBox, quarterComboBox;
     private JTable financialTable;
     private DefaultTableModel tableModel;
@@ -46,7 +48,7 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
     private void initializeComponents() {
         // ComboBoxes for the selection off year and quater reports
         yearComboBox = new JComboBox<>(new String[]{"2003", "2004", "2005"});
-        quarterComboBox = new JComboBox<>(new String[]{"Q1", "Q2", "Q3", "Q4"}); //TODO mss handig met afvink box
+        quarterComboBox = new JComboBox<>(new String[]{"Q1", "Q2", "Q3", "Q4", "Q All"}); //TODO mss handig met afvink box
         
         // Knop om het rapport te genereren
         generateReportButton = ButtonBuilder.createStyledButton("Generate Financial Report", this::generateReport);
@@ -55,10 +57,18 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
         csvRadioButton = ButtonBuilder.createStyledRadioButton("Save as CSV", true); // standaard geselecteerd
         txtRadioButton = ButtonBuilder.createStyledRadioButton("Save as TXT", false);
 
+        yearlyReportRadioButton = new JRadioButton("Yearly Report");
+        quarterlyReportRadioButton = new JRadioButton("Quarterly Report", true);
+
+
             // Groepeer de radio buttons
         ButtonGroup formatButtonGroup = new ButtonGroup();
         formatButtonGroup.add(csvRadioButton);
         formatButtonGroup.add(txtRadioButton);
+        
+        ButtonGroup reportTypeButtonGroup = new ButtonGroup();
+        reportTypeButtonGroup.add(yearlyReportRadioButton);
+        reportTypeButtonGroup.add(quarterlyReportRadioButton);
 
         // Tabel om financiële gegevens te tonen
         tableModel = new DefaultTableModel();
@@ -77,12 +87,27 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
         inputPanel.add(saveReportButton);  // Toevoegen van de opslaanknop aan het inputPanel
         inputPanel.add(csvRadioButton);// Voeg de radio buttons toe aan het inputPanel
         inputPanel.add(txtRadioButton);// Voeg de radio buttons toe aan het inputPanel
+        inputPanel.add(txtRadioButton);    // Voeg de radio buttons toe aan het inputPanel
+        
+
+
+        // Voeg radio buttons toe voor het kiezen van rapporttype (jaarlijks of per kwartaal)
+        JPanel reportTypePanel = new JPanel();
+        reportTypePanel.add(yearlyReportRadioButton);
+        reportTypePanel.add(quarterlyReportRadioButton);
 
         add(inputPanel, BorderLayout.NORTH);
         add(new JScrollPane(financialTable), BorderLayout.CENTER);
     }
 
     private void addActionsToButtons() {
+        generateReportButton.addActionListener(e -> {
+            if (quarterlyReportRadioButton.isSelected()) {
+                generateQuarterlyReport();
+            } else if (yearlyReportRadioButton.isSelected()) {
+                generateYearlyReport();
+            }
+        });
         generateReportButton.addActionListener(e -> generateReport());
         saveReportButton.addActionListener(e -> saveReportToFile()); // Actie toevoegen voor opslaanknop
     }
@@ -169,8 +194,30 @@ private void saveReportToFile() {
     } catch (SQLException | ClassNotFoundException e) {
         e.printStackTrace();
         JOptionPane.showMessageDialog(this, "Error generating report: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }}
 
-        // Show error message, for example with JOptionPane
+        private void generateQuarterlyReport() {
+            String selectedYear = (String) yearComboBox.getSelectedItem();
+            String selectedQuarter = (String) quarterComboBox.getSelectedItem();
+        
+            String startDate, endDate;
+            if ("Q All".equals(selectedQuarter)) {
+                startDate = selectedYear + "-01-01";
+                endDate = selectedYear + "-12-31";
+            } else {
+                startDate = DateFactory.calculateStartDate(selectedYear, selectedQuarter);
+                endDate = DateFactory.calculateEndDate(selectedYear, selectedQuarter);
+            }
+        
+            generateReportWithDates(startDate, endDate);
         }
-    }
+        
+private void generateYearlyReport() {
+    String selectedYear = (String) yearComboBox.getSelectedItem();
+
+    String startDate = selectedYear + "-01-01"; // Begin van het jaar
+    String endDate = selectedYear + "-12-31";   // Einde van het jaar
+
+    generateReportWithDates(startDate, endDate);
 }
+   }
