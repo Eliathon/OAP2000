@@ -121,8 +121,8 @@ public class PaymentManagement extends JFrame {
     }
 
     private void addComponentsToPanelView(JPanel panelView) {
-        JPanel labelPanel = new JPanel(new GridLayout(2, 1)); // 8 labels
-        JPanel fieldPanel = new JPanel(new GridLayout(2, 1)); // 8 fields
+        JPanel labelPanel = new JPanel(new GridLayout(2, 1)); // 2 labels
+        JPanel fieldPanel = new JPanel(new GridLayout(2, 1)); // 2 fields
 
         JTextField customerNumber = new JTextField(10);
         JTextField checkNumber = new JTextField(10);
