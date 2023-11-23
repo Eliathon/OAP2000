@@ -13,6 +13,53 @@ import java.util.List;
 
 public class EmployeeDAO {
 
+        public boolean hasReports(int employeeNumber) {
+            String sql = "SELECT COUNT(*) FROM employees WHERE reportsTo = ?";
+            try (Connection conn = new DbConnect().getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                
+                pstmt.setInt(1, employeeNumber);
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    
+        public boolean deleteEmployee(int employeeNumber) {
+            if (hasReports(employeeNumber)) {
+                return false;
+            }
+    
+            String updateSql = "UPDATE customers SET salesRepEmployeeNumber = NULL WHERE salesRepEmployeeNumber = ?";
+            String deleteSql = "DELETE FROM employees WHERE employeeNumber = ?";
+            
+            try (Connection conn = new DbConnect().getConnection()) {
+                // Set customers' salesRepEmployeeNumber to NULL where this employee is the sales rep
+                try (PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
+                    pstmt.setInt(1, employeeNumber);
+                    pstmt.executeUpdate();
+                }
+    
+                // Delete the employee
+                try (PreparedStatement pstmt = conn.prepareStatement(deleteSql)) {
+                    pstmt.setInt(1, employeeNumber);
+                    pstmt.executeUpdate();
+                }
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+    
+    
+
+
+
     public List<String[]> fetchEmployees() {
         List<String[]> employees = new ArrayList<>();
 

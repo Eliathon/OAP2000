@@ -124,9 +124,9 @@ public class EmployeeManagementPanel extends JFrame {
         employeeTable.setModel(model);
     }
 
-    private void searchEmpNum() {
+    private void searchNum() {
         EmployeeDAO employeeDAO = new EmployeeDAO();
-        List<String[]> searchResults = employeeDAO.searchEmpNum(PREF_X);
+        List<String[]> searchResults = employeeDAO.searchNum(PREF_X);
     }
 
     private void initializeFields() {
