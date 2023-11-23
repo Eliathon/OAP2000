@@ -1,6 +1,7 @@
 package com.oap200.app.views;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -81,8 +82,28 @@ public class ProductManagementPanel extends JFrame {
         buttonPanel.add(backButton);
         buttonPanel.add(logoutButton);
 
+                // Table Panel
+        JPanel tablePanel = new JPanel(new BorderLayout());
+        initializeTable(tablePanel);
+
+        // Additional Panel
+        JPanel additionalPanel = new JPanel();  // Customize as needed
+
+
+        // Create a vertical box layout for the additional panel
+        Box verticalBox = Box.createVerticalBox();
+        verticalBox.add(Box.createVerticalGlue()); // Adds vertical glue at the top
+        verticalBox.add(tabbedPane);
+        verticalBox.add(additionalPanel); // Adds additionalPanel under the tabbed pane
+        verticalBox.add(Box.createVerticalGlue()); // Adds vertical glue at the bottom
+
+        // Use JSplitPane to add the additional panel under the tabbed pane
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, verticalBox, tablePanel);
+        splitPane.setDividerLocation(500);  // Adjust the initial divider location
+
         topPanel.add(buttonPanel, BorderLayout.EAST);
-        topPanel.add(tabbedPane, BorderLayout.CENTER);
+        topPanel.add(splitPane, BorderLayout.CENTER);  // Use the split pane instead of tabbed pane
+
 
         getContentPane().add(topPanel, BorderLayout.NORTH);
     }
@@ -185,13 +206,72 @@ public class ProductManagementPanel extends JFrame {
         panelDelete.add(fieldPanel, BorderLayout.CENTER);
     }
 
+    private void initializeTable(JPanel panel) {
+        // Example data for the table
+        String[] columnNames = {"ID", "Name", "Price", "Price", "Price", "Price"};
+        Object[][] data = {
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+        };
+
+        // Create a table model
+        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
+
+        // Create a JTable with the table model
+        JTable table = new JTable(tableModel);
+
+        // Angi ønsket bredde og høyde
+        int preferredWidth = 800;
+        int preferredHeight = 700;
+
+        // Set the preferred width for the columns
+        table.getColumnModel().getColumn(0).setPreferredWidth(50); // ID column
+        table.getColumnModel().getColumn(1).setPreferredWidth(200); // Name column
+        table.getColumnModel().getColumn(2).setPreferredWidth(200); // Price column
+
+        // Add the table to a scroll pane and add it to the panel
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        scrollPane.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
+        panel.add(scrollPane, BorderLayout.CENTER);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             ProductManagementPanel frame = new ProductManagementPanel();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setTitle("Employee Management");
+            frame.setTitle("Product Management");
             frame.pack();
             frame.setVisible(true);
         });
     }
 }
+
