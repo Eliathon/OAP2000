@@ -52,38 +52,30 @@ public class ProductManagementPanel extends JFrame {
         fieldPanel.setPreferredSize(new Dimension(350, 200));
 
         //Defining labels for the text inputs and size
-        JLabel productNameLabel = new JLabel("Product Name:");
         productNameField = new JTextField();
         productNameField.setPreferredSize(new Dimension(200, 30));
 
-        JLabel productCodeLabel = new JLabel("Product Code:");
         productCodeField = new JTextField();
         productCodeField.setPreferredSize(new Dimension(200, 30));
         
 
-        JLabel productScaleLabel = new JLabel("Product Scale:");
         productScaleField = new JTextField();
         
 
-        JLabel productVendorLabel = new JLabel("Product Vendor:");
         productVendorField = new JTextField();
         
 
-        JLabel productDescriptionLabel = new JLabel("Product Description:");
         productDescriptionArea = new JTextArea();
         productDescriptionArea.setLineWrap(true);
         JScrollPane descriptionScrollPane = new JScrollPane(productDescriptionArea);
 
 
-        JLabel quantityInStockLabel = new JLabel("Quantity In Stock:");
         quantityInStockField = new JTextField();
 
 
-        JLabel buyPriceLabel = new JLabel("Buy Price:");
         buyPriceField = new JTextField();
 
 
-        JLabel MSRPLabel = new JLabel("MSRP:");
         MSRPField = new JTextField();
 
 
