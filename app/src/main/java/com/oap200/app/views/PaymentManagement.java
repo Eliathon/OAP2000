@@ -41,6 +41,12 @@ public class PaymentManagement extends JFrame {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
         JPanel topPanel = new JPanel(new BorderLayout());
 
+        JPanel labelPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
+        labelPanel.setPreferredSize(new Dimension(150, 200));
+
+        JPanel fieldPanel = new JPanel(new GridLayout(0, 1)); // 0 rader, 1 kolonne
+        fieldPanel.setPreferredSize(new Dimension(350, 200));
+
           // Create and add the 'Back' button
     JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
