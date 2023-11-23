@@ -57,8 +57,8 @@ public class PaymentManagement extends JFrame {
  paymentDateField = new JTextField();
  paymentDateField.setPreferredSize(new Dimension(200, 30));
 
-amountField = new JTextField();
-amountField.setPreferredSize(new Dimension(200, 30));
+ amountField = new JTextField();
+ amountField.setPreferredSize(new Dimension(200, 30));
  
  
 
@@ -107,7 +107,22 @@ amountField.setPreferredSize(new Dimension(200, 30));
 
         // Create the second tab for adding products.
         JPanel panel2 = new JPanel(new BorderLayout());
-        panel2.add(addButton, BorderLayout.CENTER);  // Add the addButton to panel2
+        labelPanel.add(new JLabel("Customer Number:"));
+        fieldPanel.add(customerNumberField);
+
+        labelPanel.add(new JLabel("Check Number:"));
+        fieldPanel.add(checkNumberField);
+
+        labelPanel.add(new JLabel("Payment Date:"));
+        fieldPanel.add(paymentDateField);
+
+        labelPanel.add(new JLabel("Amount:"));
+        fieldPanel.add(amountField);
+
+        // Legg til etiketter og tekstfelt i panel2
+        panel2.add(labelPanel, BorderLayout.WEST);
+        panel2.add(fieldPanel, BorderLayout.CENTER);
+        panel2.add(addButton, BorderLayout.SOUTH);  // Add the addButton to panel2
         tabbedPane.addTab("Add Payments", null, panel2, "Click to add");
          
         // Create the first tab for viewing payments.
