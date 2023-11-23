@@ -9,6 +9,12 @@ import com.oap200.app.utils.ButtonBuilder; // Import the ButtonBuilder class
 
 public class PaymentManagement extends JFrame {
 
+    private JTextField customerNumberField;
+    private JTextField checkNumberField; // Legg til et felt for produktkoden
+    private JTextField paymentDateField; // Legg til et felt for produktskalaen
+    private JTextField amountField; // Legg til et felt for produktselgeren
+
+
     private static final String PREF_X = "window_x";
     private static final String PREF_Y = "window_y";
 
