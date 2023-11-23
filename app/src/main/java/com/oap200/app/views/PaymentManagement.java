@@ -126,7 +126,7 @@ public class PaymentManagement extends JFrame {
         tabbedPane.addTab("Add Payments", null, panel2, "Click to add");
          
         // Create the first tab for viewing payments.
-        JPanel panel3 = new JPanel(new BorderLayout());
+        JPanel panel3 = new JPanel(new BorderLayout()); 
         panel3.add(updateButton, BorderLayout.CENTER);  // Add the addButton to panel2
         tabbedPane.addTab("Update Payments", null, panel3, "Click to Update");
 
