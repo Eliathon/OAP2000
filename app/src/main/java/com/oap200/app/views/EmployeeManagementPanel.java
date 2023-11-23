@@ -20,6 +20,8 @@ public class EmployeeManagementPanel extends JFrame {
     private JTable employeeTable;
 
     public EmployeeManagementPanel() {
+       
+        
         initializeFields();
 
         // Load the last window position
@@ -68,17 +70,17 @@ public class EmployeeManagementPanel extends JFrame {
         panel2.add(addButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Add Employee", null, panel2, "Click to add");
 
-        // Tab 3: Update Products
+        // Tab 3: Update Employee
         JPanel panel3 = new JPanel(new BorderLayout());
         addComponentsToPanel(panel3);
         panel3.add(updateButton, BorderLayout.SOUTH);
-        tabbedPane.addTab("Update Products", null, panel3, "Click to Update");
+        tabbedPane.addTab("Update Employee", null, panel3, "Click to Update");
 
-        // Tab 4: Delete Products
+        // Tab 4: Delete Employee
         JPanel panel4 = new JPanel(new BorderLayout());
         addComponentsToPanel(panel4);
         panel4.add(deleteButton, BorderLayout.SOUTH);
-        tabbedPane.addTab("Delete Products", null, panel4, "Click to Delete");
+        tabbedPane.addTab("Delete Employee", null, panel4, "Click to Delete");
 
         // Initialize Panels
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
@@ -120,6 +122,11 @@ public class EmployeeManagementPanel extends JFrame {
             model.addRow(row);
         }
         employeeTable.setModel(model);
+    }
+
+    private void searchEmpNum() {
+        EmployeeDAO employeeDAO = new EmployeeDAO();
+        List<String[]> searchResults = employeeDAO.searchEmpNum(PREF_X);
     }
 
     private void initializeFields() {
