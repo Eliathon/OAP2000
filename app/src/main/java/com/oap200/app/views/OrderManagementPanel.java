@@ -9,7 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
 
-import com.oap200.app.models.EmployeeDAO;
+import com.oap200.app.models.OrderDAO;
 import com.oap200.app.tabbedPanels.TabbedOrderPanel;
 import com.oap200.app.utils.ButtonBuilder;
 
@@ -111,13 +111,13 @@ private static final String PREF_X = "window_x";
     }
 
     private void viewOrders() {
-        OrdersDAO OrdersDAO = new OrdersDAO();
-        List<String[]> ordersList = OrdersDAO.fetchOrders();
+        OrdersDAO OrderDAO = new OrdersDAO();
+        List<String[]> ordersList = OrderDAO.fetchOrders();
         String[] columnNames = { "Order Number", "Order Date", "Required Date", "Shipped Date", "Status", "Comments",
                 "Customer Number" };
 
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-        for (String[] row : ordersList) {
+        for (String[] row : orderslist ) {
             model.addRow(row);
         }
         ordersTable.setModel(model);
