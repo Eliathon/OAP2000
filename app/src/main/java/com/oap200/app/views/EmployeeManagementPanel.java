@@ -1,16 +1,23 @@
 package com.oap200.app.views;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
+import java.util.List;
+
+import com.oap200.app.models.EmployeeDAO;
 import com.oap200.app.utils.ButtonBuilder;
 
 public class EmployeeManagementPanel extends JFrame {
 
     private static final String PREF_X = "window_x";
     private static final String PREF_Y = "window_y";
+
+    private JTable employeeTable;
 
     public EmployeeManagementPanel() {
         initializeFields();
@@ -81,10 +88,38 @@ public class EmployeeManagementPanel extends JFrame {
         buttonPanel.add(backButton);
         buttonPanel.add(logoutButton);
 
+        // Main panel for the frame
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(buttonPanel, BorderLayout.NORTH);
+        mainPanel.add(tabbedPane, BorderLayout.CENTER);
+
+        getContentPane().add(mainPanel, BorderLayout.CENTER);
+
         topPanel.add(buttonPanel, BorderLayout.EAST);
         topPanel.add(tabbedPane, BorderLayout.CENTER);
 
         getContentPane().add(topPanel, BorderLayout.NORTH);
+
+        // Initialize the table
+        employeeTable = new JTable();
+        JScrollPane scrollPane = new JScrollPane(employeeTable);
+        // Correct this line to add the scrollPane to the CENTER instead of EAST
+        panel1.add(scrollPane, BorderLayout.CENTER);
+
+        viewButton.addActionListener(e -> viewEmployees());
+    }
+
+    private void viewEmployees() {
+        EmployeeDAO employeeDAO = new EmployeeDAO();
+        List<String[]> employeeList = employeeDAO.fetchEmployees();
+        String[] columnNames = { "Employee Number", "Last Name", "First Name", "Extension", "E-mail", "Office Code",
+                "Reports To", "Job Title" };
+
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        for (String[] row : employeeList) {
+            model.addRow(row);
+        }
+        employeeTable.setModel(model);
     }
 
     private void initializeFields() {
@@ -134,19 +169,43 @@ public class EmployeeManagementPanel extends JFrame {
     }
 
     private void addComponentsToPanelView(JPanel panelView) {
-        JPanel labelPanel = new JPanel(new GridLayout(2, 1)); // 8 labels
-        JPanel fieldPanel = new JPanel(new GridLayout(2, 1)); // 8 fields
+        panelView.setLayout(new BorderLayout());
 
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.3; // Label weight
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+
+        // Adding the "Employee ID:" label
+        inputPanel.add(new JLabel("Employee ID:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
         JTextField employeeId = new JTextField(10);
+        inputPanel.add(employeeId, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0.3; // Reset to label weight
+        // Adding the "Last Name:" label
+        inputPanel.add(new JLabel("Last Name:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
         JTextField lastName = new JTextField(10);
+        inputPanel.add(lastName, gbc);
 
-        labelPanel.add(new JLabel("Employee ID:"));
-        fieldPanel.add(employeeId);
-        labelPanel.add(new JLabel("Last Name:"));
-        fieldPanel.add(lastName);
+        panelView.add(inputPanel, BorderLayout.NORTH);
 
-        panelView.add(labelPanel, BorderLayout.WEST);
-        panelView.add(fieldPanel, BorderLayout.CENTER);
+        // Now, create the scrollPane with the employeeTable right here:
+        JScrollPane scrollPane = new JScrollPane(employeeTable);
+
+        // Create a container panel for the table to align it to the left
+        JPanel tableContainer = new JPanel(new BorderLayout());
+        tableContainer.add(scrollPane, BorderLayout.CENTER);
+        panelView.add(tableContainer, BorderLayout.CENTER);
     }
 
     public static void main(String[] args) {
