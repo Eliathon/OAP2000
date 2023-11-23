@@ -10,6 +10,7 @@ import com.oap200.app.utils.ButtonBuilder; // Import the ButtonBuilder class
 
 
 public class ProductManagementPanel extends JFrame {
+    //Definerer inputs
     private JTextField productNameField;
     private JTextField productCodeField; // Legg til et felt for produktkoden
     private JTextField productScaleField; // Legg til et felt for produktskalaen
