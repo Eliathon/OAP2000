@@ -127,11 +127,11 @@ public class PaymentManagement extends JFrame {
          
         // Create the first tab for viewing payments.
         JPanel panel3 = new JPanel(new BorderLayout()); 
-        panel3.add(updateButton, BorderLayout.CENTER);  // Add the addButton to panel2
+        panel3.add(updateButton, BorderLayout.CENTER);  // Add the updateButton to panel3
         tabbedPane.addTab("Update Payments", null, panel3, "Click to Update");
 
         JPanel panel4 = new JPanel(new BorderLayout());
-        panel4.add(deleteButton, BorderLayout.CENTER);  // Add the addButton to panel2
+        panel4.add(deleteButton, BorderLayout.CENTER);  // Add the deleteButton to panel4
         tabbedPane.addTab("Delete Payments", null, panel4, "Click to Delete");
               
         buttonPanel.setOpaque(true);
