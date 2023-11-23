@@ -18,7 +18,7 @@ public class ReportManagementPanel extends JPanel {
     private ReportStockPanel reportStockPanel;
     private ReportPaymentsPanel reportPaymentsPanel;
     private ReportFinancialPanel reportFinancialPanel;
-
+//check this
     // Main method
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> createAndShowGUI());
