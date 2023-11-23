@@ -22,7 +22,7 @@ public class EmployeeManagementPanel extends JFrame {
 
     public EmployeeManagementPanel() {
         // Load the last window position
-        Preferences prefs = Preferences.userNodeForPackage(EmployeeManagementPanel.class);
+        Preferences prefs = Preferences.userNodeForPackage(TabbedEmployeePanel.class);
         int x = prefs.getInt(PREF_X, 50); // Default x position
         int y = prefs.getInt(PREF_Y, 50); // Default y position
         setLocation(x, y);
@@ -142,7 +142,7 @@ public class EmployeeManagementPanel extends JFrame {
         panel2.add(fieldPanel, BorderLayout.CENTER);
         panel2.add(addButton, BorderLayout.SOUTH);  // Legg til addButton i panel2
 
-        tabbedPane.addTab("Add Products", null, panel2, "Click to add");
+        tabbedPane.addTab("Add Employee", null, panel2, "Click to add");
          
         // Create the first tab for viewing payments.
         JPanel panel3 = new JPanel(new BorderLayout());
