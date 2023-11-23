@@ -1,4 +1,5 @@
 package com.oap200.app.views;
+import com.oap200.app.models.ProductsDAO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -39,7 +40,8 @@ public class ProductManagementPanel extends JFrame {
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
             /* Action for Logout Button */});
         JButton viewButton = ButtonBuilder.createViewButton(() -> {
-            /* Action for View Button */});
+            
+            });
         JButton addButton = ButtonBuilder.createAddButton(() -> {
             /* Action for Add Button */});
         JButton deleteButton = ButtonBuilder.createDeleteButton(() -> {
@@ -208,38 +210,9 @@ public class ProductManagementPanel extends JFrame {
 
     private void initializeTable(JPanel panel) {
         // Example data for the table
-        String[] columnNames = {"ID", "Name", "Price", "Price", "Price", "Price"};
+        String[] columnNames = {"Product code", "Product name", "Product Line", "Product Scale", "Product Vendor", "Product Description", "quantityInStock", "buyPrice", "MSRP"};
         Object[][] data = {
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
-                {3, "Product C", 20.0, 20.0, 20.0, 20.0},
+                
         };
 
         // Create a table model
@@ -263,6 +236,8 @@ public class ProductManagementPanel extends JFrame {
         scrollPane.setPreferredSize(new Dimension(preferredWidth, preferredHeight));
         panel.add(scrollPane, BorderLayout.CENTER);
     }
+
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
