@@ -147,7 +147,7 @@ public class EmployeeManagementPanel extends JFrame {
         JTextField reportsTo = new JTextField(10);
         JTextField jobTitle = new JTextField(10);
 
-        labelPanel.add(new JLabel("Employee ID:"));
+        labelPanel.add(new JLabel("Employee Number:"));
         fieldPanel.add(employeeId);
         labelPanel.add(new JLabel("Last Name:"));
         fieldPanel.add(lastName);
@@ -178,8 +178,8 @@ public class EmployeeManagementPanel extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
-        // Adding the "Employee ID:" label
-        inputPanel.add(new JLabel("Employee ID:"), gbc);
+        // Adding the "Employee Number:" label
+        inputPanel.add(new JLabel("Employee Number:"), gbc);
 
         gbc.gridx = 1;
         gbc.weightx = 0.7; // Field weight
