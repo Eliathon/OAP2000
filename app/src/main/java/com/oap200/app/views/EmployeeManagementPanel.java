@@ -1,4 +1,3 @@
-// Created by Kristian
 package com.oap200.app.views;
 
 import javax.swing.*;
@@ -9,55 +8,58 @@ import java.util.prefs.Preferences;
 import com.oap200.app.utils.ButtonBuilder; // Import the ButtonBuilder class
 
 public class EmployeeManagementPanel extends JFrame {
-   
-   private static final String PREF_X = "window_x";
-   private static final String PREF_Y = "window_y";
 
-   public EmployeeManagementPanel() {
-   // Load the last window position
-      Preferences prefs = Preferences.userNodeForPackage(TabbedCustomerPanel.class);
-      int x = prefs.getInt(PREF_X, 50); // Default x position
-      int y = prefs.getInt(PREF_Y, 50); // Default y position
-      setLocation(x, y);
-      addWindowListener(new WindowAdapter() {
-      @Override
-    public void windowClosing(WindowEvent e) {
-       // Save the current position
-       prefs.putInt(PREF_X, getLocation().x);
-       prefs.putInt(PREF_Y, getLocation().y);
-     
-    }
- });
+    private static final String PREF_X = "window_x";
+    private static final String PREF_Y = "window_y";
+private JTextField employeeNumberField, lastNameField, firstNameField, extensionField, emailField, officeCodeField, reportsToField, jobTitleField;
 
-    // Create the JTabbedPane
-    JTabbedPane tabbedPane = new JTabbedPane();
+    public EmployeeManagementPanel() {
+        // Load the last window position
+        Preferences prefs = Preferences.userNodeForPackage(TabbedPaymentPanel.class);
+        int x = prefs.getInt(PREF_X, 50); // Default x position
+        int y = prefs.getInt(PREF_Y, 50); // Default y position
+        setLocation(x, y);
 
-    // Create the first tab.
-    JPanel panel1 = new JPanel();
-    // Add components to panel1...
-    tabbedPane.addTab("View Employee", null, panel1, "Click to view");
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Save the current position
+                prefs.putInt(PREF_X, getLocation().x);
+                prefs.putInt(PREF_Y, getLocation().y);
+            }
+        });
 
-    // Create the second tab.
-    JPanel panel2 = new JPanel();
-    // Add components to panel2...
-    tabbedPane.addTab("Add Employee", null, panel2, "Click to add ");
+// Initialize the input fields
+employeeNumberField = new JTextField(10);
+lastNameField = new JTextField(10);
+firstNameField = new JTextField(10);
+extensionField = new JTextField(10);
+emailField = new JTextField(10);
+officeCodeField = new JTextField(10);
+reportsToField = new JTextField(10);
+jobTitleField = new JTextField(10);
 
-    // Create the third tab.
-    JPanel panel3 = new JPanel();
-    // Add components to panel3...
-    tabbedPane.addTab("Update Employee", null, panel3, "Click to update ");
 
-    // Create the fourth tab.
-    JPanel panel4 = new JPanel();
-    // Add components to panel4...
-    tabbedPane.addTab("Delete Employee", null, panel4, "Click to delete ");
+        // Set up the layout for the frame
+        setLayout(new BorderLayout());
 
-    // Set up the layout for the frame
-    setLayout(new BorderLayout());
-    JPanel topPanel = new JPanel(new BorderLayout());
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+        JPanel topPanel = new JPanel(new BorderLayout());
 
+        panel2.setLayout(new BoxLayout(panel2, BoxLayout.Y_AXIS));
         
-            // Create and add the 'Back' button
+        panel2.add(createLabeledField("Employee Number:", employeeNumberField));
+        panel2.add(createLabeledField("Last Name:", lastNameField));
+        panel2.add(createLabeledField("First Name:", firstNameField));
+        panel2.add(createLabeledField("Extension:", extensionField));
+        panel2.add(createLabeledField("Email:", emailField));
+        panel2.add(createLabeledField("Office Code:", officeCodeField));
+        panel2.add(createLabeledField("Reports To:", reportsToField));
+        panel2.add(createLabeledField("Job Title:", jobTitleField));
+
+
+          // Create and add the 'Back' button
     JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
         // Example: System.out.println("Back button clicked");
@@ -68,46 +70,69 @@ public class EmployeeManagementPanel extends JFrame {
         // Example: System.out.println("Logout button clicked");      
         });
         // Create and add the View button
-        JButton viewButton = ButtonBuilder.createActionButton(() -> {
+        JButton viewButton = ButtonBuilder.createViewButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
         // Example: System.out.println("Logout button clicked");      
         });
         // Create and add the View button
-        JButton addButton = ButtonBuilder.createActionButton(() -> {
+        JButton addButton = ButtonBuilder.createAddButton(() -> {
         // Define the action to be performed when the 'Back' button is clicked
         // Example: System.out.println("Logout button clicked");      
         });
-        // Create and add the View button
-        JButton deleteButton = ButtonBuilder.createActionButton(() -> {
-        // Define the action to be performed when the 'Back' button is clicked
-        // Example: System.out.println("Logout button clicked");      
-        });
-        // Create and add the View button
-        JButton updateButton = ButtonBuilder.createActionButton(() -> {
-        // Define the action to be performed when the 'Back' button is clicked
-        // Example: System.out.println("Logout button clicked");      
-        });
-    // Create a panel to hold the back button
-    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-    buttonPanel.setOpaque(false); // Set panel transparent
-    buttonPanel.add(backButton);
-    buttonPanel.add(logoutButton);
-    // Add the button panel to the top panel
-    topPanel.add(buttonPanel, BorderLayout.EAST);
-    topPanel.add(tabbedPane, BorderLayout.CENTER);
+        panel2.add(addButton);
 
-    // Add the top panel to the frame
-    getContentPane().add(topPanel, BorderLayout.NORTH);
+        tabbedPane.addTab("Add Employee", null, panel2, "Click to add");
+
+        // Create and add the View button
+        JButton deleteButton = ButtonBuilder.createDeleteButton(() -> {
+        // Define the action to be performed when the 'Back' button is clicked
+        // Example: System.out.println("Logout button clicked");      
+        });
+        // Create and add the View button
+        JButton updateButton = ButtonBuilder.createUpdateButton(() -> {
+        // Define the action to be performed when the 'Back' button is clicked
+        // Example: System.out.println("Logout button clicked");      
+        });
+            
+
+        // Create the JTabbedPane
+        JTabbedPane tabbedPane = new JTabbedPane();
+
+            // Create the first tab for viewing products.
+        JPanel panel1 = new JPanel(new BorderLayout());
+        panel1.add(viewButton, BorderLayout.CENTER);  // Add the viewButton to panel1
+        tabbedPane.addTab("View Employee", null, panel1, "Click to view");
+
+        // Create the second tab for adding products.
+        JPanel panel2 = new JPanel(new BorderLayout());
+        panel2.add(addButton, BorderLayout.CENTER);  // Add the addButton to panel2
+        tabbedPane.addTab("Add Employee", null, panel2, "Click to add");
+         
+        // Create the first tab for viewing payments.
+        JPanel panel3 = new JPanel(new BorderLayout());
+        panel3.add(updateButton, BorderLayout.CENTER);  // Add the addButton to panel2
+        tabbedPane.addTab("Update Employee", null, panel3, "Click to Update");
+
+        JPanel panel4 = new JPanel(new BorderLayout());
+        panel4.add(deleteButton, BorderLayout.CENTER);  // Add the addButton to panel2
+        tabbedPane.addTab("Delete Employee", null, panel4, "Click to Delete");
+              
+        buttonPanel.setOpaque(true);
+        buttonPanel.add(backButton);
+        buttonPanel.add(logoutButton);
+
+        topPanel.add(buttonPanel, BorderLayout.EAST);
+        topPanel.add(tabbedPane, BorderLayout.CENTER);
+
+        getContentPane().add(topPanel, BorderLayout.NORTH);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                EmployeeManagementPanel frame = new EmployeeManagementPanel();
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setSize(900, 600); // Set the frame size
-                frame.setVisible(true); // Display the frame
-            }
+        SwingUtilities.invokeLater(() -> {
+            EmployeeManagementPanel frame = new EmployeeManagementPanel();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(900, 600); // Set the frame size
+            frame.setVisible(true); // Display the frame
         });
     }
 }

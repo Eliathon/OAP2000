@@ -4,26 +4,30 @@ import javax.swing.*;
 import java.awt.print.PrinterException;
 
 public class PrintManager {
-    /**
-     * Print de gegeven JTable. Toont een dialoogvenster voor de printer en 
-     * handelt de printtaak af.
-     * 
-     * @param table De JTable die geprint moet worden.
-     */
+    private static boolean isPrinting = false; // Vlag om bij te houden of er geprint wordt
+
+    public static boolean isPrinting() {
+        return isPrinting; // Return de huidige status van de printvlag
+    }
+
     public static void printTable(JTable table) {
+        if (isPrinting) {
+            return; // Als er al een printtaak bezig is, doe dan niets
+        }
+
         try {
+            isPrinting = true; // Zet de vlag dat het printen begonnen is
             boolean complete = table.print();
             if (complete) {
-                // Optioneel: Toon een dialoogvenster of bericht dat het printen is geslaagd.
                 JOptionPane.showMessageDialog(table, "Afdrukken voltooid", "Printen", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                // Handel de situatie af waar de gebruiker het printen annuleert.
                 JOptionPane.showMessageDialog(table, "Afdrukken geannuleerd", "Printen", JOptionPane.WARNING_MESSAGE);
             }
         } catch (PrinterException ex) {
             ex.printStackTrace();
-            // Toon foutbericht bij een printerfout.
             JOptionPane.showMessageDialog(table, "Fout tijdens het afdrukken: " + ex.getMessage(), "Printfout", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            isPrinting = false; // Reset de printvlag wanneer het printen klaar is
         }
     }
 }

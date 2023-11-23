@@ -5,7 +5,7 @@ import com.oap200.app.Interfaces.ReportGenerator;
 import com.oap200.app.utils.DbConnect;
 import com.oap200.app.utils.PrintManager;
 import com.oap200.app.utils.ButtonBuilder; // Importeer ButtonBuilder
-import com.oap200.app.utils.DateSpinnerFactory;
+import com.oap200.app.utils.DateFactory;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -38,8 +38,8 @@ public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
         Date latestDate = new Date(); // 
 
         // Initialize DateSpinnerFactory spinners
-        startDateSpinner = DateSpinnerFactory.createDateSpinner(initialDate, earliestDate, latestDate);
-        endDateSpinner = DateSpinnerFactory.createDateSpinner(latestDate, earliestDate, latestDate);
+        startDateSpinner = DateFactory.createDateSpinner(initialDate, earliestDate, latestDate);
+        endDateSpinner = DateFactory.createDateSpinner(latestDate, earliestDate, latestDate);
 
         // Stel de DateEditor in
         JSpinner.DateEditor startDateEditor = new JSpinner.DateEditor(startDateSpinner, "yyyy-MM-dd");
@@ -76,9 +76,17 @@ public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
     private void addActionsToButtons() {
         generateReportButton.addActionListener(e -> generateReport());
         // Voeg deze regel toe aan je methode voor het instellen van button acties.
-       printButton.addActionListener(e -> PrintManager.printTable(reportTable));
+        printButton.addActionListener(e -> handlePrintAction());
 
     }
+    
+    private void handlePrintAction() {
+        if (PrintManager.isPrinting()) {
+            return; // Als er al een printtaak bezig is, doe dan niets
+        }
+        PrintManager.printTable(reportTable);
+    }
+
 @Override
 public void generateReport() {
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

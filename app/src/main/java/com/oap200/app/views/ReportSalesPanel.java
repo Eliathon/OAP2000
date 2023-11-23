@@ -3,8 +3,9 @@ package com.oap200.app.views;
 
 import com.oap200.app.utils.DbConnect;
 import com.oap200.app.utils.PrintManager;
+import com.oap200.app.Interfaces.ReportGenerator;
 import com.oap200.app.utils.ButtonBuilder; // Importeer de ButtonBuilder klasse
-import com.oap200.app.utils.DateSpinnerFactory;
+import com.oap200.app.utils.DateFactory;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -13,9 +14,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.awt.*;
-import java.awt.print.PrinterException;
 
-public class ReportSalesPanel extends JPanel {
+//implimentering ReportGenerator interface
+public class ReportSalesPanel extends JPanel implements ReportGenerator {
+    
     private JButton generateReportButton, printButton;
     private JTable reportTable;
     private DefaultTableModel tableModel;
@@ -37,8 +39,8 @@ public class ReportSalesPanel extends JPanel {
         Date latestDate = new Date(); // 
         
         // Initialiseer de JSpinners met het nieuwe SpinnerDateModel
-       startDateSpinner = DateSpinnerFactory.createDateSpinner(initialDate, earliestDate, latestDate);
-       endDateSpinner = DateSpinnerFactory.createDateSpinner(latestDate, earliestDate, latestDate);
+       startDateSpinner = DateFactory.createDateSpinner(initialDate, earliestDate, latestDate);
+       endDateSpinner = DateFactory.createDateSpinner(latestDate, earliestDate, latestDate);
         // Stel de DateEditor in
         JSpinner.DateEditor startDateEditor = new JSpinner.DateEditor(startDateSpinner, "yyyy-MM-dd");
         JSpinner.DateEditor endDateEditor = new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd");
@@ -72,13 +74,13 @@ public class ReportSalesPanel extends JPanel {
     }
 
     private void addActionsToButtons() {
-        generateReportButton.addActionListener(e -> generateReport());
-        // Voeg deze regel toe aan je methode voor het instellen van button acties.
+        generateReportButton = ButtonBuilder.createStyledButton("Generate Sales Report", this::generateReport);
+        // methode voor het instellen van button acties.
         printButton.addActionListener(e -> PrintManager.printTable(reportTable));
-
     }
-
-    private void generateReport() {
+    @Override
+    public void generateReport() {
+      // Hier komt de logica voor het genereren van het verkooprapport
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String startDate = dateFormat.format(startDateSpinner.getValue());
         String endDate = dateFormat.format(endDateSpinner.getValue());
