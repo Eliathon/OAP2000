@@ -1,5 +1,6 @@
 package com.oap200.app.views;
 import com.oap200.app.models.ProductsDAO;
+import com.oap200.app.controllers.ProductController;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -11,8 +12,8 @@ import com.oap200.app.utils.ButtonBuilder;
 import java.util.List;
 
 public class ProductManagementPanel extends JFrame {
-    private JTextField productNameField;
 
+   
 
     private static final String PREF_X = "window_x";
     private static final String PREF_Y = "window_y";
@@ -45,7 +46,8 @@ public class ProductManagementPanel extends JFrame {
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
             /* Action for Logout Button */});
         JButton viewButton = ButtonBuilder.createViewButton(() -> {
-            /* Action for View Button */});
+            /* Action for Logout Button */});
+            
         JButton addButton = ButtonBuilder.createAddButton(() -> {
             /* Action for Add Button */});
         JButton deleteButton = ButtonBuilder.createDeleteButton(() -> {
@@ -106,32 +108,20 @@ public class ProductManagementPanel extends JFrame {
         // Correct this line to add the scrollPane to the CENTER instead of EAST
         panel1.add(scrollPane, BorderLayout.CENTER);
 
-        viewButton.addActionListener(e -> {
-            String productNameFilter = productNameField.getText(); // Hent produktets navn fra tekstfeltet
-            viewProducts(productNameFilter);
-        });
+        viewButton.addActionListener(e -> viewProducts());
     }
 
-        private void viewProducts(String productNameFilter) {
-            ProductsDAO productsDAO = new ProductsDAO();
-            List<String[]> productList;
-        
-            if (productNameFilter.isEmpty()) {
-                // Hvis produktets navn er tomt, vis hele tabellen
-                productList = productsDAO.fetchProducts();
-            } else {
-                // Ellers, utfør et søk basert på produktets navn
-                productList = productsDAO.searchProducts(productNameFilter);
-            }
-        
-            DefaultTableModel model = (DefaultTableModel) productsTable.getModel();
-            model.setRowCount(0); // Clear existing data in the table
-        
-            for (String[] row : productList) {
-                model.addRow(row);
-            }
+    private void viewProducts() {
+        ProductsDAO ProductsDAO = new ProductsDAO();
+        List<String[]> productList = ProductsDAO.fetchProducts();
+        String[] columnNames = { "Product Code", "Product Name", "Product Line", "Product Scale", "Product Vendor", "Product Description", "quantityInStock", "buyPrice", "MSRP" };
+
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        for (String[] row : productList) {
+            model.addRow(row);
         }
-        
+        productsTable.setModel(model);
+    }
 
     private void initializeFields() {
         new JTextField(10);
@@ -188,43 +178,62 @@ public class ProductManagementPanel extends JFrame {
 
     private void addComponentsToPanelView(JPanel panelView) {
         panelView.setLayout(new BorderLayout());
-    
+
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 0.3; // Label weight
         gbc.gridx = 0;
         gbc.gridy = 0;
-    
-        // Adding the "Product Code:" label
-        inputPanel.add(new JLabel("Product Code:"), gbc);
-    
+
+        // Adding the "Employee Number:" label
+        inputPanel.add(new JLabel("Product code:"), gbc);
+
         gbc.gridx = 1;
         gbc.weightx = 0.7; // Field weight
-        JTextField productCodeField = new JTextField(10);
-        inputPanel.add(productCodeField, gbc);
-    
+        JTextField productCode = new JTextField(10);
+        inputPanel.add(productCode, gbc);
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 0.3; // Reset to label weight
-        // Adding the "Product Name:" label
-        inputPanel.add(new JLabel("Product Name:"), gbc);
-    
+        // Adding the "Last Name:" label
+        inputPanel.add(new JLabel("Product name:"), gbc);
+
         gbc.gridx = 1;
         gbc.weightx = 0.7; // Field weight
-        productNameField = new JTextField(10); // Bruk det eksisterende feltet
-        inputPanel.add(productNameField, gbc);
-    
+        JTextField productName = new JTextField(10);
+        inputPanel.add(productName, gbc);
+
         panelView.add(inputPanel, BorderLayout.NORTH);
-    
-        // Now, create the scrollPane with the productsTable right here:
+
+        // Now, create the scrollPane with the employeeTable right here:
         JScrollPane scrollPane = new JScrollPane(productsTable);
-    
+
         // Create a container panel for the table to align it to the left
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelView.add(tableContainer, BorderLayout.CENTER);
+
+        
     }
+
+    
+
+    
+    
+        public void displayProducts(List<String[]> productList) {
+            String[] columnNames = { "Product Code", "Product Name", "Product Line", "Product Scale", "Product Vendor", "Product Description", "quantityInStock", "buyPrice", "MSRP" };
+    
+            DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+            for (String[] row : productList) {
+                model.addRow(row);
+            }
+            productsTable.setModel(model);
+        }
+    
+       
+    
     
 
     public static void main(String[] args) {

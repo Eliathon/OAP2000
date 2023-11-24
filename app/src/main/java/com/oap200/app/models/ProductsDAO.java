@@ -15,7 +15,7 @@ import com.oap200.app.utils.DbConnect;
 
 public class ProductsDAO {
     public List<String[]> fetchProducts() {
-        System.out.println("View button clicked with filter: ");
+        System.out.println("View button clicked!");
         List<String[]> products = new ArrayList<>();
 
         try {
@@ -44,39 +44,15 @@ public class ProductsDAO {
         }
         return products;
     }
-    public List<String[]> searchProducts(String productNameFilter) {
-        
-        List<String[]> products = new ArrayList<>();
 
-        try {
-            DbConnect db = new DbConnect();
-            Connection myConnection = db.getConnection();
-            // Just an example, replace with your actual query logic
-            String query = "SELECT * FROM products WHERE productName LIKE ?";
-            PreparedStatement myStmt = myConnection.prepareStatement(query);
-            myStmt.setString(1, "%" + productNameFilter + "%");
+    public List<String[]> searchProducts(String productName) {
+        List<String[]> searchResults = new ArrayList<>();
 
-            ResultSet myRs = myStmt.executeQuery();
+       
 
-            while (myRs.next()) {
-                String[] product = new String[] {
-                        myRs.getString("productCode"),
-                        myRs.getString("productName"),
-                        myRs.getString("productLine"),
-                        myRs.getString("productScale"),
-                        myRs.getString("productVendor"),
-                        myRs.getString("productDescription"),
-                        myRs.getString("quantityInStock"),
-                        myRs.getString("buyPrice"),
-                        myRs.getString("MSRP")
-                };
-                products.add(product);
-            }
-        } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
-        }
-        return products;
+        return searchResults;
     }
+   
     }
     
 
