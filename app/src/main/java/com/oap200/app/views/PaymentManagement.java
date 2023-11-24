@@ -57,25 +57,25 @@ public class PaymentManagement extends JFrame {
         // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Tab 1: View Employee
+        // Tab 1: View Payments
         JPanel panel1 = new JPanel(new BorderLayout());
         addComponentsToPanelView(panel1);
         panel1.add(viewButton, BorderLayout.SOUTH);
         tabbedPane.addTab("View Payments", null, panel1, "Click to view");
 
-        // Tab 2: Add Employee
+        // Tab 2: Add Payments
         JPanel panel2 = new JPanel(new BorderLayout());
         addComponentsToPanel(panel2);
         panel2.add(addButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Add Payments", null, panel2, "Click to add");
 
-        // Tab 3: Update Products
+        // Tab 3: Update Payments
         JPanel panel3 = new JPanel(new BorderLayout());
         addComponentsToPanel(panel3);
         panel3.add(updateButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Update Payments", null, panel3, "Click to Update");
 
-        // Tab 4: Delete Products
+        // Tab 4: Delete Payments
         JPanel panel4 = new JPanel(new BorderLayout());
         addComponentsToPanel(panel4);
         panel4.add(deleteButton, BorderLayout.SOUTH);
@@ -104,7 +104,7 @@ public class PaymentManagement extends JFrame {
         // Initialize the table
         paymentsTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(paymentsTable);
-        // Correct this line to add the scrollPane to the CENTER instead of EAST
+       
         panel1.add(scrollPane, BorderLayout.CENTER);
 
         viewButton.addActionListener(e -> viewPayments());
@@ -123,13 +123,13 @@ public class PaymentManagement extends JFrame {
     }
 
     public void displayPayments(List<String[]> payments) {
-        // Assuming you have a table model associated with your JTable
+       
         DefaultTableModel model = new DefaultTableModel();
     
-        // Assuming you have column names defined
+        
         String[] columnNames = { "Customer Number", "Check Number", "Payment Date", "Amount" };
     
-        // Set the column names
+       
         model.setColumnIdentifiers(columnNames);
     
         // Add rows to the model
@@ -186,7 +186,7 @@ public class PaymentManagement extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
-        // Adding the "Employee Number:" label
+        // Adding the "Customer Number:" label
         inputPanel.add(new JLabel("Customer Number:"), gbc);
 
         gbc.gridx = 1;
@@ -197,7 +197,7 @@ public class PaymentManagement extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 0.3; // Reset to label weight
-        // Adding the "Last Name:" label
+        // Adding the "Check Number:" label
         inputPanel.add(new JLabel("Check Number:"), gbc);
 
         gbc.gridx = 1;
@@ -207,10 +207,10 @@ public class PaymentManagement extends JFrame {
 
         panelView.add(inputPanel, BorderLayout.NORTH);
 
-        // Now, create the scrollPane with the employeeTable right here:
+        // ScrollPane with the paymentsTable right here:
         JScrollPane scrollPane = new JScrollPane(paymentsTable);
 
-        // Create a container panel for the table to align it to the left
+        
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelView.add(tableContainer, BorderLayout.CENTER);

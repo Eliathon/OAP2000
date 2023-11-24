@@ -12,7 +12,7 @@ public class PaymentsController {
     
    
     
-        // Metode for å håndtere visning av produkter
+        // Method to handle showing different classes
             private PaymentsDAO paymentsDAO;
             private PaymentManagement paymentManagement;
         
@@ -28,7 +28,7 @@ public class PaymentsController {
                 if (deletionSuccessful) {
                     return true;
                 } else {
-                    // Håndter feil her, for eksempel vis en feilmelding
+                    // Handles errors, like failure to perform.
                     return false;
                 }
             }
@@ -39,11 +39,11 @@ public class PaymentsController {
             }
             
             public boolean handleAddPayments(String customerNumber, String checkNumber, String paymentDate, String amount) {
-                // Logikken for å legge til et produkt i databasen
-                // Du kan kalle productsDAO eller andre relevante metoder her
+                // Logic to add a payment to the database.
+                // Able to call paymentdao and other methods here.
         
-                // Returner true hvis tillegg var vellykket, ellers false
-                return true; // eller false basert på faktisk tilstand
+                // Returns to tell if result is true or false.
+                return true; // or false based on actual state.
             }
             
             public PaymentsDAO getPaymentsDAO() {

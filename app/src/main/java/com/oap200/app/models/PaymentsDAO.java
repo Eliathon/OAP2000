@@ -68,13 +68,13 @@ public class PaymentsDAO {
         String deleteSql = "DELETE FROM payments WHERE customerNumber = ?";
         
         try (Connection conn = new DbConnect().getConnection()) {
-            // Set customers' salesRepEmployeeNumber to NULL where this employee is the sales rep
+            
             try (PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
                 pstmt.setInt(1, customerNumber);
                 pstmt.executeUpdate();
             }
 
-            // Delete the employee
+            // Delete the payments
             try (PreparedStatement pstmt = conn.prepareStatement(deleteSql)) {
                 pstmt.setInt(1, customerNumber);
                 pstmt.executeUpdate();
