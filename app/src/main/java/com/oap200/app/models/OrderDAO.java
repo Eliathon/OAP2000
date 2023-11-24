@@ -1,4 +1,4 @@
-// Created by Sindre
+// Created by Patrik
 
 package com.oap200.app.models;
 
@@ -6,6 +6,8 @@ import com.oap200.app.utils.DbConnect;
 
 
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
@@ -39,5 +41,32 @@ public class OrderDAO {
             ex.printStackTrace();
         }
         return orders;
+    }
+
+    public boolean deleteOrders(int orderNumber) {
+        if (hasReports(orderNumber)) {
+            return false;
+        }
+
+        String updateSql = "UPDATE orders SET orderNumber = NULL WHERE orderNumber = ?";
+        String deleteSql = "DELETE FROM orders WHERE orderNumber = ?";
+        
+        try (Connection conn = new DbConnect().getConnection()) {
+    
+            try (PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
+                pstmt.setInt(1, orderNumber);
+                pstmt.executeUpdate();
+            }
+
+            // Delete order
+            try (PreparedStatement pstmt = conn.prepareStatement(deleteSql)) {
+                pstmt.setInt(1, orderNumber);
+                pstmt.executeUpdate();
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }
