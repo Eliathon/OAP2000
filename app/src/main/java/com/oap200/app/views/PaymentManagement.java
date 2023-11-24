@@ -52,6 +52,9 @@ public class PaymentManagement extends JFrame {
             /* Action for Delete Button */});
         JButton updateButton = ButtonBuilder.createUpdateButton(() -> {
             /* Action for Update Button */});
+            JButton searchButton = ButtonBuilder.createSearchButton(() -> {
+                searchPayments();
+            });
 
         // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();

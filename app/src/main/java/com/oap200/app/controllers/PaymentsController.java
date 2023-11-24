@@ -16,7 +16,7 @@ public class PaymentsController {
             private PaymentsDAO paymentsDAO;
             private PaymentManagement paymentManagement;
         
-            public PaymentController(PaymentsDAO paymentsDAO, PaymentManagement paymentManagement) {
+            public PaymentsController(PaymentsDAO paymentsDAO, PaymentManagement paymentManagement) {
                 this.paymentsDAO = paymentsDAO;
                 this.paymentManagement = paymentManagement;
                 
