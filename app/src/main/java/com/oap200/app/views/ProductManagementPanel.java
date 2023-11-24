@@ -13,14 +13,17 @@ import java.util.List;
 
 public class ProductManagementPanel extends JFrame {
 
-   
+    private ProductController productController;
 
     private static final String PREF_X = "window_x";
     private static final String PREF_Y = "window_y";
 
     private JTable productsTable;
+    private JTextField searchTextField;
 
     public ProductManagementPanel() {
+        productController = new ProductController(new ProductsDAO(), this);
+
         initializeFields();
 
         // Load the last window position
@@ -54,14 +57,20 @@ public class ProductManagementPanel extends JFrame {
             /* Action for Delete Button */});
         JButton updateButton = ButtonBuilder.createUpdateButton(() -> {
             /* Action for Update Button */});
+            // Create a JButton for search
+        JButton searchButton = ButtonBuilder.createSearchButton(() -> {
+            searchProducts();
+        });
 
         // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // Tab 1: View Employee
         JPanel panel1 = new JPanel(new BorderLayout());
+        
         addComponentsToPanelView(panel1);
         panel1.add(viewButton, BorderLayout.SOUTH);
+        panel1.add(searchButton, BorderLayout.EAST);
         tabbedPane.addTab("View Products", null, panel1, "Click to view");
 
         // Tab 2: Add Employee
@@ -108,10 +117,11 @@ public class ProductManagementPanel extends JFrame {
         // Correct this line to add the scrollPane to the CENTER instead of EAST
         panel1.add(scrollPane, BorderLayout.CENTER);
 
-        viewButton.addActionListener(e -> viewProducts());
+        viewButton.addActionListener(e -> productController.handleViewAllProducts());
+        searchButton.addActionListener(e -> searchProducts());
     }
 
-    private void viewProducts() {
+  /*  private void viewProducts() {
         ProductsDAO ProductsDAO = new ProductsDAO();
         List<String[]> productList = ProductsDAO.fetchProducts();
         String[] columnNames = { "Product Code", "Product Name", "Product Line", "Product Scale", "Product Vendor", "Product Description", "quantityInStock", "buyPrice", "MSRP" };
@@ -121,9 +131,11 @@ public class ProductManagementPanel extends JFrame {
             model.addRow(row);
         }
         productsTable.setModel(model);
-    }
+    }  */
 
     private void initializeFields() {
+        searchTextField = new JTextField(10);
+
         new JTextField(10);
         new JTextField(10);
         new JTextField(10);
@@ -135,6 +147,12 @@ public class ProductManagementPanel extends JFrame {
         new JTextField(10);
     
     }
+
+    private void searchProducts() {
+        String productName = searchTextField.getText();
+        productController.handleSearchProducts(productName);
+    }
+    
 
     private void addComponentsToPanel(JPanel panel) {
         JPanel labelPanel = new JPanel(new GridLayout(9, 1)); // 8 labels
@@ -177,23 +195,14 @@ public class ProductManagementPanel extends JFrame {
     }
 
     private void addComponentsToPanelView(JPanel panelView) {
+        // Create a JTextField for search
+        
         panelView.setLayout(new BorderLayout());
 
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.3; // Label weight
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-
-        // Adding the "Employee Number:" label
-        inputPanel.add(new JLabel("Product code:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
-        JTextField productCode = new JTextField(10);
-        inputPanel.add(productCode, gbc);
-
+        
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 0.3; // Reset to label weight
@@ -202,8 +211,10 @@ public class ProductManagementPanel extends JFrame {
 
         gbc.gridx = 1;
         gbc.weightx = 0.7; // Field weight
-        JTextField productName = new JTextField(10);
-        inputPanel.add(productName, gbc);
+        searchTextField = new JTextField(10);
+        inputPanel.add(searchTextField, gbc);
+
+        
 
         panelView.add(inputPanel, BorderLayout.NORTH);
 

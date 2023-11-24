@@ -122,6 +122,21 @@ public class ButtonBuilder {
         return deleteButton;
     }
 
+     // Search Button is created by Sebastian
+    public static JButton createSearchButton(Runnable action) {
+        JButton searchButton = new JButton("Search");
+        searchButton.setForeground(Color.WHITE); // Set text color to white
+        searchButton.setBackground(Color.BLACK); // Set background color to red
+        searchButton.setBorderPainted(false); // Remove border
+        searchButton.setPreferredSize(new Dimension(100, 20)); // Set a specific size
+        searchButton.addActionListener(e -> {
+            if (action != null) {
+                action.run();
+            }
+        });
+        return searchButton;
+    }
+
     // RadioButton creation method - Created by Dirkje J van der Poel
     public static JRadioButton createStyledRadioButton(String text, boolean selected) {
         JRadioButton radioButton = new JRadioButton(text, selected);

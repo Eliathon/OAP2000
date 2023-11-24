@@ -47,11 +47,34 @@ public class ProductsDAO {
 
     public List<String[]> searchProducts(String productName) {
         List<String[]> searchResults = new ArrayList<>();
-
-       
-
+    
+        try {
+            DbConnect db = new DbConnect();
+            Connection myConnection = db.getConnection();
+            PreparedStatement preparedStatement = myConnection.prepareStatement("SELECT * FROM products WHERE productName LIKE ?");
+            preparedStatement.setString(1, "%" + productName + "%");
+            ResultSet myRs = preparedStatement.executeQuery();
+    
+            while (myRs.next()) {
+                String[] product = new String[] {
+                        myRs.getString("productCode"),
+                        myRs.getString("productName"),
+                        myRs.getString("productLine"),
+                        myRs.getString("productScale"),
+                        myRs.getString("productVendor"),
+                        myRs.getString("productDescription"),
+                        myRs.getString("quantityInStock"),
+                        myRs.getString("buyPrice"),
+                        myRs.getString("MSRP"),
+                };
+                searchResults.add(product);
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
         return searchResults;
     }
+    
    
     }
     
