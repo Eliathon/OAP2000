@@ -21,11 +21,6 @@ public class PaymentsController {
                 this.paymentManagement = paymentManagement;
                 
             }
-            public void handleSearchPayments(String customerName) {
-                List<String[]> searchResults = paymentsDAO.searchPayments(customerName);
-                paymentManagement.displayPayments(searchResults);
-            }
-        
             public void handleViewAllPayments() {
                 List<String[]> allPayments = paymentsDAO.fetchPayments();
                 paymentManagement.displayProducts(allPayments);
