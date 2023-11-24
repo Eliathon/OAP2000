@@ -37,32 +37,31 @@ public class PaymentsDAO {
         return payments;
     }
 
+    public boolean deletePayments(int customerNumber) {
+        if (hasReports(customerNumber)) {
+            return false;
+        }
 
+        String updateSql = "UPDATE payments SET checkNumber = NULL WHERE checkNumber = ?";
+        String deleteSql = "DELETE FROM payments WHERE checkNumber = ?";
+        
+        try (Connection conn = new DbConnect().getConnection()) {
+            // Set customers' salesRepEmployeeNumber to NULL where this employee is the sales rep
+            try (PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
+                pstmt.setInt(1, customerNumber);
+                pstmt.executeUpdate();
+            }
+
+            // Delete the employee
+            try (PreparedStatement pstmt = conn.prepareStatement(deleteSql)) {
+                pstmt.setInt(1, customerNumber);
+                pstmt.executeUpdate();
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
     
-    public void insertPayment(String customerNumber, String checkNumber, String paymentDate, String amount) {
-        try {
-            DbConnect db = new DbConnect();
-            Connection myConnection = db.getConnection();
-
- // Using a prepared statement to prevent SQL injection
-
-            String sql = "INSERT INTO payments (customerNumber, checkNumber, paymentDate, amount) VALUES (?, ?, ?, ?)";
-            try (PreparedStatement pstmt = myConnection.prepareStatement(sql)) {
-                pstmt.setString(1, customerNumber);
-                pstmt.setString(2, checkNumber);
-                pstmt.setString(3, paymentDate);
-                pstmt.setString(4, amount);
-
-// Execute the insert statement
-
-pstmt.executeUpdate();
-}
-} catch (SQLException | ClassNotFoundException ex) {
-ex.printStackTrace();
-// Handle the exception appropriately based on your application's requirements
-}
-}
-
-
-
 }
