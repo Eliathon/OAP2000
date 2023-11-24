@@ -11,6 +11,8 @@ import com.oap200.app.utils.ButtonBuilder;
 import java.util.List;
 
 public class ProductManagementPanel extends JFrame {
+    private JTextField productNameField;
+
 
     private static final String PREF_X = "window_x";
     private static final String PREF_Y = "window_y";
@@ -104,20 +106,32 @@ public class ProductManagementPanel extends JFrame {
         // Correct this line to add the scrollPane to the CENTER instead of EAST
         panel1.add(scrollPane, BorderLayout.CENTER);
 
-        viewButton.addActionListener(e -> viewProducts());
+        viewButton.addActionListener(e -> {
+            String productNameFilter = productNameField.getText(); // Hent produktets navn fra tekstfeltet
+            viewProducts(productNameFilter);
+        });
     }
 
-    private void viewProducts() {
-        ProductsDAO ProductsDAO = new ProductsDAO();
-        List<String[]> productList = ProductsDAO.fetchProducts();
-        String[] columnNames = { "Product Code", "Product Name", "Product Line", "Product Scale", "Product Vendor", "Product Description", "quantityInStock", "buyPrice", "MSRP" };
-
-        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-        for (String[] row : productList) {
-            model.addRow(row);
+        private void viewProducts(String productNameFilter) {
+            ProductsDAO productsDAO = new ProductsDAO();
+            List<String[]> productList;
+        
+            if (productNameFilter.isEmpty()) {
+                // Hvis produktets navn er tomt, vis hele tabellen
+                productList = productsDAO.fetchProducts();
+            } else {
+                // Ellers, utfør et søk basert på produktets navn
+                productList = productsDAO.searchProducts(productNameFilter);
+            }
+        
+            DefaultTableModel model = (DefaultTableModel) productsTable.getModel();
+            model.setRowCount(0); // Clear existing data in the table
+        
+            for (String[] row : productList) {
+                model.addRow(row);
+            }
         }
-        productsTable.setModel(model);
-    }
+        
 
     private void initializeFields() {
         new JTextField(10);
@@ -137,20 +151,35 @@ public class ProductManagementPanel extends JFrame {
         JPanel fieldPanel = new JPanel(new GridLayout(9, 1)); // 8 fields
 
         // Cloning fields for each tab
-        JTextField customerNumber = new JTextField(10);
-        JTextField checkNumber = new JTextField(10);
-        JTextField paymentDate = new JTextField(10);
-        JTextField amount = new JTextField(10);
+        JTextField productCode = new JTextField(10);
+        JTextField productName = new JTextField(10);
+        JTextField productLine = new JTextField(10);
+        JTextField productScale = new JTextField(10);
+        JTextField productVendor = new JTextField(10);
+        JTextField productDescription = new JTextField(10);
+        JTextField quantityInStock = new JTextField(10);
+        JTextField buyPrice = new JTextField(10);
+        JTextField MSRP = new JTextField(10);
         
 
-        labelPanel.add(new JLabel("Customer Number:"));
-        fieldPanel.add(customerNumber);
-        labelPanel.add(new JLabel("Check Number:"));
-        fieldPanel.add(checkNumber);
-        labelPanel.add(new JLabel("Payment Date:"));
-        fieldPanel.add(paymentDate);
-        labelPanel.add(new JLabel("Amount:"));
-        fieldPanel.add(amount);
+        labelPanel.add(new JLabel("Product Code:"));
+        fieldPanel.add(productCode);
+        labelPanel.add(new JLabel("Product Name:"));
+        fieldPanel.add(productName);
+        labelPanel.add(new JLabel("Product Line:"));
+        fieldPanel.add(productLine);
+        labelPanel.add(new JLabel("Product Scale:"));
+        fieldPanel.add(productScale);
+        labelPanel.add(new JLabel("Product Vendor:"));
+        fieldPanel.add(productVendor);
+        labelPanel.add(new JLabel("Product Description:"));
+        fieldPanel.add(productDescription);
+        labelPanel.add(new JLabel("quantityInStock:"));
+        fieldPanel.add(quantityInStock);
+        labelPanel.add(new JLabel("buyPrice:"));
+        fieldPanel.add(buyPrice);
+        labelPanel.add(new JLabel("MSRP:"));
+        fieldPanel.add(MSRP);
     
 
         panel.add(labelPanel, BorderLayout.WEST);
@@ -159,43 +188,44 @@ public class ProductManagementPanel extends JFrame {
 
     private void addComponentsToPanelView(JPanel panelView) {
         panelView.setLayout(new BorderLayout());
-
+    
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 0.3; // Label weight
         gbc.gridx = 0;
         gbc.gridy = 0;
-
-        // Adding the "Employee Number:" label
-        inputPanel.add(new JLabel("Customer Number:"), gbc);
-
+    
+        // Adding the "Product Code:" label
+        inputPanel.add(new JLabel("Product Code:"), gbc);
+    
         gbc.gridx = 1;
         gbc.weightx = 0.7; // Field weight
-        JTextField customerNumber = new JTextField(10);
-        inputPanel.add(customerNumber, gbc);
-
+        JTextField productCodeField = new JTextField(10);
+        inputPanel.add(productCodeField, gbc);
+    
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 0.3; // Reset to label weight
-        // Adding the "Last Name:" label
-        inputPanel.add(new JLabel("Check Number:"), gbc);
-
+        // Adding the "Product Name:" label
+        inputPanel.add(new JLabel("Product Name:"), gbc);
+    
         gbc.gridx = 1;
         gbc.weightx = 0.7; // Field weight
-        JTextField checkNumber = new JTextField(10);
-        inputPanel.add(checkNumber, gbc);
-
+        productNameField = new JTextField(10); // Bruk det eksisterende feltet
+        inputPanel.add(productNameField, gbc);
+    
         panelView.add(inputPanel, BorderLayout.NORTH);
-
-        // Now, create the scrollPane with the employeeTable right here:
+    
+        // Now, create the scrollPane with the productsTable right here:
         JScrollPane scrollPane = new JScrollPane(productsTable);
-
+    
         // Create a container panel for the table to align it to the left
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelView.add(tableContainer, BorderLayout.CENTER);
     }
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
