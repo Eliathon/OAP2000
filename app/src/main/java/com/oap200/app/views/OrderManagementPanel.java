@@ -5,7 +5,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
-import java.awt.List;
+import java.util.List;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
@@ -13,13 +13,15 @@ import java.util.prefs.Preferences;
 import com.oap200.app.models.OrderDAO;
 import com.oap200.app.tabbedPanels.TabbedOrderPanel;
 import com.oap200.app.utils.ButtonBuilder;
+import com.oap200.app.utils.DbConnect;
+import com.mysql.cj.jdbc.Driver;
 
 public class OrderManagementPanel extends JFrame {
    
 private static final String PREF_X = "window_x";
    private static final String PREF_Y = "window_y";
 
-   private JTable ordersTable;
+   private JTable OrdersTable;
 
    public OrderManagementPanel() {
     initializeFields();
@@ -103,8 +105,8 @@ private static final String PREF_X = "window_x";
         getContentPane().add(topPanel, BorderLayout.NORTH);
 
         // Initialize the table
-        ordersTable = new JTable();
-        JScrollPane scrollPane = new JScrollPane(ordersTable);
+        OrdersTable = new JTable();
+        JScrollPane scrollPane = new JScrollPane(OrdersTable);
         // Correct this line to add the scrollPane to the CENTER instead of EAST
         panel1.add(scrollPane, BorderLayout.CENTER);
 
@@ -113,16 +115,17 @@ private static final String PREF_X = "window_x";
 
     private void viewOrders() {
         OrderDAO OrderDAO = new OrderDAO();
-        List <String[]> ordersList = OrderDAO.fetchOrders();
+        List<String[]> ordersList = OrderDAO.fetchOrders();
         String[] columnNames = { "Order Number", "Order Date", "Required Date", "Shipped Date", "Status", "Comments",
                 "Customer Number" };
 
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-        for (String[] row : ordersList ) {
+        for (String[] row : ordersList) {
             model.addRow(row);
         }
-        ordersTable.setModel(model);
+        OrdersTable.setModel(model);
     }
+
 
     private void initializeFields() {
         new JTextField(10);
@@ -198,7 +201,7 @@ private static final String PREF_X = "window_x";
         panelView.add(inputPanel, BorderLayout.NORTH);
 
         // Now, create the scrollPane with the employeeTable right here:
-        JScrollPane scrollPane = new JScrollPane(ordersTable);
+        JScrollPane scrollPane = new JScrollPane(OrdersTable);
 
         // Create a container panel for the table to align it to the left
         JPanel tableContainer = new JPanel(new BorderLayout());

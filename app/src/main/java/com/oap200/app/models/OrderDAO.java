@@ -2,7 +2,8 @@
 
 package com.oap200.app.models;
 
-import com.oap200.app.utils.DbConnect;
+import com.oap200.app.utils.DbConnect;  
+
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -24,13 +25,13 @@ public class OrderDAO {
 
             while (myRs.next()) {
                 String[] order = new String[] {
-                        myRs.getString("Order Number"),
-                        myRs.getString("Order Date"),
-                        myRs.getString("Required Date"),
-                        myRs.getString("Shipped Date"),
-                        myRs.getString("Status"),
-                        myRs.getString("Comments"),
-                        myRs.getString("Customer Number"),
+                        myRs.getString("orderNumber"),
+                        myRs.getString("orderDate"),
+                        myRs.getString("requiredDate"),
+                        myRs.getString("shippedDate"),
+                        myRs.getString("status"),
+                        myRs.getString("comments"),
+                        myRs.getString("customerNumber"),
                 };
                 orders.add(order);
             }
