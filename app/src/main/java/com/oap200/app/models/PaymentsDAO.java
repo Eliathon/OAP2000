@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.PreparedStatement;
 
 public class PaymentsDAO {
 
@@ -35,4 +36,12 @@ public class PaymentsDAO {
         }
         return payments;
     }
+
+    public void insertPayment(String customerNumber, String checkNumber, String paymentDate, String amount) {
+        try {
+            DbConnect db = new DbConnect();
+            Connection myConnection = db.getConnection();
+
+            
+
 }
