@@ -37,6 +37,8 @@ public class PaymentsDAO {
         return payments;
     }
 
+
+    
     public boolean deletePayments(int customerNumber) {
         if (hasReports(customerNumber)) {
             return false;
