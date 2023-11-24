@@ -44,8 +44,8 @@ public class PaymentsDAO {
             return false;
         }
 
-        String updateSql = "UPDATE payments SET checkNumber = NULL WHERE checkNumber = ?";
-        String deleteSql = "DELETE FROM payments WHERE checkNumber = ?";
+        String updateSql = "UPDATE payments SET customerNumber = NULL WHERE customerNumber = ?";
+        String deleteSql = "DELETE FROM payments WHERE customerNumber = ?";
         
         try (Connection conn = new DbConnect().getConnection()) {
             // Set customers' salesRepEmployeeNumber to NULL where this employee is the sales rep
@@ -65,6 +65,8 @@ public class PaymentsDAO {
         }
         return true;
     }
+
+
     public boolean updatePayments(String customerNumber, String newCheckNumber, String newPaymentDate, String newAmount) {
         String updateSql = "UPDATE payments SET checkNumber = ?, paymentDate = ?, amount = ? WHERE customerNumber = ?";
 

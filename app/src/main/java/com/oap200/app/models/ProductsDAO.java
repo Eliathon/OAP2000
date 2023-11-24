@@ -1,6 +1,8 @@
 package com.oap200.app.models;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -88,42 +90,27 @@ public class ProductsDAO {
             return false;
         }
     }
+    public static List<String> getProductLines() {
+        List<String> productLines = new ArrayList<>();
     
+        try {
+            DbConnect db = new DbConnect();
+            Connection myConnection = db.getConnection();
+            Statement myStmt = myConnection.createStatement();
+            ResultSet myRs = myStmt.executeQuery("SELECT DISTINCT productLine FROM products");
     
-        // ... annen kode ...
-    
-        public boolean addProduct(String productCode, String productName, String productLine, String productScale,
-                                  String productVendor, String productDescription, String quantityInStock,
-                                  String buyPrice, String MSRP) {
-            try {
-                DbConnect db = new DbConnect();
-                Connection myConnection = db.getConnection();
-    
-                String query = "INSERT INTO products (productCode, productName, productLine, productScale, " +
-                        "productVendor, productDescription, quantityInStock, buyPrice, MSRP) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    
-                try (PreparedStatement preparedStatement = myConnection.prepareStatement(query)) {
-                    preparedStatement.setString(1, productCode);
-                    preparedStatement.setString(2, productName);
-                    preparedStatement.setString(3, productLine);
-                    preparedStatement.setString(4, productScale);
-                    preparedStatement.setString(5, productVendor);
-                    preparedStatement.setString(6, productDescription);
-                    preparedStatement.setString(7, quantityInStock);
-                    preparedStatement.setString(8, buyPrice);
-                    preparedStatement.setString(9, MSRP);
-    
-                    int rowsAffected = preparedStatement.executeUpdate();
-    
-                    return rowsAffected > 0;
-                }
-            } catch (SQLException | ClassNotFoundException ex) {
-                ex.printStackTrace();
+            while (myRs.next()) {
+                String productLine = myRs.getString("productLine");
+                productLines.add(productLine);
             }
-    
-            return false;
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
         }
+    
+        return productLines;
+    }
+    
+
     }
     
     
