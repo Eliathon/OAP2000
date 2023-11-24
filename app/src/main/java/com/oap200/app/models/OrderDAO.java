@@ -11,10 +11,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrdersDAO {
+public class OrderDAO {
 
-    public List<String> fetchOrders() {
-        List<String> orders = new ArrayList<>();
+    public List<String[]> fetchOrders() {
+        List<String[]> orders = new ArrayList<>();
 
         try {
             DbConnect db = new DbConnect();
@@ -23,13 +23,16 @@ public class OrdersDAO {
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM orders");
 
             while (myRs.next()) {
-                orders.add(myRs.getString("orderNumber"));
-                orders.add(myRs.getString("orderDate"));
-                orders.add(myRs.getString("requiredDate"));
-                orders.add(myRs.getString("shippedDate"));
-                orders.add(myRs.getString("status"));
-                orders.add(myRs.getString("comments"));
-                orders.add(myRs.getString("customerNumber"));
+                String[] order = new String[] {
+                        myRs.getString("Order Number"),
+                        myRs.getString("Order Date"),
+                        myRs.getString("Required Date"),
+                        myRs.getString("Shipped Date"),
+                        myRs.getString("Status"),
+                        myRs.getString("Comments"),
+                        myRs.getString("Customer Number"),
+                };
+                orders.add(order);
             }
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
