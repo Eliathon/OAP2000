@@ -3,7 +3,10 @@ package com.oap200.app.controllers;
 import com.oap200.app.models.ProductsDAO;
 import com.oap200.app.views.ProductManagementPanel;
 
+import java.math.BigDecimal;
 import java.util.List;
+
+import javax.swing.JOptionPane;
 public class ProductController {
     // Metode for å håndtere visning av produkter
         private ProductsDAO productsDAO;
@@ -33,14 +36,26 @@ public class ProductController {
                 return false;
             }
         }
+
+        private void updateProductList() {
+            List<String[]> allProducts = productsDAO.fetchProducts();
+            productManagementPanel.displayProducts(allProducts);
+        }
         
-        public boolean handleAddProduct(String productCode, String productName, String productLine, String productScale,
-                                    String productVendor, String productDescription, String quantityInStock,
-                                    String buyPrice, String MSRP) {
-        return productsDAO.addProduct(productCode, productName, productLine, productScale,
-                                       productVendor, productDescription, quantityInStock,
-                                       buyPrice, MSRP);
-    }
+        public boolean handleAddProduct(String productCode, String productName, String productLine, String productScale, String productVendor, String productDescription, String quantityInStock, String buyPrice, String MSRP) {
+            // Logikken for å legge til et produkt i databasen
+            // Du kan kalle productsDAO eller andre relevante metoder her
+    
+            // Returner true hvis tillegg var vellykket, ellers false
+            return true; // eller false basert på faktisk tilstand
+        }
+        
+        public ProductsDAO getProductsDAO() {
+            return this.productsDAO;
+        }
+        
+
+
         
 
     

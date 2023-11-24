@@ -4,6 +4,7 @@ import com.oap200.app.controllers.ProductController;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -22,13 +23,26 @@ public class ProductManagementPanel extends JFrame {
     private JTextField searchTextField;
     private JTextField searchCodeField;
 
+    private JTextField productCode;
+private JTextField productName;
+private JComboBox<String> productLineComboBox;
+private JTextField productScale;
+private JTextField productVendor;
+private JTextField productDescription;
+private JTextField quantityInStock;
+private JTextField buyPrice;
+private JTextField MSRP;
+
+private ProductController ProductController;
+
+
     
 
     public ProductManagementPanel() {
 
         
         productController = new ProductController(new ProductsDAO(), this);
-
+        productController = new ProductController(new ProductsDAO(), this);
         initializeFields();
 
         // Load the last window position
@@ -132,23 +146,45 @@ public class ProductManagementPanel extends JFrame {
         viewButton.addActionListener(e -> productController.handleViewAllProducts());
         searchButton.addActionListener(e -> searchProducts());
         deleteButton.addActionListener(e -> deleteProduct());
+        addButton.addActionListener(e -> addProduct());
 
     }
 
     private void initializeFields() {
-        searchTextField = new JTextField(10);
-
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
+        // Last produktlinjene før du initialiserer komponentene
+        loadProductLines();
     
+        searchTextField = new JTextField(10);
+    
+        productCode = new JTextField(10);
+        productName = new JTextField(10);
+        productLineComboBox = new JComboBox();
+        productScale = new JTextField(10);
+        productVendor = new JTextField(10);
+        productDescription = new JTextField(10);
+        quantityInStock = new JTextField(10);
+        buyPrice = new JTextField(10);
+        MSRP = new JTextField(10);
     }
+    
+
+    private void loadProductLines() {
+        if (ProductController != null) {
+            // Hent produktlinjene fra databasen og legg dem til i JComboBox
+            List<String> productLines = ProductController.getProductsDAO().getProductLines();
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(productLines.toArray(new String[0]));
+            productLineComboBox.setModel(model);
+        } else {
+            // Håndter tilfellet der ProductController er null
+            System.err.println("ProductController is null");
+        }
+    }
+    
+    
+    
+    
+    
+    
 
     private void searchProducts() {
         String productName = searchTextField.getText();
@@ -164,6 +200,20 @@ public class ProductManagementPanel extends JFrame {
             JOptionPane.showMessageDialog(this, "Feil ved sletting av produkt.", "Feil", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    private void addProduct() {
+        boolean additionSuccessful = productController.handleAddProduct(
+            productCode.getText(), productName.getText(), (String) productLineComboBox.getSelectedItem(),
+            productScale.getText(), productVendor.getText(), productDescription.getText(),
+            quantityInStock.getText(), buyPrice.getText(), MSRP.getText());
+    
+        if (additionSuccessful) {
+            JOptionPane.showMessageDialog(this, "Produktet ble lagt til vellykket.", "Legge til fullført", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Feil ved legging til produkt.", "Feil", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     
     
     
@@ -175,7 +225,7 @@ public class ProductManagementPanel extends JFrame {
         // Cloning fields for each tab
         JTextField productCode = new JTextField(10);
         JTextField productName = new JTextField(10);
-        JTextField productLine = new JTextField(10);
+        productLineComboBox = new JComboBox();
         JTextField productScale = new JTextField(10);
         JTextField productVendor = new JTextField(10);
         JTextField productDescription = new JTextField(10);
@@ -189,7 +239,7 @@ public class ProductManagementPanel extends JFrame {
         labelPanel.add(new JLabel("Product Name:"));
         fieldPanel.add(productName);
         labelPanel.add(new JLabel("Product Line:"));
-        fieldPanel.add(productLine);
+        fieldPanel.add(productLineComboBox); // Endre denne linjen
         labelPanel.add(new JLabel("Product Scale:"));
         fieldPanel.add(productScale);
         labelPanel.add(new JLabel("Product Vendor:"));
