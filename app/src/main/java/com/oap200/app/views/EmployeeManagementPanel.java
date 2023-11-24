@@ -103,7 +103,6 @@ public class EmployeeManagementPanel extends JFrame {
         // Initialize the table
         employeeTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(employeeTable);
-        // Correct this line to add the scrollPane to the CENTER instead of EAST
         panel1.add(scrollPane, BorderLayout.CENTER);
 
         viewButton.addActionListener(e -> viewEmployees());
