@@ -43,6 +43,40 @@ public class OrderDAO {
         return orders;
     }
 
+    public boolean addOrder() {
+        String orderNumber = orderNumberField.getText();
+        String orderDate = orderDateField.getText();
+        String requiredDate = requiredDateField.getText();
+        String shippedDate = shippedDateField.getText();
+        String status = statusField.getText();
+        String comments = commentsField.getText();
+        String customerNumber = customerNumberField.getText();
+    
+        String addquery = "INSERT INTO orders (orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber) VALUES (?,?,?,?,?,?,?)";
+    
+        try {
+            DbConnect db = new DbConnect();
+            Connection myConnection = db.getConnection();
+            Statement myStmt = myConnection.createStatement();
+            ResultSet myRs = myStmt.executeQuery("INSERT * INTO orders");
+        
+        statement.setString(1, orderNumber);
+        statement.setString(2, orderDate);
+        statement.setString(3, requiredDate);
+        statement.setString(4, shippedDate);
+        statement.setString(5, status);
+        statement.setString(6, comments);
+        statement.setString(7, customerNumber);
+    
+        int rowsInserted = statement.executeUpdate();
+        if (rowsInserted > 0) {
+            System.out.println("A new order has been added!");
+        }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean deleteOrders(int orderNumber) {
         if (hasReports(orderNumber)) {
             return false;

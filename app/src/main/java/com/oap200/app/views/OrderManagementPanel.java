@@ -200,7 +200,7 @@ private static final String PREF_X = "window_x";
 
         panelView.add(inputPanel, BorderLayout.NORTH);
 
-        // Now, create the scrollPane with the employeeTable right here:
+        // Now, create the scrollPane with the orderTable right here:
         JScrollPane scrollPane = new JScrollPane(OrdersTable);
 
         // Create a container panel for the table to align it to the left
@@ -209,45 +209,10 @@ private static final String PREF_X = "window_x";
         panelView.add(tableContainer, BorderLayout.CENTER);
     }
 
-    private void addComponentsToAddPanel(JPanel panelAdd) {
-       JPanel inputPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.3; // Label weight
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-
-        // Adding the "Order Number:" label
-        inputPanel.add(new JLabel("Order Number:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
-        JTextField orderNumber = new JTextField(10);
-        inputPanel.add(orderNumber, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 0.3; // Reset to label weight
-        // Adding the "Last Name:" label
-        inputPanel.add(new JLabel("Order Date:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
-        JTextField orderDate = new JTextField(10);
-        inputPanel.add(orderDate, gbc);
-
-        panelView.add(inputPanel, BorderLayout.NORTH);
-
-        // Now, create the scrollPane with the employeeTable right here:
-        JScrollPane scrollPane = new JScrollPane(OrdersTable);
-
-        // Create a container panel for the table to align it to the left
-        JPanel tableContainer = new JPanel(new BorderLayout());
-        tableContainer.add(scrollPane, BorderLayout.CENTER);
-        panelAdd.add(tableContainer, BorderLayout.CENTER);
-
-
+    private void addOrders() {
+        
     }
+
     
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
