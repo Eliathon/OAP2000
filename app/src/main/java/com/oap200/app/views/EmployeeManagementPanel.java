@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
+import java.util.Collections;
 import java.util.List;
 
 import com.oap200.app.models.EmployeeDAO;
@@ -16,13 +17,15 @@ public class EmployeeManagementPanel extends JFrame {
 
     private static final String PREF_X = "window_x";
     private static final String PREF_Y = "window_y";
+    private JComboBox<String> reportsToComboBox;
 
+    
     private JTable employeeTable;
 
-    public EmployeeManagementPanel() {
-       
-        
+    public EmployeeManagementPanel() {    
         initializeFields();
+        reportsToComboBox = new JComboBox<>();
+        populateReportsToDropdown();
 
         // Load the last window position
         Preferences prefs = Preferences.userNodeForPackage(EmployeeManagementPanel.class);
@@ -50,8 +53,8 @@ public class EmployeeManagementPanel extends JFrame {
             /* Action for View Button */});
         JButton addButton = ButtonBuilder.createAddButton(() -> {
             /* Action for Add Button */});
-        JButton deleteButton = ButtonBuilder.createDeleteButton(() -> {
-            /* Action for Delete Button */});
+        JButton deleteButton = ButtonBuilder.createDeleteButton(this::deleteEmployee);
+            /* Action for Delete Button */
         JButton updateButton = ButtonBuilder.createUpdateButton(() -> {
             /* Action for Update Button */});
 
@@ -110,6 +113,10 @@ public class EmployeeManagementPanel extends JFrame {
         viewButton.addActionListener(e -> viewEmployees());
     }
 
+    
+
+    
+
     private void viewEmployees() {
         EmployeeDAO employeeDAO = new EmployeeDAO();
         List<String[]> employeeList = employeeDAO.fetchEmployees();
@@ -127,6 +134,51 @@ public class EmployeeManagementPanel extends JFrame {
         EmployeeDAO employeeDAO = new EmployeeDAO();
         List<String[]> searchResults = employeeDAO.searchNum(PREF_X);
     }
+
+    private void deleteEmployee() {
+        int selectedRow = employeeTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select an employee to delete.", "No Selection", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+    
+        int employeeNumber = Integer.parseInt((String) employeeTable.getValueAt(selectedRow, 0));
+        EmployeeDAO employeeDAO = new EmployeeDAO();
+    
+        if (employeeDAO.deleteEmployee(employeeNumber)) {
+            JOptionPane.showMessageDialog(this, "Employee deleted successfully!");
+            viewEmployees(); // Refresh the table to reflect the deletion
+        } else {
+            JOptionPane.showMessageDialog(this, "Error: Could not delete the employee.", "Deletion Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+private void populateReportsToDropdown() {try {
+        // No direct database access here, use DAO methods for data retrieval
+        List<Employee> employees = EmployeeDAO.fetchEmployees();
+        for (Employee employee : employees) {
+            reportsToComboBox.addItem(employee.toString());
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+private class Employee{
+    private int employeeNumber;
+    private String firstName;
+    private String lastName;
+
+public static List<Employee> fetchEmployees() {
+            try {
+                return EmployeeDAO.fetchEmployees(); // Implement this method in your DAO
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Collections.emptyList();
+            }
+        }
+
+}
 
     private void initializeFields() {
         new JTextField(10);
