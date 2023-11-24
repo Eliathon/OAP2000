@@ -3,8 +3,9 @@
 package com.oap200.app.models;
 
 import com.oap200.app.utils.DbConnect;  
+import com.oap200.app.views.OrderManagementPanel;
 
-
+import com.oap200.app.utils.DbConnect;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -43,7 +44,7 @@ public class OrderDAO {
         return orders;
     }
 
-    public boolean addOrder() {
+    public boolean addOrders() {
         String orderNumber = orderNumberField.getText();
         String orderDate = orderDateField.getText();
         String requiredDate = requiredDateField.getText();

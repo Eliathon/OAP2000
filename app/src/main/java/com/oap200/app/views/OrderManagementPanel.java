@@ -70,6 +70,7 @@ private static final String PREF_X = "window_x";
         JPanel panel2 = new JPanel(new BorderLayout());
         addComponentsToPanel(panel2);
         panel2.add(addButton, BorderLayout.SOUTH);
+        addButton.addActionListener(e -> addOrders());
         tabbedPane.addTab("Add Orders", null, panel2, "Click to add");
 
         // Tab 3: Update Order
@@ -210,16 +211,26 @@ private static final String PREF_X = "window_x";
     }
 
     private void addOrders() {
-    OrderDAO OrderDAO = new OrderDAO();
-        List<String[]> addquery = OrderDAO.addOrders();
-        String[] columnNames = { "Order Number", "Order Date", "Required Date", "Shipped Date", "Status", "Comments",
-                "Customer Number" };
-
-        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-        for (String[] row : addquery) {
-            model.addRow(row);
+        OrderController orderController = new OrderController();
+    
+        String orderNumber = orderNumberField.getText();
+        String orderDate = orderDateField.getText();
+        String requiredDate = requiredDateField.getText();
+        String shippedDate = shippedDateField.getText();
+        String status = statusField.getText();
+        String comments = commentsField.getText();
+        String customerNumber = customerNumberField.getText();
+    
+        boolean isAdded = orderController.addOrder(orderNumber, orderDate, requiredDate,
+         shippedDate, status, comments, customerNumber);
+    
+        if (isAdded) {
+            // Update the table in the view if addition is successful
+            viewOrders();
+        } else {
+            // Handle case where addition fails
+            // For example, show an error message to the user
         }
-        OrdersTable.setModel(model);
     }
 
     private void addComponentsToPanelAdd(JPanel panelAdd) {
@@ -250,6 +261,47 @@ private static final String PREF_X = "window_x";
         gbc.weightx = 0.7; // Field weight
         JTextField orderDate = new JTextField(10); // Define the JTextField for order date
         inputPanel.add(orderDate, gbc);
+
+        gbc.gridy++;
+        inputPanel.add(new JLabel("Required Date:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField requiredDate = new JTextField(10); // Define the JTextField for required date
+        inputPanel.add(requiredDate, gbc);
+
+        gbc.gridy++;
+        inputPanel.add(new JLabel("Shipped Date:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField shippedDate = new JTextField(10); // Define the JTextField for shipped date
+        inputPanel.add(shippedDate, gbc);
+
+        gbc.gridy++;
+        inputPanel.add(new JLabel("Status:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField status = new JTextField(10); // Define the JTextField for status
+        inputPanel.add(status, gbc);
+
+        gbc.gridy++;
+        inputPanel.add(new JLabel("Comments:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField comments = new JTextField(10); // Define the JTextField for comments
+        inputPanel.add(comments, gbc);
+
+        gbc.gridy++;
+        inputPanel.add(new JLabel("Customer Number:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField customerNumber = new JTextField(10); // Define the JTextField for customer number
+        inputPanel.add(customerNumber, gbc);
+
         
         panelAdd.add(inputPanel, BorderLayout.NORTH);
 
@@ -258,6 +310,7 @@ private static final String PREF_X = "window_x";
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelView.add(tableContainer, BorderLayout.CENTER);
+
     }
 
     
