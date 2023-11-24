@@ -21,10 +21,7 @@ public class PaymentsController {
                 this.paymentManagement = paymentManagement;
                 
             }
-            public void handleViewAllPayments() {
-                List<String[]> allPayments = paymentsDAO.fetchPayments();
-                paymentManagement.displayProducts(allPayments);
-            }
+          
     
             public boolean handleDeletePayments(String checkNumber) {
                 boolean deletionSuccessful = paymentsDAO.deletePayments(checkNumber);
@@ -61,4 +58,3 @@ public class PaymentsController {
     } 
 
 
-}
