@@ -38,6 +38,26 @@ public class PaymentsDAO {
     }
 
 
+    public boolean hasReports(int customerNumber) {
+        String query = "SELECT COUNT(*) FROM reports WHERE customerNumber = ?";
+        try (Connection conn = new DbConnect().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, customerNumber);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
     
     public boolean deletePayments(int customerNumber) {
         if (hasReports(customerNumber)) {
@@ -86,4 +106,25 @@ public class PaymentsDAO {
             return false;
         }
     }
+
+    public boolean addPayment(String customerNumber, String checkNumber, String paymentDate, String amount) {
+        String insertSql = "INSERT INTO payments (customerNumber, checkNumber, paymentDate, amount) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = new DbConnect().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(insertSql)) {
+
+            pstmt.setString(1, customerNumber);
+            pstmt.setString(2, checkNumber);
+            pstmt.setString(3, paymentDate);
+            pstmt.setString(4, amount);
+
+            int rowsAffected = pstmt.executeUpdate();
+
+            return rowsAffected > 0;  // Return true if at least one row is affected (insert successful)
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

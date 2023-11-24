@@ -52,6 +52,7 @@ public class PaymentManagement extends JFrame {
             /* Action for Delete Button */});
         JButton updateButton = ButtonBuilder.createUpdateButton(() -> {
             /* Action for Update Button */});
+          
 
         // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -120,6 +121,26 @@ public class PaymentManagement extends JFrame {
         }
         paymentsTable.setModel(model);
     }
+
+    public void displaypayments(List<String[]> payments) {
+        // Assuming you have a table model associated with your JTable
+        DefaultTableModel model = new DefaultTableModel();
+
+        // Assuming you have column names defined
+        String[] columnNames = { "Customer Number", "Check Number", "Payment Date", "Amount" };
+
+        // Set the column names
+        model.setColumnIdentifiers(columnNames);
+
+        // Add rows to the model
+        for (String[] payment : payments) {
+            model.addRow(payment);
+        }
+
+        // Set the model to the JTable
+        paymentsTable.setModel(model);
+    }
+
 
     private void initializeFields() {
         new JTextField(10);
