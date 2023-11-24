@@ -210,7 +210,54 @@ private static final String PREF_X = "window_x";
     }
 
     private void addOrders() {
+    OrderDAO OrderDAO = new OrderDAO();
+        List<String[]> addquery = OrderDAO.addOrders();
+        String[] columnNames = { "Order Number", "Order Date", "Required Date", "Shipped Date", "Status", "Comments",
+                "Customer Number" };
+
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        for (String[] row : addquery) {
+            model.addRow(row);
+        }
+        OrdersTable.setModel(model);
+    }
+
+    private void addComponentsToPanelAdd(JPanel panelAdd) {
+        panelAdd.setLayout(new BorderLayout());
+    
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.3; // Label weight
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+    
+        // Adding the "Order Number:" label
+        inputPanel.add(new JLabel("Order Number:"), gbc);
+    
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField orderNumber = new JTextField(10); // Define the JTextField for order number
+        inputPanel.add(orderNumber, gbc);
+    
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0.3; // Reset to label weight
+        // Adding the "Order Date:" label
+        inputPanel.add(new JLabel("Order Date:"), gbc);
+    
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField orderDate = new JTextField(10); // Define the JTextField for order date
+        inputPanel.add(orderDate, gbc);
         
+        panelAdd.add(inputPanel, BorderLayout.NORTH);
+
+        JScrollPane scrollPane = new JScrollPane(OrdersTable);
+
+        JPanel tableContainer = new JPanel(new BorderLayout());
+        tableContainer.add(scrollPane, BorderLayout.CENTER);
+        panelView.add(tableContainer, BorderLayout.CENTER);
     }
 
     
