@@ -20,8 +20,13 @@ public class ProductManagementPanel extends JFrame {
 
     private JTable productsTable;
     private JTextField searchTextField;
+    private JTextField searchCodeField;
+
+    
 
     public ProductManagementPanel() {
+
+        
         productController = new ProductController(new ProductsDAO(), this);
 
         initializeFields();
@@ -62,6 +67,14 @@ public class ProductManagementPanel extends JFrame {
             searchProducts();
         });
 
+                // Panel for "View" knappen
+        JPanel viewSearchButtonPanel = new JPanel(new FlowLayout());
+        viewSearchButtonPanel.add(viewButton);
+        viewSearchButtonPanel.add(searchButton);
+
+       
+
+
         // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
@@ -69,25 +82,24 @@ public class ProductManagementPanel extends JFrame {
         JPanel panel1 = new JPanel(new BorderLayout());
         
         addComponentsToPanelView(panel1);
-        panel1.add(viewButton, BorderLayout.SOUTH);
-        panel1.add(searchButton, BorderLayout.EAST);
+        panel1.add(viewSearchButtonPanel, BorderLayout.SOUTH);
         tabbedPane.addTab("View Products", null, panel1, "Click to view");
 
         // Tab 2: Add Employee
         JPanel panel2 = new JPanel(new BorderLayout());
-        addComponentsToPanel(panel2);
+        addComponentsToPanelAdd(panel2);
         panel2.add(addButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Add Products", null, panel2, "Click to add");
 
         // Tab 3: Update Products
         JPanel panel3 = new JPanel(new BorderLayout());
-        addComponentsToPanel(panel3);
+        addComponentsToPanelUpdate(panel3);
         panel3.add(updateButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Update Products", null, panel3, "Click to Update");
 
         // Tab 4: Delete Products
         JPanel panel4 = new JPanel(new BorderLayout());
-        addComponentsToPanel(panel4);
+        addComponentsToPanelDelete(panel4);
         panel4.add(deleteButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Delete Products", null, panel4, "Click to Delete");
 
@@ -119,19 +131,9 @@ public class ProductManagementPanel extends JFrame {
 
         viewButton.addActionListener(e -> productController.handleViewAllProducts());
         searchButton.addActionListener(e -> searchProducts());
+        deleteButton.addActionListener(e -> deleteProduct());
+
     }
-
-  /*  private void viewProducts() {
-        ProductsDAO ProductsDAO = new ProductsDAO();
-        List<String[]> productList = ProductsDAO.fetchProducts();
-        String[] columnNames = { "Product Code", "Product Name", "Product Line", "Product Scale", "Product Vendor", "Product Description", "quantityInStock", "buyPrice", "MSRP" };
-
-        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-        for (String[] row : productList) {
-            model.addRow(row);
-        }
-        productsTable.setModel(model);
-    }  */
 
     private void initializeFields() {
         searchTextField = new JTextField(10);
@@ -152,9 +154,21 @@ public class ProductManagementPanel extends JFrame {
         String productName = searchTextField.getText();
         productController.handleSearchProducts(productName);
     }
+
+    private void deleteProduct() {
+        String productCode = searchCodeField.getText();
+        boolean deletionSuccessful = productController.handleDeleteProduct(productCode);
+        if (deletionSuccessful) {
+            JOptionPane.showMessageDialog(this, "Produktet ble slettet vellykket.", "Sletting fullført", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Feil ved sletting av produkt.", "Feil", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    
     
 
-    private void addComponentsToPanel(JPanel panel) {
+    private void addComponentsToPanelAdd(JPanel panel) {
         JPanel labelPanel = new JPanel(new GridLayout(9, 1)); // 8 labels
         JPanel fieldPanel = new JPanel(new GridLayout(9, 1)); // 8 fields
 
@@ -194,6 +208,68 @@ public class ProductManagementPanel extends JFrame {
         panel.add(fieldPanel, BorderLayout.CENTER);
     }
 
+    private void addComponentsToPanelUpdate(JPanel panelUpdate) {
+        panelUpdate.setLayout(new BorderLayout());
+    
+        JPanel inputPanelUpdate = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+    
+        // Product Code
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0.3;
+        inputPanelUpdate.add(new JLabel("Product Code:"), gbc);
+    
+        gbc.gridx = 1;
+        gbc.weightx = 0.7;
+        JTextField productCodeTextField = new JTextField(10);
+        inputPanelUpdate.add(productCodeTextField, gbc);
+    
+        // Quantity In Stock
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 0.3;
+        inputPanelUpdate.add(new JLabel("Quantity In Stock:"), gbc);
+    
+        gbc.gridx = 1;
+        gbc.weightx = 0.7;
+        JTextField quantityInStockTextField = new JTextField(10);
+        inputPanelUpdate.add(quantityInStockTextField, gbc);
+    
+        // Buy Price
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.weightx = 0.3;
+        inputPanelUpdate.add(new JLabel("Buy Price:"), gbc);
+    
+        gbc.gridx = 1;
+        gbc.weightx = 0.7;
+        JTextField buyPriceTextField = new JTextField(10);
+        inputPanelUpdate.add(buyPriceTextField, gbc);
+    
+        // MSRP
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.weightx = 0.3;
+        inputPanelUpdate.add(new JLabel("MSRP:"), gbc);
+    
+        gbc.gridx = 1;
+        gbc.weightx = 0.7;
+        JTextField msrpTextField = new JTextField(10);
+        inputPanelUpdate.add(msrpTextField, gbc);
+    
+        panelUpdate.add(inputPanelUpdate, BorderLayout.NORTH);
+    
+        // Now, create the scrollPane with the employeeTable right here:
+        JScrollPane scrollPane = new JScrollPane(productsTable);
+    
+        // Create a container panel for the table to align it to the left
+        JPanel tableContainer = new JPanel(new BorderLayout());
+        tableContainer.add(scrollPane, BorderLayout.CENTER);
+        panelUpdate.add(tableContainer, BorderLayout.CENTER);
+    }
+    
     private void addComponentsToPanelView(JPanel panelView) {
         // Create a JTextField for search
         
@@ -229,10 +305,39 @@ public class ProductManagementPanel extends JFrame {
         
     }
 
-    
+    private void addComponentsToPanelDelete(JPanel panelDelete) {
+        // Create a JTextField for search
+        
+        panelDelete.setLayout(new BorderLayout());
 
-    
-    
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0.3; // Reset to label weight
+        // Adding the "Last Name:" label
+        inputPanel.add(new JLabel("Product code:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        searchCodeField = new JTextField(10);
+        inputPanel.add(searchCodeField, gbc);
+
+        
+
+        panelDelete.add(inputPanel, BorderLayout.NORTH);
+
+        // Now, create the scrollPane with the employeeTable right here:
+        JScrollPane scrollPane = new JScrollPane(productsTable);
+
+        // Create a container panel for the table to align it to the left
+        JPanel tableContainer = new JPanel(new BorderLayout());
+        tableContainer.add(scrollPane, BorderLayout.CENTER);
+        panelDelete.add(tableContainer, BorderLayout.CENTER);
+    }
+
         public void displayProducts(List<String[]> productList) {
             String[] columnNames = { "Product Code", "Product Name", "Product Line", "Product Scale", "Product Vendor", "Product Description", "quantityInStock", "buyPrice", "MSRP" };
     
@@ -244,9 +349,6 @@ public class ProductManagementPanel extends JFrame {
         }
     
        
-    
-    
-
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             ProductManagementPanel frame = new ProductManagementPanel();
