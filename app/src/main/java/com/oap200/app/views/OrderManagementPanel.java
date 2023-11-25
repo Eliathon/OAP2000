@@ -131,13 +131,13 @@ private static final String PREF_X = "window_x";
 
 
     private void initializeFields() {
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
+        this.orderNumber = new JTextField(10);
+        this.orderDate = new JTextField(10);
+        this.requiredDate = new JTextField(10);
+        this.shippedDate = new JTextField(10);
+        this.status = new JTextField(10);
+        this.commetns = new JTextField(10);
+        this.customerNumber = new JTextField(10);
     }
 
     private void addComponentsToPanel(JPanel panel) {
@@ -213,7 +213,7 @@ private static final String PREF_X = "window_x";
     }
 
     private void addOrders() {
-        OrdersController ordersController = new OrdersController();
+        OrdersController OrdersController = new OrdersController();
     
         String orderNumber = orderNumberField.getText();
         String orderDate = orderDateField.getText();
@@ -237,7 +237,7 @@ private static final String PREF_X = "window_x";
     private void addComponentsToPanelAdd(JPanel paneladd) {
         panelAdd.setLayout(new BorderLayout());
     
-        JPanel addComponentsToPanel = new JPanel(new GridBagLayout());
+        JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 0.3; // Label weight
@@ -338,17 +338,81 @@ private static final String PREF_X = "window_x";
     }
 
     private void updateOrders() {
+        OrdersController OrdersController = new OrdersController();
 
-        JTextArea orderNumber = new JTextArea(10);
-        JTextArea orderDate = new JTextArea(10);
-        JTextArea requiredDate = new JTextArea(10);
-        JTextArea shippedDate = new JTextArea(10);
-        JTextArea status = new JTextArea(10);
-        JTextArea comments = new JTextArea(10);
-        JTextArea customerNumber = new JTextArea(10);
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.3; // Label weight
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+    
+        // Adding the "Order Number:" label
+        inputPanel.add(new JLabel("Update Order Number:"), gbc);
+    
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField orderNumberField = new JTextField(10); //JTextField for order number
+        inputPanel.add(orderNumberField, gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0.3; // Reset to label weight
+        // Adding the "Order Date:" label
+        inputPanel.add(new JLabel("Update Order Date:"), gbc);
+    
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField orderDate = new JTextField(10); // Define the JTextField for order date
+        inputPanel.add(orderDate, gbc);
 
-        OrdersController ordersController = new OrdersController();
+        gbc.gridy++;
+        inputPanel.add(new JLabel("Update Required Date:"), gbc);
 
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField requiredDate = new JTextField(10); // Define the JTextField for required date
+        inputPanel.add(requiredDate, gbc);
+
+        gbc.gridy++;
+        inputPanel.add(new JLabel("Update Shipped Date:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField shippedDate = new JTextField(10); // Define the JTextField for shipped date
+        inputPanel.add(shippedDate, gbc);
+
+        gbc.gridy++;
+        inputPanel.add(new JLabel("Update Status:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField status = new JTextField(10); // Define the JTextField for status
+        inputPanel.add(status, gbc);
+
+        gbc.gridy++;
+        inputPanel.add(new JLabel("Comments:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField comments = new JTextField(10); // Define the JTextField for comments
+        inputPanel.add(comments, gbc);
+
+        gbc.gridy++;
+        inputPanel.add(new JLabel("Customer Number:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField customerNumber = new JTextField(10); // Define the JTextField for customer number
+        inputPanel.add(customerNumber, gbc);
+    
+        panelUpdate.add(inputPanel, BorderLayout.NORTH);
+    
+        JScrollPane scrollPane = new JScrollPane(OrdersTable); 
+        JPanel tableContainer = new JPanel(new BorderLayout());
+        tableContainer.add(scrollPane, BorderLayout.CENTER);
+        panelUpdate.add(tableContainer, BorderLayout.CENTER);
+        
         boolean isUpdated = ordersController.updateOrder(orderNumber.getText(), orderDate.getText(), requiredDate.getText(), shippedDate.getText(), status.getText(), comments.getText(), customerNumber.getText());
         
         if (isUpdated) {
