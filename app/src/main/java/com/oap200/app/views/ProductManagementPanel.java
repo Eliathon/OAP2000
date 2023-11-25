@@ -1,3 +1,4 @@
+//Created by Sebastian
 package com.oap200.app.views;
 import com.oap200.app.models.ProductsDAO;
 import com.oap200.app.controllers.ProductController;
@@ -92,9 +93,6 @@ private ProductController productController;
         viewSearchButtonPanel.add(viewButton);
         viewSearchButtonPanel.add(searchButton);
 
-       
-
-
         // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
@@ -168,7 +166,6 @@ private ProductController productController;
 
     }
     
-
     private void initializeFields() {
         // Last produktlinjene før du initialiserer komponentene
         System.out.println("Initializing fields...");
@@ -186,7 +183,6 @@ private ProductController productController;
         this.MSRP = new JTextField(10);
     }
     
-
     private void loadProductLines() {
         if (productController != null) {
             List<String> productLines = productController.getProductLines();
@@ -197,15 +193,6 @@ private ProductController productController;
             System.err.println("ProductController is null!!");
         }
     }
-    
-
-    
-    
-    
-    
-    
-    
-    
     
 
     private void searchProducts() {
@@ -238,16 +225,10 @@ private ProductController productController;
         }
     }
     
-    
-    
-    
 
     private void addComponentsToPanelAdd(JPanel panel) {
         JPanel labelPanel = new JPanel(new GridLayout(9, 1)); 
         JPanel fieldPanel = new JPanel(new GridLayout(9, 1)); 
-
-       
-        
 
         labelPanel.add(new JLabel("Product Code:"));
         fieldPanel.add(productCode);
@@ -328,9 +309,6 @@ private ProductController productController;
         panelUpdate.add(tableContainer, BorderLayout.CENTER);
     }
     
-    
-    
-    
     private void addComponentsToPanelView(JPanel panelView) {
         // Create a JTextField for search
         
@@ -351,8 +329,6 @@ private ProductController productController;
         searchTextField = new JTextField(10);
         inputPanel.add(searchTextField, gbc);
 
-        
-
         panelView.add(inputPanel, BorderLayout.NORTH);
 
         // Now, create the scrollPane with the employeeTable right here:
@@ -362,8 +338,6 @@ private ProductController productController;
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelView.add(tableContainer, BorderLayout.CENTER);
-
-        
     }
 
     private void addComponentsToPanelDelete(JPanel panelDelete) {
@@ -385,8 +359,6 @@ private ProductController productController;
         gbc.weightx = 0.7; // Field weight
         searchCodeField = new JTextField(10);
         inputPanel.add(searchCodeField, gbc);
-
-        
 
         panelDelete.add(inputPanel, BorderLayout.NORTH);
 
@@ -411,10 +383,6 @@ private ProductController productController;
         // Endre utskriften for å bruke Arrays.deepToString
         System.out.println("Displayed products with lines: " + Arrays.deepToString(productList.toArray()));
     }
-    
-    
-
-    
     
        
     public static void main(String[] args) {
