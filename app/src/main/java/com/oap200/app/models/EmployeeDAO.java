@@ -1,99 +1,37 @@
+//Created by Kristian
 package com.oap200.app.models;
 
-import com.oap200.app.utils.DbConnect;
-import com.oap200.app.views.EmployeeManagementPanel;
-
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.table.DefaultTableModel;
+import com.oap200.app.views.EmployeeManagementPanel;
+
+import com.oap200.app.utils.DbConnect;
+
 public class EmployeeDAO {
-
-        public boolean hasReports(int employeeNumber) {
-            String sql = "SELECT COUNT(*) FROM employees WHERE reportsTo = ?";
-            try (Connection conn = new DbConnect().getConnection();
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                
-                pstmt.setInt(1, employeeNumber);
-                ResultSet rs = pstmt.executeQuery();
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
-                }
-            } catch (SQLException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            return false;
-        }
-    
-public boolean addEmployee(String employeeNumber, String lastName, String firstName, String extension, String email, String officeCode, String reportsTo, String jobTitle) {
-    String sql = "INSERT INTO employees (employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-    try (Connection conn = new DbConnect().getConnection();
-    PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-        pstmt.setString(1, employeeNumber);
-            pstmt.setString(2, lastName);
-            pstmt.setString(3, firstName);
-            pstmt.setString(4, extension);
-            pstmt.setString(5, email);
-            pstmt.setString(6, officeCode);
-            pstmt.setString(7, reportsTo);
-            pstmt.setString(8, jobTitle);
-
-            int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
-    } catch (SQLException | ClassNotFoundException e) {
-        e.printStackTrace();
-        return false;
-    }
-}
-
-
-        public boolean deleteEmployee(int employeeNumber) {
-            if (hasReports(employeeNumber)) {
-                return false;
-            }
-    
-            String updateSql = "UPDATE customers SET salesRepEmployeeNumber = NULL WHERE salesRepEmployeeNumber = ?";
-            String deleteSql = "DELETE FROM employees WHERE employeeNumber = ?";
-            
-            try (Connection conn = new DbConnect().getConnection()) {
-                // Set customers' salesRepEmployeeNumber to NULL where this employee is the sales rep
-                try (PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
-                    pstmt.setInt(1, employeeNumber);
-                    pstmt.executeUpdate();
-                }
-    
-                // Delete the employee
-                try (PreparedStatement pstmt = conn.prepareStatement(deleteSql)) {
-                    pstmt.setInt(1, employeeNumber);
-                    pstmt.executeUpdate();
-                }
-            } catch (SQLException | ClassNotFoundException e) {
-                e.printStackTrace();
-                return false;
-            }
-            return true;
-        }
-    
-    
-
-
-
+    // Method to fetch all products from the database
     public List<String[]> fetchEmployees() {
+        System.out.println("View button clicked!");
         List<String[]> employees = new ArrayList<>();
 
         try {
+            // Establish a database connection
             DbConnect db = new DbConnect();
             Connection myConnection = db.getConnection();
             Statement myStmt = myConnection.createStatement();
+            
+            // Execute SELECT query to retrieve all employees
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM employees");
 
+            // Process the retrieved data and populate the 'employees' list
             while (myRs.next()) {
                 String[] employee = new String[] {
                         myRs.getString("employeeNumber"),
@@ -112,63 +50,182 @@ public boolean addEmployee(String employeeNumber, String lastName, String firstN
         }
         return employees;
     }
-  
-    public List<String[]> searchNum(String empNumber) {
-        List<String[]> employees = new ArrayList<>();
-        String sql = "SELECT employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle FROM employees WHERE employeeNumber LIKE ?";
+    
+    // Method to search for employees by name in the database
+    public List<String[]> searchEmployees(String lastName) {
+        List<String[]> searchResults = new ArrayList<>();
 
-        try (Connection conn = new DbConnect().getConnection();
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try {
+            // Establish a database connection
+            DbConnect db = new DbConnect();
+            Connection myConnection = db.getConnection();
+            
+            // Execute prepared statement to search for employees after the given name
+            PreparedStatement preparedStatement = myConnection.prepareStatement("SELECT * FROM employees WHERE lastName LIKE ?");
+            preparedStatement.setString(1, "%" + lastName + "%");
+            ResultSet myRs = preparedStatement.executeQuery();
 
-        pstmt.setString(1, "%" + empNumber + "%");
-        try (ResultSet rs = pstmt.executeQuery()) {
-            while (rs.next()) {
-                String[] employee = {
-                    rs.getString("employeeNumber"),
-                    rs.getString("lastName"),
-                    rs.getString("firstName"),
-                    rs.getString("extension"),
-                    rs.getString("email"),
-                    rs.getString("officeCode"),
-                    rs.getString("reportsTo"),
-                    rs.getString("jobTitle"),
+            // Process the retrieved data and populate the 'searchResults' list
+            while (myRs.next()) {
+                String[] employee = new String[] {
+                        myRs.getString("employeeNumber"),
+                        myRs.getString("lastName"),
+                        myRs.getString("firstLine"),
+                        myRs.getString("extension"),
+                        myRs.getString("email"),
+                        myRs.getString("officeCode"),
+                        myRs.getString("reportsTo"),
+                        myRs.getString("jobTitle"),
                 };
-                employees.add(employee);
+                searchResults.add(employee);
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return searchResults;
+    }
+    
+    // Method to delete an employee from the database
+    public boolean deleteEmployee(String employeeNumber) {
+        try {
+            // Establish a database connection
+            DbConnect db = new DbConnect();
+            Connection myConnection = db.getConnection();
+            
+            // Execute prepared statement to delete an employee with a given code
+            PreparedStatement preparedStatement = myConnection.prepareStatement("DELETE FROM employees WHERE employeeNumber = ?");
+            preparedStatement.setString(1, employeeNumber);
+            
+            // Get the number of rows affected after the deletion
+            int rowsAffected = preparedStatement.executeUpdate();
+            
+            // Return true if deletion was successful
+            return rowsAffected > 0;
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+    
+    // Method to retrieve distinct product lines from the database
+    public static List<String> getEmployeeRoles() {
+        List<String> employeeRoles = new ArrayList<>();
+
+        try {
+            // Establish a database connection
+            DbConnect db = new DbConnect();
+            Connection myConnection = db.getConnection();
+            Statement myStmt = myConnection.createStatement();
+            
+            // Execute SELECT query to retrieve the employee roles 
+            ResultSet myRs = myStmt.executeQuery("SELECT DISTINCT jobTitle FROM employees");
+
+            // Process the retrieved data and populate the 'productLines' list
+            while (myRs.next()) {
+                String role = myRs.getString("jobTitle");
+                employeeRoles.add(role);
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        return employeeRoles;
+    }
+    
+    // Method to add a new employee to the database
+    public boolean addEmployee(String employeeNumber, String lastName, String firstName, String extension, String email, String officeCode, Integer reportsTo, String jobTitle) {
+        Connection myConnection = null;
+
+        try {
+            // Establish a database connection
+            DbConnect db = new DbConnect();
+            myConnection = db.getConnection();
+
+            // Prepare the INSERT query
+            PreparedStatement preparedStatement = myConnection.prepareStatement("INSERT INTO employees VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement.setString(1, employeeNumber);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setString(3, firstName);
+            preparedStatement.setString(4, extension);
+            preparedStatement.setString(5, email);
+            preparedStatement.setString(6, officeCode);
+            preparedStatement.setInt(7, reportsTo);
+            preparedStatement.setString(8, jobTitle);
+
+            // Validate input data
+            if (employeeNumber == null || employeeNumber.trim().isEmpty() || lastName == null || lastName.trim().isEmpty()) {
+                System.out.println("Employee number and last name is required.");
+                return false;
+            }
+
+            // Start transaction
+            myConnection.setAutoCommit(false);
+
+            // Execute the INSERT query
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            // Confirm the transaction if the addition was successful
+            if (rowsAffected > 0) {
+                myConnection.commit();
+                System.out.println("Employee added successfully");
+            } else {
+                // Roll back the transaction if the addition failed
+                myConnection.rollback();
+                System.out.println("Failed to add employee");
+            }
+
+            // Log the number of affected rows (for troubleshooting)
+            System.out.println("Rows affected: " + rowsAffected);
+
+            // Return true if the addition was successful
+            return rowsAffected > 0;
+
+        } catch (SQLException | ClassNotFoundException | NumberFormatException ex) {
+            // Log any exceptions
+            ex.printStackTrace();
+            return false;
+
+        } finally {
+            try {
+                if (myConnection != null) {
+                    // Set back to autocommit=true
+                    myConnection.setAutoCommit(true);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
-    } catch (SQLException | ClassNotFoundException e) {
-        e.printStackTrace();
     }
-    return employees;
-}
+    
+    // Method to update an employee in the database
+    public boolean updateEmployee(String employeeNumber, String lastName, String firstName, String extension, String email, String officeCode, Integer reportsTo, String jobTitle) {
+        try {
+            
+            // Establish a database connection
+            DbConnect db = new DbConnect();
+            Connection myConnection = db.getConnection();
+            PreparedStatement preparedStatement = myConnection.prepareStatement(
+                    "UPDATE employees SET lastName=?, firstName=?, extension=?, email=?, officeCode=?, reportsTo=?, jobTitle=? WHERE employeeNumber=?");
 
-public List<String[]> searchName(String empName) {
-        List<String[]> employees = new ArrayList<>();
-        String sql = "SELECT employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle FROM employees WHERE lastName LIKE ?";
+            // Set parameters for the UPDATE query
+           
+        preparedStatement.setString(1, lastName);
+        preparedStatement.setString(2, firstName);
+        preparedStatement.setString(3, extension);
+        preparedStatement.setString(4, email);
+        preparedStatement.setString(5, officeCode);
+           preparedStatement.setInt(6, reportsTo);
+        preparedStatement.setString(7, jobTitle);
+        preparedStatement.setString(8, employeeNumber);
 
-        try (Connection conn = new DbConnect().getConnection();
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            // Execute the UPDATE query
+            int rowsAffected = preparedStatement.executeUpdate();
 
-        pstmt.setString(1, "%" + empName + "%");
-        try (ResultSet rs = pstmt.executeQuery()) {
-            while (rs.next()) {
-                String[] employee = {
-                    rs.getString("employeeNumber"),
-                   rs.getString("lastName"),
-                   rs.getString("firstName"), 
-                    rs.getString("extension"),
-                    rs.getString("email"),
-                    rs.getString("officeCode"),
-                    rs.getString("reportsTo"),
-                    rs.getString("jobTitle"),
-                };
-                employees.add(employee);
-            }
+            // Return true if the update was successful
+            return rowsAffected > 0;
+        } catch (SQLException | ClassNotFoundException | NumberFormatException ex) {
+            ex.printStackTrace();
+            return false;
         }
-    } catch (SQLException | ClassNotFoundException e) {
-        e.printStackTrace();
     }
-    return employees;
-}
-
 }
