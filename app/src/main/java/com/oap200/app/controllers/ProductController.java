@@ -1,3 +1,4 @@
+//Created by Sebastian
 package com.oap200.app.controllers;
 
 import com.oap200.app.models.ProductsDAO;
@@ -8,6 +9,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 public class ProductController {
+
     // Metode for å håndtere visning av produkter
         private ProductsDAO productsDAO;
         private ProductManagementPanel productManagementPanel;
@@ -37,26 +39,43 @@ public class ProductController {
             }
         }
 
-        private void updateProductList() {
-            List<String[]> allProducts = productsDAO.fetchProducts();
-            productManagementPanel.displayProducts(allProducts);
+       
+        
+        public boolean handleAddProduct(String productCode, String productName, String productLine, String productScale, String productVendor, String productDescription, String quantityInStockText, String buyPriceText, String MSRPText) {
+            try {
+                int quantityInStock = Integer.parseInt(quantityInStockText);
+                BigDecimal buyPrice = new BigDecimal(buyPriceText);
+                BigDecimal MSRP = new BigDecimal(MSRPText);
+        
+                return productsDAO.addProduct(productCode, productName, productLine, productScale, productVendor, productDescription, quantityInStock, buyPrice, MSRP);
+            } catch (NumberFormatException | ArithmeticException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(productManagementPanel, "Feil ved konvertering av tall.", "Feil", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
         }
         
-        public boolean handleAddProduct(String productCode, String productName, String productLine, String productScale, String productVendor, String productDescription, String quantityInStock, String buyPrice, String MSRP) {
-            // Logikken for å legge til et produkt i databasen
-            // Du kan kalle productsDAO eller andre relevante metoder her
+        
     
-            // Returner true hvis tillegg var vellykket, ellers false
-            return true; // eller false basert på faktisk tilstand
-        }
-        
         public ProductsDAO getProductsDAO() {
             return this.productsDAO;
         }
+    
+        public List<String> getProductLines() {
+            return ProductsDAO.getProductLines();
+        }
+
+        public boolean handleUpdateProduct(String productCode, String newQuantityInStock, String newBuyPrice, String newMSRP) {
+            try {
+                return productsDAO.updateProduct(productCode, newQuantityInStock, newBuyPrice, newMSRP);
+            } catch (NumberFormatException | ArithmeticException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(productManagementPanel, "Feil ved konvertering av tall.", "Feil", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
         
-
-
         
-
+        
     
 } 

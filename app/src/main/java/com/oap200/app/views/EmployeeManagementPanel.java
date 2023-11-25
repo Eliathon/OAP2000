@@ -2,13 +2,11 @@ package com.oap200.app.views;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.prefs.Preferences;
-import java.util.Collections;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 import com.oap200.app.models.EmployeeDAO;
 import com.oap200.app.utils.ButtonBuilder;
@@ -18,14 +16,20 @@ public class EmployeeManagementPanel extends JFrame {
     private static final String PREF_X = "window_x";
     private static final String PREF_Y = "window_y";
     private JComboBox<String> reportsToComboBox;
-
-    
+    private JTextField employeeNumberField;
+    private JTextField lastNameField;
+    private JTextField firstNameField;
+    private JTextField extensionField;
+    private JTextField emailField;
+    private JTextField officeCodeField;
+    private JTextField reportsToField;
+    private JTextField jobTitleField;
     private JTable employeeTable;
 
     public EmployeeManagementPanel() {    
         initializeFields();
         reportsToComboBox = new JComboBox<>();
-        populateReportsToDropdown();
+      
 
         // Load the last window position
         Preferences prefs = Preferences.userNodeForPackage(EmployeeManagementPanel.class);
@@ -44,19 +48,13 @@ public class EmployeeManagementPanel extends JFrame {
         // Set up the layout for the frame
         setLayout(new BorderLayout());
 
-        // Initialize ButtonBuilder buttons
-        JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
-            /* Action for Back Button */});
-        JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
-            /* Action for Logout Button */});
-        JButton viewButton = ButtonBuilder.createViewButton(() -> {
-            /* Action for View Button */});
-        JButton addButton = ButtonBuilder.createAddButton(() -> {
-            /* Action for Add Button */});
-        JButton deleteButton = ButtonBuilder.createDeleteButton(this::deleteEmployee);
-            /* Action for Delete Button */
-        JButton updateButton = ButtonBuilder.createUpdateButton(() -> {
-            /* Action for Update Button */});
+    JButton backButton = ButtonBuilder.createBlueBackButton(() -> {/* Action for Back Button */});
+    JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {/* Action for Logout Button */});
+    JButton viewButton = ButtonBuilder.createViewButton(this::viewEmployees);
+    JButton addButton = ButtonBuilder.createAddButton(this::addEmployee);
+    JButton deleteButton = ButtonBuilder.createDeleteButton(this::deleteEmployee);
+    JButton updateButton = ButtonBuilder.createUpdateButton(() -> {/* Action for Update Button */});
+
 
         // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -120,8 +118,7 @@ public class EmployeeManagementPanel extends JFrame {
     private void viewEmployees() {
         EmployeeDAO employeeDAO = new EmployeeDAO();
         List<String[]> employeeList = employeeDAO.fetchEmployees();
-        String[] columnNames = { "Employee Number", "Last Name", "First Name", "Extension", "E-mail", "Office Code",
-                "Reports To", "Job Title" };
+        String[] columnNames = { "Employee Number", "Last Name", "First Name", "Extension", "E-mail", "Office Code", "Reports To", "Job Title" };
 
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         for (String[] row : employeeList) {
@@ -134,6 +131,33 @@ public class EmployeeManagementPanel extends JFrame {
         EmployeeDAO employeeDAO = new EmployeeDAO();
         List<String[]> searchResults = employeeDAO.searchNum(PREF_X);
     }
+
+private void addEmployee() {
+    String employeeNumber = employeeNumberField.getText().trim();
+   String lastName = lastNameField.getText().trim();
+   String firstName = firstNameField.getText().trim();
+    String extension = extensionField.getText().trim();
+    String email = emailField.getText().trim();
+    String officeCode = officeCodeField.getText().trim();
+    String reportsTo = reportsToField.getText().trim();
+    String jobTitle = jobTitleField.getText().trim();
+
+    if (employeeNumber.isEmpty() || lastName.isEmpty() || firstName.isEmpty() || extension.isEmpty() || email.isEmpty() || officeCode.isEmpty() || reportsTo.isEmpty() || jobTitle.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "All fields are required.");
+        return;
+    }
+
+EmployeeDAO employeeDAO = new EmployeeDAO();
+boolean success = employeeDAO.addEmployee(employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle);
+
+if (success){
+    JOptionPane.showMessageDialog(this, "Employee added successfully!");
+    viewEmployees();
+} else {
+        JOptionPane.showMessageDialog(this, "Error: Could not create new employee.", "Addition Error", JOptionPane.ERROR_MESSAGE);
+}
+
+}
 
     private void deleteEmployee() {
         int selectedRow = employeeTable.getSelectedRow();
@@ -153,42 +177,17 @@ public class EmployeeManagementPanel extends JFrame {
         }
     }
     
-private void populateReportsToDropdown() {try {
-        // No direct database access here, use DAO methods for data retrieval
-        List<Employee> employees = EmployeeDAO.fetchEmployees();
-        for (Employee employee : employees) {
-            reportsToComboBox.addItem(employee.toString());
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
 
-private class Employee{
-    private int employeeNumber;
-    private String firstName;
-    private String lastName;
-
-public static List<Employee> fetchEmployees() {
-            try {
-                return EmployeeDAO.fetchEmployees(); // Implement this method in your DAO
-            } catch (Exception e) {
-                e.printStackTrace();
-                return Collections.emptyList();
-            }
-        }
-
-}
 
     private void initializeFields() {
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
-        new JTextField(10);
+        employeeNumberField = new JTextField(10);
+        lastNameField = new JTextField(10);
+        firstNameField = new JTextField(10);
+        extensionField = new JTextField(10);
+        emailField = new JTextField(10);
+        officeCodeField = new JTextField(10);
+        reportsToField = new JTextField(10);
+        jobTitleField = new JTextField(10);
     }
 
     private void addComponentsToPanel(JPanel panel) {
@@ -196,7 +195,7 @@ public static List<Employee> fetchEmployees() {
         JPanel fieldPanel = new JPanel(new GridLayout(8, 1)); // 8 fields
 
         // Cloning fields for each tab
-        JTextField employeeId = new JTextField(10);
+        JTextField employeeNumber = new JTextField(10);
         JTextField lastName = new JTextField(10);
         JTextField firstName = new JTextField(10);
         JTextField extension = new JTextField(10);
@@ -206,7 +205,7 @@ public static List<Employee> fetchEmployees() {
         JTextField jobTitle = new JTextField(10);
 
         labelPanel.add(new JLabel("Employee Number:"));
-        fieldPanel.add(employeeId);
+        fieldPanel.add(employeeNumber);
         labelPanel.add(new JLabel("Last Name:"));
         fieldPanel.add(lastName);
         labelPanel.add(new JLabel("First Name:"));
@@ -241,8 +240,9 @@ public static List<Employee> fetchEmployees() {
 
         gbc.gridx = 1;
         gbc.weightx = 0.7; // Field weight
-        JTextField employeeId = new JTextField(10);
-        inputPanel.add(employeeId, gbc);
+        employeeNumberField = new JTextField(10);  // Use the class field
+    inputPanel.add(employeeNumberField, gbc);
+
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -265,6 +265,12 @@ public static List<Employee> fetchEmployees() {
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelView.add(tableContainer, BorderLayout.CENTER);
     }
+
+private void initView(){
+
+    viewButton.addActionListener(e -> viewEmployees());
+    addButton.addActionListener(e -> addEmployee());
+}
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

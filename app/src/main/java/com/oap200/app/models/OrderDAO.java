@@ -59,6 +59,8 @@ public class OrderDAO {
             
         String addquery = "INSERT INTO orders (orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber)" + "VALUES (?,?,?,?,?,?,?)";
         PreparedStatement statement = myConnection.prepareStatement(addquery);
+        Statement myStmt = myConnection.createStatement();
+        ResultSet myRs = myStmt.executeQuery("INSERT INTO * TO orders");
 
         statement.setString(1, orderNumber);
         statement.setString(2, orderDate);
