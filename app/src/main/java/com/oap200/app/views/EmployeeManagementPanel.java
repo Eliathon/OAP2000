@@ -142,7 +142,7 @@ private void addEmployee() {
     String reportsTo = reportsToField.getText().trim();
     String jobTitle = jobTitleField.getText().trim();
 
-    if (employeeNumber.isEmpty() || lastName.isEmpty() || firstName.isEmpty() || extension.isEmpty() || email.isEmpty() || officeCode.isEmpty() || reportsTo.isEmpty() || jobTitle.isEmpty()){
+    if (employeeNumber.isEmpty() || lastName.isEmpty() || firstName.isEmpty() || extension.isEmpty() || email.isEmpty() || officeCode.isEmpty() || reportsTo.isEmpty() || jobTitle.isEmpty()) {
         JOptionPane.showMessageDialog(this, "All fields are required.");
         return;
     }
