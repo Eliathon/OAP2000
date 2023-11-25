@@ -12,7 +12,7 @@ import com.oap200.app.views.OrderManagementPanel;
 
 public class OrdersController {
     private OrderDAO OrderDAO;
-    public OrderController() {
+    public OrdersController() {
         this.OrderDAO = new OrderDAO();
         new OrderManagementPanel();
     }

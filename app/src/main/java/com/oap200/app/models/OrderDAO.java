@@ -56,7 +56,7 @@ public class OrderDAO {
         String searchSql = "SELECT * FROM orders WHERE orderNumber = ? OR orderDate = ? OR requiredDate = ? OR shippedDate = ? OR status = ? OR comments = ? OR customerNumber = ?";
         PreparedStatement statement = myConnection.prepareStatement(searchSql);
 
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= 7; i++) {
             statement.setString(i, orderNumber); // Assuming searchCriteria is a string for simplicity
         }
 

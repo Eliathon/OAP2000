@@ -114,6 +114,15 @@ private static final String PREF_X = "window_x";
 
         viewButton.addActionListener(e -> viewOrders());
     }
+     private void initializeFields() {
+        JTextField orderNumber = new JTextField(10);
+        JTextField orderDate = new JTextField(10);
+        JTextField requiredDate = new JTextField(10);
+        JTextField shippedDate = new JTextField(10);
+        JTextField status = new JTextField(10);
+        JTextField comments = new JTextField(10);
+        JTextField customerNumber = new JTextField(10);
+    }
 
     private void viewOrders() {
         OrderDAO OrderDAO = new OrderDAO();
@@ -134,7 +143,7 @@ private static final String PREF_X = "window_x";
         OrderDAO OrderDAO = new OrderDAO();
     
         // Call the addOrders method from OrderDAO
-        boolean isAdded = OrderDAO.addOrders(set.orderNumber, set.orderDate, set.requiredDate, set.shippedDate, set.status, set.comments, set.customerNumber);
+        boolean isAdded = OrderDAO.addOrders("orderNumber", "orderDate", "requiredDate", "shippedDate", "status", "comments", "customerNumber");
     
         if (isAdded) {
             // Update the table in the view if addition is successful
@@ -142,23 +151,14 @@ private static final String PREF_X = "window_x";
         } else {
             System.out.println("Error adding order!");
         }
+
+         addButton.addActionListener(e -> addOrders());
     }
 
     
     private void ordersResult() {
         String orderNumber = searchTextField.getText();
         OrdersController.handleOrdersResult(orderNumber);
-    }
-
-
-    private void initializeFields() {
-        JTextField orderNumber = new JTextField(10);
-        JTextField orderDate = new JTextField(10);
-        JTextField requiredDate = new JTextField(10);
-        JTextField shippedDate = new JTextField(10);
-        JTextField status = new JTextField(10);
-        JTextField comments = new JTextField(10);
-        JTextField customerNumber = new JTextField(10);
     }
 
     private void addComponentsToPanel(JPanel panel) {
