@@ -48,7 +48,7 @@ public class OrdersController {
         return OrderDAO.addOrders(orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber);
     } catch (NumberFormatException | DataFormatException  e) {
         ex.printStackTrace();
-        JOptionPane.showMessageDialog(OrderManagementPanel, "Invalid input", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog("OrderManagementPanel", "Invalid input", JOptionPane.ERROR_MESSAGE);
         return false;
     }
 }
