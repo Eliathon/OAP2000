@@ -29,6 +29,30 @@ public class EmployeeDAO {
             return false;
         }
     
+public boolean addEmployee(String employeeNumber, String lastName, String firstName, String extension, String email, String officeCode, String reportsTo, String jobTitle) {
+    String sql = "INSERT INTO employees (employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+    try (Connection conn = new DbConnect().getConnection();
+    PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+        pstmt.setString(1, employeeNumber);
+            pstmt.setString(2, lastName);
+            pstmt.setString(3, firstName);
+            pstmt.setString(4, extension);
+            pstmt.setString(5, email);
+            pstmt.setString(6, officeCode);
+            pstmt.setString(7, reportsTo);
+            pstmt.setString(8, jobTitle);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+    } catch (SQLException | ClassNotFoundException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
+
         public boolean deleteEmployee(int employeeNumber) {
             if (hasReports(employeeNumber)) {
                 return false;
@@ -90,7 +114,7 @@ public class EmployeeDAO {
   
     public List<String[]> searchNum(String empNumber) {
         List<String[]> employees = new ArrayList<>();
-        String sql = "SELECT employeeNumber, firstName, lastName, extension, email, officeCode, reportsTo, jobTitle FROM employees WHERE employeeNumber LIKE ?";
+        String sql = "SELECT employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle FROM employees WHERE employeeNumber LIKE ?";
 
         try (Connection conn = new DbConnect().getConnection();
          PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -100,8 +124,8 @@ public class EmployeeDAO {
             while (rs.next()) {
                 String[] employee = {
                     rs.getString("employeeNumber"),
-                    rs.getString("firstName"),
                     rs.getString("lastName"),
+                    rs.getString("firstName"),
                     rs.getString("extension"),
                     rs.getString("email"),
                     rs.getString("officeCode"),
@@ -119,7 +143,7 @@ public class EmployeeDAO {
 
 public List<String[]> searchName(String empName) {
         List<String[]> employees = new ArrayList<>();
-        String sql = "SELECT employeeNumber, firstName, lastName, extension, email, officeCode, reportsTo, jobTitle FROM employees WHERE lastName LIKE ?";
+        String sql = "SELECT employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle FROM employees WHERE lastName LIKE ?";
 
         try (Connection conn = new DbConnect().getConnection();
          PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -129,8 +153,8 @@ public List<String[]> searchName(String empName) {
             while (rs.next()) {
                 String[] employee = {
                     rs.getString("employeeNumber"),
-                    rs.getString("firstName"),
-                    rs.getString("lastName"),
+                   rs.getString("lastName"),
+                   rs.getString("firstName"), 
                     rs.getString("extension"),
                     rs.getString("email"),
                     rs.getString("officeCode"),
