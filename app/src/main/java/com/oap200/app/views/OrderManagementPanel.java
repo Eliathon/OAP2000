@@ -121,7 +121,7 @@ private static final String PREF_X = "window_x";
         JTextField requiredDate = new JTextField(10);
         JTextField shippedDate = new JTextField(10);
         JTextField status = new JTextField(10);
-        JTextField comments = new JTextField(10);
+        JTextField comments = new JTextField(30);
         JTextField customerNumber = new JTextField(10);
     }
 
@@ -179,7 +179,7 @@ private static final String PREF_X = "window_x";
         JTextField requiredDate = new JTextField(10);
         JTextField shippedDate = new JTextField(10);
         JTextField status = new JTextField(10);
-        JTextField comments = new JTextField(10);
+        JTextField comments = new JTextField(30);
         JTextField customerNumber = new JTextField(10);
         
         labelPanel.add(new JLabel("Order Number:"));
@@ -241,8 +241,100 @@ private static final String PREF_X = "window_x";
         panelView.add(tableContainer, BorderLayout.CENTER);
     }
 
-    
-   
+    private void addComponentsToPanelAdd(JPanel panelAdd) {
+        panelAdd.setLayout(new BorderLayout());
+
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.3; // Label weight
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+
+        // Adding the "Order Number:" label
+        inputPanel.add(new JLabel(" Add Order Number:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField orderNumber = new JTextField(10);
+        inputPanel.add(orderNumber, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0.3; // Reset to label weight
+        // Adding the "Order Date:" label
+        inputPanel.add(new JLabel("Add Order Date:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField orderDate = new JTextField(10);
+        inputPanel.add(orderDate, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0.3; // Reset to label weight
+        // Adding the "Required Date:" label
+        inputPanel.add(new JLabel("Add Required Date:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField requiredDate = new JTextField(10);
+        inputPanel.add(requiredDate, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0.3; // Reset to label weight
+        // Adding the "Required Date:" label
+        inputPanel.add(new JLabel("Add Shipped Date:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField shippedDate = new JTextField(10);
+        inputPanel.add(shippedDate, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0.3; // Reset to label weight
+        // Adding the "Required Date:" label
+        inputPanel.add(new JLabel("Add Status:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField status = new JTextField(10);
+        inputPanel.add(status, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0.3; // Reset to label weight
+        // Adding the "Required Date:" label
+        inputPanel.add(new JLabel("Add Comments:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField comments = new JTextField(30);
+        inputPanel.add(comments, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0.3; // Reset to label weight
+        // Adding the "Required Date:" label
+        inputPanel.add(new JLabel("Add Customer Number:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField customerNumber = new JTextField(10);
+        inputPanel.add(customerNumber, gbc);
+
+        panelAdd.add(inputPanel, BorderLayout.NORTH);
+
+        // Now, create the scrollPane with the orderTable right here:
+        JScrollPane scrollPane = new JScrollPane(OrdersTable);
+
+        // Create a container panel for the table to align it to the left
+        JPanel tableContainer = new JPanel(new BorderLayout());
+        tableContainer.add(scrollPane, BorderLayout.CENTER);
+        panelAdd.add(tableContainer, BorderLayout.CENTER);
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
