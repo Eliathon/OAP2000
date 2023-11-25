@@ -10,7 +10,7 @@ import java.util.prefs.Preferences;
 
 import com.oap200.app.models.EmployeeDAO;
 import com.oap200.app.utils.ButtonBuilder;
-
+import com.oap200.app.controllers.EmployeesController;
 public class EmployeeManagementPanel extends JFrame {
 
     private static final String PREF_X = "window_x";
@@ -26,10 +26,51 @@ public class EmployeeManagementPanel extends JFrame {
     private JTextField jobTitleField;
     private JTable employeeTable;
 
+    private JTextField searchNumField;
+    private JTextField searchNameField;
+
+// Define methods to retrieve input values from GUI components
+public String getEmployeeNumber() {
+    return employeeNumberField.getText().trim();
+}
+
+public String getLastName() {
+    return lastNameField.getText().trim();
+}
+
+public String getFirstName() {
+    return firstNameField.getText().trim();
+}
+
+public String getExtension() {
+    return extensionField.getText().trim();
+}
+
+public String getEmail() {
+    return emailField.getText().trim();
+}
+
+public String getOfficeCode() {
+    return officeCodeField.getText().trim();
+}
+
+public String getReportsTo() {
+    return reportsToField.getText().trim();
+}
+
+public String getJobTitle() {
+    return jobTitleField.getText().trim();
+}
+
+// ... Other methods ...
+
+
+
+
     public EmployeeManagementPanel() {    
         initializeFields();
         reportsToComboBox = new JComboBox<>();
-      
+      initView();
 
         // Load the last window position
         Preferences prefs = Preferences.userNodeForPackage(EmployeeManagementPanel.class);
@@ -132,6 +173,15 @@ public class EmployeeManagementPanel extends JFrame {
         List<String[]> searchResults = employeeDAO.searchNum(PREF_X);
     }
 
+    public void showAddSuccessMessage(String message) {
+        JOptionPane.showMessageDialog(this, message);
+    }
+    
+    public void showAddErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Addition Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+
 private void addEmployee() {
     String employeeNumber = employeeNumberField.getText().trim();
    String lastName = lastNameField.getText().trim();
@@ -142,8 +192,9 @@ private void addEmployee() {
     String reportsTo = reportsToField.getText().trim();
     String jobTitle = jobTitleField.getText().trim();
 
+
     if (employeeNumber.isEmpty() || lastName.isEmpty() || firstName.isEmpty() || extension.isEmpty() || email.isEmpty() || officeCode.isEmpty() || reportsTo.isEmpty() || jobTitle.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "All fields are required.");
+        JOptionPane.showMessageDialog(this, "TESTEREN");
         return;
     }
 
@@ -195,31 +246,24 @@ if (success){
         JPanel fieldPanel = new JPanel(new GridLayout(8, 1)); // 8 fields
 
         // Cloning fields for each tab
-        JTextField employeeNumber = new JTextField(10);
-        JTextField lastName = new JTextField(10);
-        JTextField firstName = new JTextField(10);
-        JTextField extension = new JTextField(10);
-        JTextField email = new JTextField(10);
-        JTextField officeCode = new JTextField(10);
-        JTextField reportsTo = new JTextField(10);
-        JTextField jobTitle = new JTextField(10);
-
+        
         labelPanel.add(new JLabel("Employee Number:"));
-        fieldPanel.add(employeeNumber);
-        labelPanel.add(new JLabel("Last Name:"));
-        fieldPanel.add(lastName);
-        labelPanel.add(new JLabel("First Name:"));
-        fieldPanel.add(firstName);
-        labelPanel.add(new JLabel("Extension:"));
-        fieldPanel.add(extension);
-        labelPanel.add(new JLabel("Email:"));
-        fieldPanel.add(email);
-        labelPanel.add(new JLabel("Office Code:"));
-        fieldPanel.add(officeCode);
-        labelPanel.add(new JLabel("Reports To:"));
-        fieldPanel.add(reportsTo);
-        labelPanel.add(new JLabel("Job Title:"));
-        fieldPanel.add(jobTitle);
+    fieldPanel.add(employeeNumberField);
+    labelPanel.add(new JLabel("Last Name:"));
+    fieldPanel.add(lastNameField);
+    labelPanel.add(new JLabel("First Name:"));
+    fieldPanel.add(firstNameField);
+    labelPanel.add(new JLabel("Extension:"));
+    fieldPanel.add(extensionField);
+    labelPanel.add(new JLabel("Email:"));
+    fieldPanel.add(emailField);
+    labelPanel.add(new JLabel("Office Code:"));
+    fieldPanel.add(officeCodeField);
+    labelPanel.add(new JLabel("Reports To:"));
+    fieldPanel.add(reportsToField);
+    labelPanel.add(new JLabel("Job Title:"));
+    fieldPanel.add(jobTitleField);
+
 
         panel.add(labelPanel, BorderLayout.WEST);
         panel.add(fieldPanel, BorderLayout.CENTER);
@@ -266,7 +310,7 @@ if (success){
         panelView.add(tableContainer, BorderLayout.CENTER);
     }
 
-private void initView(){
+public void initView(){
 
     viewButton.addActionListener(e -> viewEmployees());
     addButton.addActionListener(e -> addEmployee());

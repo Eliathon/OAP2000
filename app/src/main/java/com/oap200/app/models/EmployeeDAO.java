@@ -1,6 +1,7 @@
 package com.oap200.app.models;
 
 import com.oap200.app.utils.DbConnect;
+import com.oap200.app.views.EmployeeManagementPanel;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
