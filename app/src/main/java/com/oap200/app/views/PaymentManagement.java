@@ -6,7 +6,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
 import java.util.prefs.Preferences;
+import java.util.Comparator;
 import java.util.List;
 
 import com.oap200.app.models.PaymentsDAO;
@@ -18,6 +20,8 @@ public class PaymentManagement extends JFrame {
     private static final String PREF_Y = "window_y";
 
     private JTable paymentsTable;
+
+    
 
     public PaymentManagement() {
         initializeFields();
@@ -46,40 +50,28 @@ public class PaymentManagement extends JFrame {
             /* Action for Logout Button */});
         JButton viewButton = ButtonBuilder.createViewButton(() -> {
             /* Action for View Button */});
-        JButton addButton = ButtonBuilder.createAddButton(() -> {
-            /* Action for Add Button */});
-        JButton deleteButton = ButtonBuilder.createDeleteButton(() -> {
-            /* Action for Delete Button */});
-        JButton updateButton = ButtonBuilder.createUpdateButton(() -> {
-            /* Action for Update Button */});
-          
+            JButton sortCustomerButton = new JButton("Sort by Customer Number");
+            JButton sortCheckButton = new JButton("Sort by Check Number");
+            JButton sortDateButton = new JButton("Sort by Payment Date");
+            JButton sortAmountButton = new JButton("Sort by Amount");
+
+            sortCustomerButton.addActionListener(e -> viewSortedData("customerNumber"));
+            sortCheckButton.addActionListener(e -> viewSortedData("checkNumber"));
+            sortDateButton.addActionListener(e -> viewSortedData("paymentDate"));
+            sortAmountButton.addActionListener(e -> viewSortedData("amount"));
+
+
 
         // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Tab 1: View Payments
+        // Tab 1: View Employee
         JPanel panel1 = new JPanel(new BorderLayout());
         addComponentsToPanelView(panel1);
         panel1.add(viewButton, BorderLayout.SOUTH);
         tabbedPane.addTab("View Payments", null, panel1, "Click to view");
 
-        // Tab 2: Add Payments
-        JPanel panel2 = new JPanel(new BorderLayout());
-        addComponentsToPanel(panel2);
-        panel2.add(addButton, BorderLayout.SOUTH);
-        tabbedPane.addTab("Add Payments", null, panel2, "Click to add");
-
-        // Tab 3: Update Payments
-        JPanel panel3 = new JPanel(new BorderLayout());
-        addComponentsToPanel(panel3);
-        panel3.add(updateButton, BorderLayout.SOUTH);
-        tabbedPane.addTab("Update Payments", null, panel3, "Click to Update");
-
-        // Tab 4: Delete Payments
-        JPanel panel4 = new JPanel(new BorderLayout());
-        addComponentsToPanel(panel4);
-        panel4.add(deleteButton, BorderLayout.SOUTH);
-        tabbedPane.addTab("Delete Payments", null, panel4, "Click to Delete");
+       
 
         // Initialize Panels
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
@@ -88,6 +80,10 @@ public class PaymentManagement extends JFrame {
         buttonPanel.setOpaque(true);
         buttonPanel.add(backButton);
         buttonPanel.add(logoutButton);
+        buttonPanel.add(sortCustomerButton);
+        buttonPanel.add(sortCheckButton);
+        buttonPanel.add(sortDateButton);
+        buttonPanel.add(sortAmountButton);
 
         // Main panel for the frame
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -104,11 +100,16 @@ public class PaymentManagement extends JFrame {
         // Initialize the table
         paymentsTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(paymentsTable);
-       
+        // Correct this line to add the scrollPane to the CENTER instead of EAST
         panel1.add(scrollPane, BorderLayout.CENTER);
 
         viewButton.addActionListener(e -> viewPayments());
+        viewButton.addActionListener(e -> viewCheck());
+        viewButton.addActionListener(e -> viewDate());
+        viewButton.addActionListener(e -> viewAmount());
     }
+
+    
 
     private void viewPayments() {
         PaymentsDAO PaymentsDAO = new PaymentsDAO();
@@ -122,25 +123,70 @@ public class PaymentManagement extends JFrame {
         paymentsTable.setModel(model);
     }
 
-    public void displayPayments(List<String[]> payments) {
-       
-        DefaultTableModel model = new DefaultTableModel();
+    private void viewSortedData(String sortByColumn) {
+        PaymentsDAO paymentsDAO = new PaymentsDAO();
+        List<String[]> paymentsList = paymentsDAO.fetchPaymentsOrderedBy(sortByColumn);
     
-        
-        String[] columnNames = { "Customer Number", "Check Number", "Payment Date", "Amount" };
+        String[] columnNames = { "Customer Number", "Checknumber", "Payment Date", "Amount" };
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
     
-       
-        model.setColumnIdentifiers(columnNames);
-    
-        // Add rows to the model
-        for (String[] payment : payments) {
-            model.addRow(payment);
+        for (String[] row : paymentsList) {
+            model.addRow(row);
         }
     
-        // Set the model to the JTable
         paymentsTable.setModel(model);
     }
-    
+
+      private void viewCheck() {
+    PaymentsDAO paymentsDAO = new PaymentsDAO();
+    List<String[]> paymentsList = paymentsDAO.fetchPayments();
+
+    // Sort paymentsList based on Checknumber (assuming it's a numeric value)
+    paymentsList.sort(Comparator.comparingDouble(row -> Double.parseDouble(row[1])));
+
+    String[] columnNames = { "Customer Number", "Checknumber", "Payment Date", "Amount" };
+    DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+
+    for (String[] row : paymentsList) {
+        model.addRow(row);
+    }
+
+    paymentsTable.setModel(model);
+}
+
+private void viewDate() {
+    PaymentsDAO paymentsDAO = new PaymentsDAO();
+    List<String[]> paymentsList = paymentsDAO.fetchPayments();
+
+    // Sort paymentsList based on Payment Date (assuming it's a date string in a sortable format)
+    paymentsList.sort(Comparator.comparing(row -> LocalDate.parse(row[2])));
+
+    String[] columnNames = { "Customer Number", "Checknumber", "Payment Date", "Amount" };
+    DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+
+    for (String[] row : paymentsList) {
+        model.addRow(row);
+    }
+
+    paymentsTable.setModel(model);
+}
+
+private void viewAmount() {
+    PaymentsDAO paymentsDAO = new PaymentsDAO();
+    List<String[]> paymentsList = paymentsDAO.fetchPayments();
+
+    // Sort paymentsList based on Amount (assuming it's a numeric value)
+    paymentsList.sort(Comparator.comparingDouble(row -> Double.parseDouble(row[3])));
+
+    String[] columnNames = { "Customer Number", "Checknumber", "Payment Date", "Amount" };
+    DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+
+    for (String[] row : paymentsList) {
+        model.addRow(row);
+    }
+
+    paymentsTable.setModel(model);
+}
 
 
     private void initializeFields() {
@@ -178,43 +224,66 @@ public class PaymentManagement extends JFrame {
 
     private void addComponentsToPanelView(JPanel panelView) {
         panelView.setLayout(new BorderLayout());
-
+    
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 0.3; // Label weight
         gbc.gridx = 0;
         gbc.gridy = 0;
-
+    
         // Adding the "Customer Number:" label
         inputPanel.add(new JLabel("Customer Number:"), gbc);
-
+    
         gbc.gridx = 1;
         gbc.weightx = 0.7; // Field weight
         JTextField customerNumber = new JTextField(10);
         inputPanel.add(customerNumber, gbc);
-
+    
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 0.3; // Reset to label weight
         // Adding the "Check Number:" label
         inputPanel.add(new JLabel("Check Number:"), gbc);
-
+    
         gbc.gridx = 1;
         gbc.weightx = 0.7; // Field weight
         JTextField checkNumber = new JTextField(10);
         inputPanel.add(checkNumber, gbc);
-
+    
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 0.3; // Reset to label weight
+        // Adding the "Payment Date:" label
+        inputPanel.add(new JLabel("Payment Date:"), gbc);
+    
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField paymentDate = new JTextField(10);
+        inputPanel.add(paymentDate, gbc);
+    
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.weightx = 0.3; // Reset to label weight
+        // Adding the "Amount:" label
+        inputPanel.add(new JLabel("Amount:"), gbc);
+    
+        gbc.gridx = 1;
+        gbc.weightx = 0.7; // Field weight
+        JTextField amount = new JTextField(10);
+        inputPanel.add(amount, gbc);
+    
         panelView.add(inputPanel, BorderLayout.NORTH);
-
-        // ScrollPane with the paymentsTable right here:
+    
+        // Now, create the scrollPane with the paymentsTable right here:
         JScrollPane scrollPane = new JScrollPane(paymentsTable);
-
-        
+    
+        // Create a container panel for the table to align it to the left
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelView.add(tableContainer, BorderLayout.CENTER);
     }
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
