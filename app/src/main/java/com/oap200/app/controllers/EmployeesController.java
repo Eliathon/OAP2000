@@ -42,7 +42,32 @@ public class EmployeesController {
 
     private void handleAddButton() {
         // Handle add button action
+
+        String employeeNumber = employeeManagementPanel.getEmployeeNumber();
+    String lastName = employeeManagementPanel.getLastName();
+    String firstName = employeeManagementPanel.getFirstName();
+    String extension = employeeManagementPanel.getExtension();
+    String email = employeeManagementPanel.getEmail();
+    String officeCode = employeeManagementPanel.getOfficeCode();
+    String reportsTo = employeeManagementPanel.getReportsTo();
+    String jobTitle = employeeManagementPanel.getJobTitle();
+
+    if (employeeNumber.isEmpty() || lastName.isEmpty() || firstName.isEmpty() || extension.isEmpty() ||
+    email.isEmpty() || officeCode.isEmpty() || reportsTo.isEmpty() || jobTitle.isEmpty()) {
+employeeManagementPanel.showAddErrorMessage("All fields are required.");
+return;
+
     }
+boolean success = employeeDAO.addEmployee(employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle);
+ if (success) {
+        employeeManagementPanel.showAddSuccessMessage("Employee added successfully!");
+        handleViewButton(); // Refresh the table to reflect the addition
+    } else {
+        employeeManagementPanel.showAddErrorMessage("Error: Could not create new employee.");
+    }
+}
+
+
 
     private void handleUpdateButton() {
         // Handle update button action

@@ -80,10 +80,7 @@ public class PaymentManagement extends JFrame {
         buttonPanel.setOpaque(true);
         buttonPanel.add(backButton);
         buttonPanel.add(logoutButton);
-        buttonPanel.add(sortCustomerButton);
-        buttonPanel.add(sortCheckButton);
-        buttonPanel.add(sortDateButton);
-        buttonPanel.add(sortAmountButton);
+       
 
         // Main panel for the frame
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -197,92 +194,56 @@ private void viewAmount() {
     
     }
 
-    private void addComponentsToPanel(JPanel panel) {
-        JPanel labelPanel = new JPanel(new GridLayout(4, 1)); // 8 labels
-        JPanel fieldPanel = new JPanel(new GridLayout(4, 1)); // 8 fields
-
-        // Cloning fields for each tab
-        JTextField customerNumber = new JTextField(10);
-        JTextField checkNumber = new JTextField(10);
-        JTextField paymentDate = new JTextField(10);
-        JTextField amount = new JTextField(10);
-        
-
-        labelPanel.add(new JLabel("Customer Number:"));
-        fieldPanel.add(customerNumber);
-        labelPanel.add(new JLabel("Check Number:"));
-        fieldPanel.add(checkNumber);
-        labelPanel.add(new JLabel("Payment Date:"));
-        fieldPanel.add(paymentDate);
-        labelPanel.add(new JLabel("Amount:"));
-        fieldPanel.add(amount);
-    
-
-        panel.add(labelPanel, BorderLayout.WEST);
-        panel.add(fieldPanel, BorderLayout.CENTER);
-    }
+   
 
     private void addComponentsToPanelView(JPanel panelView) {
-        panelView.setLayout(new BorderLayout());
-    
-        JPanel inputPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.3; // Label weight
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-    
-        // Adding the "Customer Number:" label
-        inputPanel.add(new JLabel("Customer Number:"), gbc);
-    
-        gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
-        JTextField customerNumber = new JTextField(10);
-        inputPanel.add(customerNumber, gbc);
-    
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 0.3; // Reset to label weight
-        // Adding the "Check Number:" label
-        inputPanel.add(new JLabel("Check Number:"), gbc);
-    
-        gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
-        JTextField checkNumber = new JTextField(10);
-        inputPanel.add(checkNumber, gbc);
-    
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.weightx = 0.3; // Reset to label weight
-        // Adding the "Payment Date:" label
-        inputPanel.add(new JLabel("Payment Date:"), gbc);
-    
-        gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
-        JTextField paymentDate = new JTextField(10);
-        inputPanel.add(paymentDate, gbc);
-    
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.weightx = 0.3; // Reset to label weight
-        // Adding the "Amount:" label
-        inputPanel.add(new JLabel("Amount:"), gbc);
-    
-        gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
-        JTextField amount = new JTextField(10);
-        inputPanel.add(amount, gbc);
-    
-        panelView.add(inputPanel, BorderLayout.NORTH);
-    
-        // Now, create the scrollPane with the paymentsTable right here:
-        JScrollPane scrollPane = new JScrollPane(paymentsTable);
-    
-        // Create a container panel for the table to align it to the left
-        JPanel tableContainer = new JPanel(new BorderLayout());
-        tableContainer.add(scrollPane, BorderLayout.CENTER);
-        panelView.add(tableContainer, BorderLayout.CENTER);
-    }
+    panelView.setLayout(new BorderLayout());
+
+    JPanel inputPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.weightx = 0.3; // Button weight
+
+    // Adding the "Customer Number" sorting button
+    JButton sortCustomerButton = new JButton("Sort by Customer Number");
+    sortCustomerButton.addActionListener(e -> viewSortedData("customerNumber"));
+    inputPanel.add(sortCustomerButton, gbc);
+
+    // Adding the "Check Number" sorting button
+    JButton sortCheckButton = new JButton("Sort by Check Number");
+    sortCheckButton.addActionListener(e -> viewSortedData("checkNumber"));
+    gbc.gridx = 1;
+    inputPanel.add(sortCheckButton, gbc);
+
+    // Adding the "Payment Date" sorting button
+    JButton sortDateButton = new JButton("Sort by Payment Date");
+    sortDateButton.addActionListener(e -> viewSortedData("paymentDate"));
+    gbc.gridx = 2;
+    inputPanel.add(sortDateButton, gbc);
+
+    // Adding the "Amount" sorting button
+    JButton sortAmountButton = new JButton("Sort by Amount");
+    sortAmountButton.addActionListener(e -> viewSortedData("amount"));
+    gbc.gridx = 3;
+    inputPanel.add(sortAmountButton, gbc);
+
+    // Adjusting button size based on header size
+    Dimension buttonSize = sortCustomerButton.getPreferredSize();
+    sortCheckButton.setPreferredSize(buttonSize);
+    sortDateButton.setPreferredSize(buttonSize);
+    sortAmountButton.setPreferredSize(buttonSize);
+
+    panelView.add(inputPanel, BorderLayout.NORTH);
+
+    // Now, create the scrollPane with the paymentsTable right here:
+    JScrollPane scrollPane = new JScrollPane(paymentsTable);
+
+    // Create a container panel for the table to align it to the left
+    JPanel tableContainer = new JPanel(new BorderLayout());
+    tableContainer.add(scrollPane, BorderLayout.CENTER);
+    panelView.add(tableContainer, BorderLayout.CENTER);
+}
+
     
 
     public static void main(String[] args) {
