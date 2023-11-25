@@ -35,6 +35,11 @@ public class ProductManagementPanel extends JFrame {
     private JTextField buyPrice;
     private JTextField MSRP;
 
+    private JTextField updateProductCode;
+    private JTextField updateQuantityInStock;
+    private JTextField updateBuyPrice;
+    private JTextField updateMSRP;
+
 private ProductController productController;
 
 
@@ -148,6 +153,17 @@ private ProductController productController;
         searchButton.addActionListener(e -> searchProducts());
         deleteButton.addActionListener(e -> deleteProduct());
         addButton.addActionListener(e -> addProduct());
+        updateButton.addActionListener(e -> {
+            
+            String productCodeToUpdate = updateProductCode.getText();
+            String newQuantityInStock = updateQuantityInStock.getText();
+            String newBuyPrice = updateBuyPrice.getText();
+            String newMSRP = updateMSRP.getText();
+            
+
+            productController.handleUpdateProduct(productCodeToUpdate, newQuantityInStock, newBuyPrice, newMSRP);
+            System.out.println(productCodeToUpdate + newQuantityInStock + newBuyPrice + newMSRP);
+        });
         loadProductLines();
 
     }
@@ -264,49 +280,42 @@ private ProductController productController;
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
     
-        // Product Code
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 0.3;
-        inputPanelUpdate.add(new JLabel("Product Code:"), gbc);
+        inputPanelUpdate.add(new JLabel("Update Product Code:"), gbc);
     
         gbc.gridx = 1;
         gbc.weightx = 0.7;
-        JTextField productCodeTextField = new JTextField(10);
-        inputPanelUpdate.add(productCodeTextField, gbc);
+        updateProductCode = new JTextField(10);
+        inputPanelUpdate.add(updateProductCode, gbc);
     
-        // Quantity In Stock
+        gbc.gridy++;
         gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.weightx = 0.3;
-        inputPanelUpdate.add(new JLabel("Quantity In Stock:"), gbc);
-    
+        inputPanelUpdate.add(new JLabel("Update Quantity In Stock:"), gbc);
         gbc.gridx = 1;
-        gbc.weightx = 0.7;
-        JTextField quantityInStockTextField = new JTextField(10);
-        inputPanelUpdate.add(quantityInStockTextField, gbc);
+        updateQuantityInStock = new JTextField(10);
+        inputPanelUpdate.add(updateQuantityInStock, gbc);
     
-        // Buy Price
+        gbc.gridy++;
         gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.weightx = 0.3;
-        inputPanelUpdate.add(new JLabel("Buy Price:"), gbc);
-    
+        inputPanelUpdate.add(new JLabel("Update Buy Price:"), gbc);
         gbc.gridx = 1;
-        gbc.weightx = 0.7;
-        JTextField buyPriceTextField = new JTextField(10);
-        inputPanelUpdate.add(buyPriceTextField, gbc);
+        updateBuyPrice = new JTextField(10);
+        inputPanelUpdate.add(updateBuyPrice, gbc);
     
-        // MSRP
+        gbc.gridy++;
         gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.weightx = 0.3;
-        inputPanelUpdate.add(new JLabel("MSRP:"), gbc);
-    
+        inputPanelUpdate.add(new JLabel("Update MSRP:"), gbc);
         gbc.gridx = 1;
-        gbc.weightx = 0.7;
-        JTextField msrpTextField = new JTextField(10);
-        inputPanelUpdate.add(msrpTextField, gbc);
+        updateMSRP = new JTextField(10);
+        inputPanelUpdate.add(updateMSRP, gbc);
+    
+        // Legg til dette for å fylle tomrom i panelet
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        gbc.weighty = 1.0;
+        inputPanelUpdate.add(new JPanel(), gbc);
     
         panelUpdate.add(inputPanelUpdate, BorderLayout.NORTH);
     
@@ -318,6 +327,9 @@ private ProductController productController;
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelUpdate.add(tableContainer, BorderLayout.CENTER);
     }
+    
+    
+    
     
     private void addComponentsToPanelView(JPanel panelView) {
         // Create a JTextField for search

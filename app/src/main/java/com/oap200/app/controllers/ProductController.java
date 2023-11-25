@@ -63,12 +63,18 @@ public class ProductController {
         public List<String> getProductLines() {
             return ProductsDAO.getProductLines();
         }
+
+        public boolean handleUpdateProduct(String productCode, String newQuantityInStock, String newBuyPrice, String newMSRP) {
+            try {
+                return productsDAO.updateProduct(productCode, newQuantityInStock, newBuyPrice, newMSRP);
+            } catch (NumberFormatException | ArithmeticException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(productManagementPanel, "Feil ved konvertering av tall.", "Feil", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
         
         
-
-
-
         
-
     
 } 

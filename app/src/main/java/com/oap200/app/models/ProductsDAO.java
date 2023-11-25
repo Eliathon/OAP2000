@@ -175,5 +175,33 @@ public class ProductsDAO {
             }
         }
     }
+
+    public boolean updateProduct(String productCode, String newQuantityInStock, String newBuyPrice, String newMSRP) {
+    try {
+        int quantityInStock = Integer.parseInt(newQuantityInStock);
+        BigDecimal buyPrice = new BigDecimal(newBuyPrice);
+        BigDecimal msrp = new BigDecimal(newMSRP);
+
+        DbConnect db = new DbConnect();
+        Connection myConnection = db.getConnection();
+        PreparedStatement preparedStatement = myConnection.prepareStatement(
+                "UPDATE products SET quantityInStock=?, buyPrice=?, MSRP=? WHERE productCode=?");
+
+        preparedStatement.setInt(1, quantityInStock);
+        preparedStatement.setBigDecimal(2, buyPrice);
+        preparedStatement.setBigDecimal(3, msrp);
+        preparedStatement.setString(4, productCode);
+
+        int rowsAffected = preparedStatement.executeUpdate();
+
+        return rowsAffected > 0;
+    } catch (SQLException | ClassNotFoundException | NumberFormatException ex) {
+        ex.printStackTrace();
+        return false;
+    }
+}
+
+    
+    
     
     }
