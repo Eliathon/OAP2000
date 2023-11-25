@@ -10,7 +10,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 public class EmployeeController {
 
-   // Method for handling the display of products
+   // Method for handling the display of employees
 private EmployeeDAO employeeDAO;
 private EmployeeManagementPanel employeeManagementPanel;
 
@@ -19,19 +19,19 @@ public EmployeeController(EmployeeDAO employeeDAO, EmployeeManagementPanel emplo
     this.employeeManagementPanel = employeeManagementPanel;
 }
 
-// Method to handle searching for products by name
+// Method to handle searching for employees by name
 public void handleSearchEmployees(String employeeName) {
     List<String[]> searchResults = employeeDAO.searchEmployees(employeeName);
     employeeManagementPanel.displayEmployees(searchResults);
 }
 
-// Method to handle displaying all products
+// Method to handle displaying all employees
 public void handleViewAllEmployees() {
     List<String[]> allEmployees = employeeDAO.fetchEmployees();
     employeeManagementPanel.displayEmployees(allEmployees);
 }
 
-// Method to handle deleting a product
+// Method to handle deleting an employee
 public boolean handleDeleteEmployee(String employeeNumber) {
     boolean deletionSuccessful = employeeDAO.deleteEmployee(employeeNumber);
     if (deletionSuccessful) {
@@ -53,7 +53,7 @@ public EmployeeDAO getEmployeeDAO() {
     return this.employeeDAO;
 }
 
-// Method to retrieve the list of product lines
+// Method to retrieve the list of employee roles
 public List<String> getEmployeeRoles() {
     return EmployeeDAO.getEmployeeRoles();
 }

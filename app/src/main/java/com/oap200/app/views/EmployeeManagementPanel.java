@@ -26,7 +26,7 @@ public class EmployeeManagementPanel extends JFrame {
     private JTextField searchNumberField;
     private JTextField searchNameField;
 
-    // Components for adding a product
+    // Components for adding a new employee
     private JTextField employeeNumber;
     private JTextField lastName;
     private JComboBox<String> employeeRolesComboBox = new JComboBox<>();
@@ -37,7 +37,7 @@ public class EmployeeManagementPanel extends JFrame {
     private JTextField reportsTo;
     private JTextField jobTitle;
 
-    // Components for updating a product
+    // Components for updating an employee
     private JTextField updateEmployeeNumber;
     private JTextField updateLastName;
     private JTextField updateFirstName;
@@ -117,25 +117,25 @@ private void initializeFields() {
         // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Tab 1: View Products
+        // Tab 1: View Employees
         JPanel panel1 = new JPanel(new BorderLayout());
         addComponentsToPanelView(panel1);
         panel1.add(viewSearchButtonPanel, BorderLayout.SOUTH);
         tabbedPane.addTab("View Employees", null, panel1, "Click to view");
 
-        // Tab 2: Add Products
+        // Tab 2: Add Employees
         JPanel panel2 = new JPanel(new BorderLayout());
         addComponentsToPanelAdd(panel2);
         panel2.add(addButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Add Employee", null, panel2, "Click to add");
 
-        // Tab 3: Update Products
+        // Tab 3: Update Employees
         JPanel panel3 = new JPanel(new BorderLayout());
         addComponentsToPanelUpdate(panel3);
         panel3.add(updateButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Update Employee", null, panel3, "Click to Update");
 
-        // Tab 4: Delete Products
+        // Tab 4: Delete Employees
         JPanel panel4 = new JPanel(new BorderLayout());
         addComponentsToPanelDelete(panel4);
         panel4.add(deleteButton, BorderLayout.SOUTH);
