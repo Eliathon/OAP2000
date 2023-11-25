@@ -71,6 +71,7 @@ private static final String PREF_X = "window_x";
         // Tab 2: Add Order
         JPanel panel2 = new JPanel(new BorderLayout());
         addComponentsToPanel(panel2);
+        addButton.addActionListener(e -> addOrders());
         panel2.add(addButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Add Orders", null, panel2, "Click to add");
 
@@ -138,22 +139,29 @@ private static final String PREF_X = "window_x";
     }
 
     private void addOrders() {
-       
         // Create an instance of OrderDAO
-        OrderDAO OrderDAO = new OrderDAO();
+        OrderDAO orderDAO = new OrderDAO();
     
         // Call the addOrders method from OrderDAO
-        boolean isAdded = OrderDAO.addOrders("orderNumber", "orderDate", "requiredDate", "shippedDate", "status", "comments", "customerNumber");
-    
-        if (isAdded) {
-            // Update the table in the view if addition is successful
-            viewOrders();
+            String orderNumber = orderNumberTextField.getText();
+            String orderDate = orderDateTextField.getText();
+            String requiredDate = requiredDateTextField.getText();
+            String shippedDate = shippedDateTextField.getText();
+            String status = statusTextField.getText();
+            String comments = commentsTextField.getText();
+            String customerNumber = customerNumberTextField.getText();
+
+             // Call the addOrders method from OrderDAO
+       boolean isAdded = orderDAO.addOrders(orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber);
+        
+       if (isAdded) {
+             // Update the table in the view if addition is successful
+           viewOrders();
         } else {
             System.out.println("Error adding order!");
         }
-
-        
     }
+    
 
     
     private void ordersResult() {
