@@ -31,7 +31,7 @@ public class OrdersController {
 
     public void handlesearchOrders(String orderNumber) {
     
-        List<String[]> ordersResult = OrderDao.searchOrders(orderNumber);
+        List<String[]> ordersResult = OrderDAO.searchOrders(orderNumber);
         OrderManagementPanel.displayOrders(ordersResult);
     }
 
@@ -42,8 +42,8 @@ public class OrdersController {
         try {
             int orderNumberInt = Integer.parseInt(orderNumber);
             int customerNumberInt = Integer.parseInt(customerNumber);
-            Date orderdate = new Date(orderDate);
-            Date requireddate = new Date(requiredDate);
+            Date orderDate = new Date(orderDate);
+            Date requiredDate = new Date(requiredDate);
         // Add a new order to the database
         return OrderDAO.addOrders(orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber);
     } catch (NumberFormatException | DataFormatException  e) {

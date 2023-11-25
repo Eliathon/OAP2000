@@ -152,7 +152,7 @@ private static final String PREF_X = "window_x";
             System.out.println("Error adding order!");
         }
 
-         addButton.addActionListener(e -> addOrders());
+        
     }
 
     
