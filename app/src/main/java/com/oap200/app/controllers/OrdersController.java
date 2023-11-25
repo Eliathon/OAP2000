@@ -3,6 +3,9 @@
 package main.java.com.oap200.app.controllers;
 
 import javax.swing.JTextField;
+import javax.swing. JOptionPane;
+import java.util.List;
+import java.util.zip.DataFormatException;
 
 import com.oap200.app.models.OrderDAO;
 import com.oap200.app.views.OrderManagementPanel;
@@ -26,14 +29,27 @@ public class OrdersController {
         });
     }
 
-    public void addOrder(JTextField orderNumberField, JTextField orderDateField, JTextField requiredDateField, JTextField shippedDateField, JTextField statusField, JTextField commentsField, JTextField customerNumberField) {
-        // Add a new order to the database
-        OrderDAO.addOrders(orderNumberField, orderDateField, requiredDateField, shippedDateField, statusField, commentsField, customerNumberField);
+    public void handlesearchOrders(String orderNumber) {
+    
+        List<String[]> ordersResult = OrderDao.searchOrders(orderNumber);
+        OrderManagementPanel.displayOrders(ordersResult);
     }
 
-    public boolean addOrder(String orderNumber, String orderDate, String requiredDate,
-                            String shippedDate, String status, String comments, String customerNumber) {
+    //Handle a new order
+    public boolean handleAddOrder(String orderNumber, String orderDate, String requiredDate,
+    String shippedDate, String status, String comments, String customerNumber) {
+
+        try {
+            int orderNumberInt = Integer.parseInt(orderNumber);
+            int customerNumberInt = Integer.parseInt(customerNumber);
+            Date orderdate = new Date(orderDate);
+            Date requireddate = new Date(requiredDate);
         // Add a new order to the database
         return OrderDAO.addOrders(orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber);
+    } catch (NumberFormatException | DataFormatException  e) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(OrderManagementPanel, "Invalid input", JOptionPane.ERROR_MESSAGE);
+        return false;
     }
+}
 }

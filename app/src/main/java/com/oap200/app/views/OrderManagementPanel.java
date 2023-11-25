@@ -46,24 +46,54 @@ private static final String PREF_X = "window_x";
 
         // Initialize ButtonBuilder buttons
         JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
-            /* Action for Back Button */});
+        /* Action for Back Button */});
+        backButton.addActionListener(e -> {
+            if (action != null) {
+                action.run();
+            }
+        });
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
             /* Action for Logout Button */});
+            backButton.addActionListener(e -> {
+                if (action != null) {
+                    action.run();
+                }
+            });
         JButton viewButton = ButtonBuilder.createViewButton(() -> {
             /* Action for View Button */});
+            viewButton.addActionListener(e -> {
+                if (action != null) {
+                    action.run();
+                }
+            });
         JButton addButton = ButtonBuilder.createAddButton(() -> {
             /* Action for Add Button */});
+            addButton.addActionListener(e -> {
+                if (action != null) {
+                    action.run();
+                }
+            });
         JButton deleteButton = ButtonBuilder.createDeleteButton(() -> {
             /* Action for Delete Button */});
+            deleteButton.addActionListener(e -> {
+                if (action != null) {
+                    action.run();
+                }
+            });
         JButton updateButton = ButtonBuilder.createUpdateButton(() -> {
             /* Action for Update Button */});
-
+            updateButton.addActionListener(e -> {
+                if (action != null) {
+                    action.run();
+                }
+            });
         // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // Tab 1: View Orders
         JPanel panel1 = new JPanel(new BorderLayout());
         addComponentsToPanelView(panel1);
+
         panel1.add(viewButton, BorderLayout.SOUTH);
         tabbedPane.addTab("View Orders", null, panel1, "Click to view");
 
@@ -71,13 +101,11 @@ private static final String PREF_X = "window_x";
         JPanel panel2 = new JPanel(new BorderLayout());
         addComponentsToPanel(panel2);
         panel2.add(addButton, BorderLayout.SOUTH);
-        addButton.addActionListener(e -> addOrders());
         tabbedPane.addTab("Add Orders", null, panel2, "Click to add");
 
         // Tab 3: Update Order
         JPanel panel3 = new JPanel(new BorderLayout());
         addComponentsToPanel(panel3);
-        updateButton.addActionListener(e -> updateOrders());
         panel3.add(updateButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Update Orders", null, panel3, "Click to Update");
 
@@ -129,15 +157,20 @@ private static final String PREF_X = "window_x";
         OrdersTable.setModel(model);
     }
 
+    private void ordersResult() {
+        String orderNumber = searchTextField.getText();
+        OrdersController.handleOrdersResult(orderNumber);
+    }
+
 
     private void initializeFields() {
-        this.orderNumber = new JTextField(10);
-        this.orderDate = new JTextField(10);
-        this.requiredDate = new JTextField(10);
-        this.shippedDate = new JTextField(10);
-        this.status = new JTextField(10);
-        this.commetns = new JTextField(10);
-        this.customerNumber = new JTextField(10);
+        orderNumber = new JTextField(10);
+        orderDate = new JTextField(10);
+        requiredDate = new JTextField(10);
+        shippedDate = new JTextField(10);
+        status = new JTextField(10);
+        comments = new JTextField(10);
+        customerNumber = new JTextField(10);
     }
 
     private void addComponentsToPanel(JPanel panel) {
@@ -213,18 +246,12 @@ private static final String PREF_X = "window_x";
     }
 
     private void addOrders() {
-        OrdersController OrdersController = new OrdersController();
+       
+        // Create an instance of OrderDAO
+        OrderDAO orderDAO = new OrderDAO();
     
-        String orderNumber = orderNumberField.getText();
-        String orderDate = orderDateField.getText();
-        String requiredDate = requiredDateField.getText();
-        String shippedDate = shippedDateField.getText();
-        String status = statusField.getText();
-        String comments = commentsField.getText();
-        String customerNumber = customerNumberField.getText();
-    
-        boolean isAdded = orderController.addOrder(orderNumber, orderDate, requiredDate,
-         shippedDate, status, comments, customerNumber);
+        // Call the addOrders method from OrderDAO
+        boolean isAdded = orderDAO.addOrders(orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber);
     
         if (isAdded) {
             // Update the table in the view if addition is successful
@@ -233,8 +260,9 @@ private static final String PREF_X = "window_x";
             System.out.println("Error adding order!");
         }
     }
+    
 
-    private void addComponentsToPanelAdd(JPanel paneladd) {
+    private void addComponentsToPanelAdd(JPanel panelAdd) {
         panelAdd.setLayout(new BorderLayout());
     
         JPanel inputPanel = new JPanel(new GridBagLayout());
@@ -249,93 +277,24 @@ private static final String PREF_X = "window_x";
     
         gbc.gridx = 1;
         gbc.weightx = 0.7; // Field weight
-        JTextField orderNumberField = new JTextField(10); //JTextField for order number
+        JTextField orderNumberField = new JTextField(10); // JTextField for order number
         inputPanel.add(orderNumberField, gbc);
-        
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 0.3; // Reset to label weight
-        // Adding the "Order Date:" label
-        inputPanel.add(new JLabel("Order Date:"), gbc);
     
-        gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
-        JTextField orderDate = new JTextField(10); // Define the JTextField for order date
-        inputPanel.add(orderDate, gbc);
-
-        gbc.gridy++;
-        inputPanel.add(new JLabel("Required Date:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
-        JTextField requiredDate = new JTextField(10); // Define the JTextField for required date
-        inputPanel.add(requiredDate, gbc);
-
-        gbc.gridy++;
-        inputPanel.add(new JLabel("Shipped Date:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
-        JTextField shippedDate = new JTextField(10); // Define the JTextField for shipped date
-        inputPanel.add(shippedDate, gbc);
-
-        gbc.gridy++;
-        inputPanel.add(new JLabel("Status:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
-        JTextField status = new JTextField(10); // Define the JTextField for status
-        inputPanel.add(status, gbc);
-
-        gbc.gridy++;
-        inputPanel.add(new JLabel("Comments:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
-        JTextField comments = new JTextField(10); // Define the JTextField for comments
-        inputPanel.add(comments, gbc);
-
-        gbc.gridy++;
-        inputPanel.add(new JLabel("Customer Number:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
-        JTextField customerNumber = new JTextField(10); // Define the JTextField for customer number
-        inputPanel.add(customerNumber, gbc);
+        // ... (other fields)
+    
+        JButton addButton = ButtonBuilder.createAddButton(() -> {
+            addOrders(orderNumber.getText(), orderDate.getText(), requiredDate.getText(),
+                      shippedDate.getText(), status.getText(), comments.getText(), customerNumber.getText());
+        });
     
         panelAdd.add(inputPanel, BorderLayout.NORTH);
     
-        JScrollPane scrollPane = new JScrollPane(OrdersTable); 
+        JScrollPane scrollPane = new JScrollPane(OrdersTable);
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelAdd.add(tableContainer, BorderLayout.CENTER);
     }
-
-    private void addComponentsToPanelDelete(JPanel panelDelete) {
-        panelDelete.setLayout(new BorderLayout());
-
-        JPanel inputPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 0.3; // Label weight
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-
-        // Adding the "Order Number:" label
-        inputPanel.add(new JLabel("Order Number:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
-        JTextField orderNumber = new JTextField(10);
-        inputPanel.add(orderNumber, gbc);
-
-        panelDelete.add(inputPanel, BorderLayout.NORTH);
     
-        JScrollPane scrollPane = new JScrollPane(OrdersTable); 
-        JPanel tableContainer = new JPanel(new BorderLayout());
-        tableContainer.add(scrollPane, BorderLayout.CENTER);
-        panelDelete.add(tableContainer, BorderLayout.CENTER);
-    }
 
     private void updateOrders() {
         OrdersController OrdersController = new OrdersController();
