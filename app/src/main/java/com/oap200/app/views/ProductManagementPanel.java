@@ -1,11 +1,11 @@
 //Created by Sebastian
 package com.oap200.app.views;
+
 import com.oap200.app.models.ProductsDAO;
 import com.oap200.app.controllers.ProductController;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -17,15 +17,16 @@ import java.util.List;
 
 public class ProductManagementPanel extends JFrame {
 
-
-
+    // Preferences keys for storing window position
     private static final String PREF_X = "window_x";
     private static final String PREF_Y = "window_y";
 
+    // Components for the view
     private JTable productsTable;
     private JTextField searchTextField;
     private JTextField searchCodeField;
 
+    // Components for adding a product
     private JTextField productCode;
     private JTextField productName;
     private JComboBox<String> productLineComboBox = new JComboBox<>();
@@ -36,21 +37,17 @@ public class ProductManagementPanel extends JFrame {
     private JTextField buyPrice;
     private JTextField MSRP;
 
+    // Components for updating a product
     private JTextField updateProductCode;
     private JTextField updateQuantityInStock;
     private JTextField updateBuyPrice;
     private JTextField updateMSRP;
 
-private ProductController productController;
-
-
-    
+    private ProductController productController;
 
     public ProductManagementPanel() {
         initializeFields();
         productController = new ProductController(new ProductsDAO(), this);
-        
-        
 
         // Load the last window position
         Preferences prefs = Preferences.userNodeForPackage(ProductManagementPanel.class);
@@ -58,6 +55,7 @@ private ProductController productController;
         int y = prefs.getInt(PREF_Y, 50); // Default y position
         setLocation(x, y);
 
+        // Save window position on close
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -70,25 +68,18 @@ private ProductController productController;
         setLayout(new BorderLayout());
 
         // Initialize ButtonBuilder buttons
-        JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
-            /* Action for Back Button */});
-        JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
-            /* Action for Logout Button */});
-        JButton viewButton = ButtonBuilder.createViewButton(() -> {
-            /* Action for Logout Button */});
-            
+        JButton backButton = ButtonBuilder.createBlueBackButton(() -> { /* Action for Back Button */ });
+        JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> { /* Action for Logout Button */ });
+        JButton viewButton = ButtonBuilder.createViewButton(() -> { /* Action for View Button */ });
         JButton addButton = ButtonBuilder.createAddButton(() -> {
-            System.out.println("Add Button Clicked!"); });
-        JButton deleteButton = ButtonBuilder.createDeleteButton(() -> {
-            /* Action for Delete Button */});
-        JButton updateButton = ButtonBuilder.createUpdateButton(() -> {
-            /* Action for Update Button */});
-            // Create a JButton for search
+            System.out.println("Add Button Clicked!");
+        });
+        JButton deleteButton = ButtonBuilder.createDeleteButton(() -> { /* Action for Delete Button */ });
+        JButton updateButton = ButtonBuilder.createUpdateButton(() -> { /* Action for Update Button */ });
         JButton searchButton = ButtonBuilder.createSearchButton(() -> {
             searchProducts();
         });
 
-                // Panel for "View" knappen
         JPanel viewSearchButtonPanel = new JPanel(new FlowLayout());
         viewSearchButtonPanel.add(viewButton);
         viewSearchButtonPanel.add(searchButton);
@@ -96,14 +87,13 @@ private ProductController productController;
         // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Tab 1: View Employee
+        // Tab 1: View Products
         JPanel panel1 = new JPanel(new BorderLayout());
-        
         addComponentsToPanelView(panel1);
         panel1.add(viewSearchButtonPanel, BorderLayout.SOUTH);
         tabbedPane.addTab("View Products", null, panel1, "Click to view");
 
-        // Tab 2: Add Employee
+        // Tab 2: Add Products
         JPanel panel2 = new JPanel(new BorderLayout());
         addComponentsToPanelAdd(panel2);
         panel2.add(addButton, BorderLayout.SOUTH);
@@ -144,7 +134,6 @@ private ProductController productController;
         // Initialize the table
         productsTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(productsTable);
-        // Correct this line to add the scrollPane to the CENTER instead of EAST
         panel1.add(scrollPane, BorderLayout.CENTER);
 
         viewButton.addActionListener(e -> productController.handleViewAllProducts());
@@ -152,27 +141,23 @@ private ProductController productController;
         deleteButton.addActionListener(e -> deleteProduct());
         addButton.addActionListener(e -> addProduct());
         updateButton.addActionListener(e -> {
-            
             String productCodeToUpdate = updateProductCode.getText();
             String newQuantityInStock = updateQuantityInStock.getText();
             String newBuyPrice = updateBuyPrice.getText();
             String newMSRP = updateMSRP.getText();
-            
 
             productController.handleUpdateProduct(productCodeToUpdate, newQuantityInStock, newBuyPrice, newMSRP);
             System.out.println(productCodeToUpdate + newQuantityInStock + newBuyPrice + newMSRP);
         });
         loadProductLines();
-
     }
-    
+
     private void initializeFields() {
-        // Last produktlinjene før du initialiserer komponentene
         System.out.println("Initializing fields...");
         loadProductLines();
-    
+
         searchTextField = new JTextField(10);
-    
+
         this.productCode = new JTextField(10);
         this.productName = new JTextField(10);
         this.productScale = new JTextField(10);
@@ -182,7 +167,7 @@ private ProductController productController;
         this.buyPrice = new JTextField(10);
         this.MSRP = new JTextField(10);
     }
-    
+
     private void loadProductLines() {
         if (productController != null) {
             List<String> productLines = productController.getProductLines();
@@ -193,7 +178,6 @@ private ProductController productController;
             System.err.println("ProductController is null!!");
         }
     }
-    
 
     private void searchProducts() {
         String productName = searchTextField.getText();
@@ -204,9 +188,9 @@ private ProductController productController;
         String productCode = searchCodeField.getText();
         boolean deletionSuccessful = productController.handleDeleteProduct(productCode);
         if (deletionSuccessful) {
-            JOptionPane.showMessageDialog(this, "Produktet ble slettet vellykket.", "Sletting fullført", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Product deleted successfully.", "Deletion completed", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Feil ved sletting av produkt.", "Feil", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error deleting product.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -214,41 +198,39 @@ private ProductController productController;
         System.out.println("addProduct() called!");
 
         boolean additionSuccessful = productController.handleAddProduct(
-            productCode.getText(), productName.getText(), (String) productLineComboBox.getSelectedItem(),
-            productScale.getText(), productVendor.getText(), productDescription.getText(),
-            quantityInStock.getText(), buyPrice.getText(), MSRP.getText());
-    
+                productCode.getText(), productName.getText(), (String) productLineComboBox.getSelectedItem(),
+                productScale.getText(), productVendor.getText(), productDescription.getText(),
+                quantityInStock.getText(), buyPrice.getText(), MSRP.getText());
+
         if (additionSuccessful) {
-            JOptionPane.showMessageDialog(this, "Produktet ble lagt til vellykket.", "Legge til fullført", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Product added successfully.", "Addition completed", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Feil ved legging til produkt.", "Feil", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error adding product.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
 
     private void addComponentsToPanelAdd(JPanel panel) {
-        JPanel labelPanel = new JPanel(new GridLayout(9, 1)); 
-        JPanel fieldPanel = new JPanel(new GridLayout(9, 1)); 
+        JPanel labelPanel = new JPanel(new GridLayout(9, 1));
+        JPanel fieldPanel = new JPanel(new GridLayout(9, 1));
 
         labelPanel.add(new JLabel("Product Code:"));
         fieldPanel.add(productCode);
         labelPanel.add(new JLabel("Product Name:"));
         fieldPanel.add(productName);
         labelPanel.add(new JLabel("Product Line:"));
-        fieldPanel.add(productLineComboBox); // Endre denne linjen
+        fieldPanel.add(productLineComboBox);
         labelPanel.add(new JLabel("Product Scale:"));
         fieldPanel.add(productScale);
         labelPanel.add(new JLabel("Product Vendor:"));
         fieldPanel.add(productVendor);
         labelPanel.add(new JLabel("Product Description:"));
         fieldPanel.add(productDescription);
-        labelPanel.add(new JLabel("quantityInStock:"));
+        labelPanel.add(new JLabel("Quantity In Stock:"));
         fieldPanel.add(quantityInStock);
-        labelPanel.add(new JLabel("buyPrice:"));
+        labelPanel.add(new JLabel("Buy Price:"));
         fieldPanel.add(buyPrice);
         labelPanel.add(new JLabel("MSRP:"));
         fieldPanel.add(MSRP);
-    
 
         panel.add(labelPanel, BorderLayout.WEST);
         panel.add(fieldPanel, BorderLayout.CENTER);
@@ -256,82 +238,79 @@ private ProductController productController;
 
     private void addComponentsToPanelUpdate(JPanel panelUpdate) {
         panelUpdate.setLayout(new BorderLayout());
-    
+
         JPanel inputPanelUpdate = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-    
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 0.3;
         inputPanelUpdate.add(new JLabel("Update Product Code:"), gbc);
-    
+
         gbc.gridx = 1;
         gbc.weightx = 0.7;
         updateProductCode = new JTextField(10);
         inputPanelUpdate.add(updateProductCode, gbc);
-    
+
         gbc.gridy++;
         gbc.gridx = 0;
         inputPanelUpdate.add(new JLabel("Update Quantity In Stock:"), gbc);
         gbc.gridx = 1;
         updateQuantityInStock = new JTextField(10);
         inputPanelUpdate.add(updateQuantityInStock, gbc);
-    
+
         gbc.gridy++;
         gbc.gridx = 0;
         inputPanelUpdate.add(new JLabel("Update Buy Price:"), gbc);
         gbc.gridx = 1;
         updateBuyPrice = new JTextField(10);
         inputPanelUpdate.add(updateBuyPrice, gbc);
-    
+
         gbc.gridy++;
         gbc.gridx = 0;
         inputPanelUpdate.add(new JLabel("Update MSRP:"), gbc);
         gbc.gridx = 1;
         updateMSRP = new JTextField(10);
         inputPanelUpdate.add(updateMSRP, gbc);
-    
-        // Legg til dette for å fylle tomrom i panelet
+
+        // Add this to fill the space in the panel
         gbc.gridy++;
         gbc.gridwidth = 2;
         gbc.weighty = 1.0;
         inputPanelUpdate.add(new JPanel(), gbc);
-    
+
         panelUpdate.add(inputPanelUpdate, BorderLayout.NORTH);
-    
-        // Now, create the scrollPane with the employeeTable right here:
+
+        // Create the scrollPane with the employeeTable
         JScrollPane scrollPane = new JScrollPane(productsTable);
-    
+
         // Create a container panel for the table to align it to the left
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelUpdate.add(tableContainer, BorderLayout.CENTER);
     }
-    
+
     private void addComponentsToPanelView(JPanel panelView) {
-        // Create a JTextField for search
-        
         panelView.setLayout(new BorderLayout());
 
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        
+
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.weightx = 0.3; // Reset to label weight
-        // Adding the "Last Name:" label
+        gbc.weightx = 0.3;
         inputPanel.add(new JLabel("Product name:"), gbc);
 
         gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
+        gbc.weightx = 0.7;
         searchTextField = new JTextField(10);
         inputPanel.add(searchTextField, gbc);
 
         panelView.add(inputPanel, BorderLayout.NORTH);
 
-        // Now, create the scrollPane with the employeeTable right here:
+        // Create the scrollPane with the employeeTable
         JScrollPane scrollPane = new JScrollPane(productsTable);
 
         // Create a container panel for the table to align it to the left
@@ -341,28 +320,25 @@ private ProductController productController;
     }
 
     private void addComponentsToPanelDelete(JPanel panelDelete) {
-        // Create a JTextField for search
-        
         panelDelete.setLayout(new BorderLayout());
 
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        
+
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.weightx = 0.3; // Reset to label weight
-        // Adding the "Last Name:" label
+        gbc.weightx = 0.3;
         inputPanel.add(new JLabel("Product code:"), gbc);
 
         gbc.gridx = 1;
-        gbc.weightx = 0.7; // Field weight
+        gbc.weightx = 0.7;
         searchCodeField = new JTextField(10);
         inputPanel.add(searchCodeField, gbc);
 
         panelDelete.add(inputPanel, BorderLayout.NORTH);
 
-        // Now, create the scrollPane with the employeeTable right here:
+        // Create the scrollPane with the employeeTable
         JScrollPane scrollPane = new JScrollPane(productsTable);
 
         // Create a container panel for the table to align it to the left
@@ -372,27 +348,24 @@ private ProductController productController;
     }
 
     public void displayProducts(List<String[]> productList) {
-        String[] columnNames = { "Product Code", "Product Name", "Product Line", "Product Scale", "Product Vendor", "Product Description", "quantityInStock", "buyPrice", "MSRP" };
-    
+        String[] columnNames = { "Product Code", "Product Name", "Product Line", "Product Scale", "Product Vendor", "Product Description", "Quantity In Stock", "Buy Price", "MSRP" };
+
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         for (String[] row : productList) {
             model.addRow(row);
         }
         productsTable.setModel(model);
-    
-        // Endre utskriften for å bruke Arrays.deepToString
-        System.out.println("Displayed products with lines: " + Arrays.deepToString(productList.toArray()));
+
+        System.out.println("Displayed products: " + Arrays.deepToString(productList.toArray()));
     }
-    
-       
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             ProductManagementPanel frame = new ProductManagementPanel();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setTitle("Product management");
+            frame.setTitle("Product Management");
             frame.pack();
             frame.setVisible(true);
         });
     }
 }
-
