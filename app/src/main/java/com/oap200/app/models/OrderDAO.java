@@ -131,7 +131,6 @@ public class OrderDAO {
     public boolean deleteOrders (String orderNumber) {
         
     try {
-    
     DbConnect db = new DbConnect();
     Connection myConnection = db.getConnection();
      
@@ -139,8 +138,6 @@ public class OrderDAO {
     statement.setString(1, orderNumber);
                
     int rowsAffected = statement.executeUpdate();
-
-
     return rowsAffected > 0;
 } catch (SQLException | ClassNotFoundException e) {
     e.printStackTrace();

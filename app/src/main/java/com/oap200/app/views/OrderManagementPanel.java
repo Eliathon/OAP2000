@@ -9,6 +9,9 @@ import java.awt.*;
 import java.util.List;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.prefs.Preferences;
 
 import com.oap200.app.models.OrderDAO;
@@ -21,6 +24,16 @@ public class OrderManagementPanel extends JFrame {
    
 private static final String PREF_X = "window_x";
    private static final String PREF_Y = "window_y";
+
+    private JTextField searchTextField;
+    private JTextField orderNumber;
+    private JTextField orderDate;
+    private JTextField requiredDate; 
+    private JTextField shippedDate; 
+    private JTextField status;
+    private JTextField comments;
+    private JTextField customerNumber;  
+
 
    private JTable OrdersTable;
 
@@ -56,16 +69,22 @@ private static final String PREF_X = "window_x";
         JButton deleteButton = ButtonBuilder.createDeleteButton(() -> {
             /* Action for Delete Button */});
         JButton updateButton = ButtonBuilder.createUpdateButton(() -> {
-            /* Action for Update Button */});
+            /* Action for Update Button */});   
+        JButton searchButton = ButtonBuilder.createSearchButton(() -> {
+        /* Action for Search Button */});
 
-        // Initialize JTabbedPane
+        JPanel viewSearchButtonPanel = new JPanel(new FlowLayout());
+        viewSearchButtonPanel.add(viewButton);
+        viewSearchButtonPanel.add(searchButton);
+       
+                // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // Tab 1: View Orders
         JPanel panel1 = new JPanel(new BorderLayout());
         addComponentsToPanelView(panel1);
 
-        panel1.add(viewButton, BorderLayout.SOUTH);
+        panel1.add(viewSearchButtonPanel, BorderLayout.SOUTH);
         tabbedPane.addTab("View Orders", null, panel1, "Click to view");
 
         // Tab 2: Add Order
@@ -114,16 +133,13 @@ private static final String PREF_X = "window_x";
         panel1.add(scrollPane, BorderLayout.CENTER);
 
         viewButton.addActionListener(e -> viewOrders());
+        searchButton.addActionListener(e -> searchOrders());
     }
      private void initializeFields() {
-        JTextField orderNumber = new JTextField(10);
-        JTextField orderDate = new JTextField(10);
-        JTextField requiredDate = new JTextField(10);
-        JTextField shippedDate = new JTextField(10);
-        JTextField status = new JTextField(10);
-        JTextField comments = new JTextField(30);
-        JTextField customerNumber = new JTextField(10);
-    }
+
+        searchTextField = new JTextField(10);
+        this.orderNumber = new JTextField(10);
+     }   
 
     private void viewOrders() {
         OrderDAO OrderDAO = new OrderDAO();
@@ -167,6 +183,11 @@ private static final String PREF_X = "window_x";
     private void ordersResult() {
         String orderNumber = searchTextField.getText();
         OrdersController.handleOrdersResult(orderNumber);
+    }
+
+    private void searchOrders() {
+        String orderNumber = searchTextField.getText();
+        OrdersController.handleSearchOrders(orderNumber);
     }
 
     private void addComponentsToPanel(JPanel panel) {
@@ -335,6 +356,33 @@ private static final String PREF_X = "window_x";
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelAdd.add(tableContainer, BorderLayout.CENTER);
     }
+    
+    private void addComponentsToPanelDelete(JPanel panelDelete) {
+        panelDelete.setLayout(new BorderLayout());
+    
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.3; // Label weight
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+    
+        // Adding the "Order Number:" label
+        inputPanel.add(new JLabel("Order Number:"), gbc);
+    
+        panelDelete.add(inputPanel, BorderLayout.NORTH);
+    
+        // Now, create the scrollPane with the orderTable right here:
+        JScrollPane scrollPane = new JScrollPane(OrdersTable);
+    
+        // Create a container panel for the table to align it to the left
+        JPanel tableContainer = new JPanel(new BorderLayout());
+        tableContainer.add(scrollPane, BorderLayout.CENTER);
+        panelDelete.add(tableContainer, BorderLayout.CENTER);
+    }
+    
+
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
