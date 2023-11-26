@@ -1,20 +1,28 @@
 // Created by Sindre and Johnny
+
 package com.oap200.app.views;
 
-import javax.swing.*;
 import com.oap200.app.utils.ButtonBuilder;
+import com.oap200.app.controllers.SQLController;
+import com.oap200.app.tabbedPanels.*;
+import com.oap200.app.utils.DbConnect;
+
+import javax.swing.*;
 import java.awt.*;
+import java.sql.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.prefs.Preferences;
-import com.oap200.app.tabbedPanels.*;
+
 // Import for TabbedPanels
 
 public class MainFrame extends JFrame {
 
     private JTextArea textArea;
     private Preferences prefs = Preferences.userNodeForPackage(MainFrame.class);
+    private JTextArea sqlQueryArea;
+    private JTextArea sqlResultArea;
     private final String X_POS_KEY = "xPos";
     private final String Y_POS_KEY = "yPos";
     private final String WIDTH_KEY = "width";
@@ -69,6 +77,40 @@ public class MainFrame extends JFrame {
         gbc.gridx++;
         topPanel.add(notificationsButton, gbc);
         add(topPanel, BorderLayout.NORTH);
+
+        // SQL Query Area
+        sqlQueryArea = new JTextArea(5, 30);
+        JScrollPane sqlQueryScrollPane = new JScrollPane(sqlQueryArea);
+
+        // SQL Result Area
+        sqlResultArea = new JTextArea(10, 30);
+        sqlResultArea.setEditable(false);
+        JScrollPane sqlResultScrollPane = new JScrollPane(sqlResultArea);
+
+        // Execute SQL Button
+        JButton executeSqlButton = new JButton("Execute SQL");
+        executeSqlButton.addActionListener(e -> executeSqlQuery());
+
+        JPanel sqlPanel = new JPanel();
+        sqlPanel.setLayout(new BorderLayout());
+        sqlPanel.add(sqlQueryScrollPane, BorderLayout.NORTH);
+        sqlPanel.add(executeSqlButton, BorderLayout.CENTER);
+        sqlPanel.add(sqlResultScrollPane, BorderLayout.SOUTH);
+
+        // Add SQL Panel to MainFrame
+        add(sqlPanel, BorderLayout.SOUTH);
+    }
+
+    private SQLController sqlController = new SQLController();
+
+    private void executeSqlQuery() {
+        String sqlQuery = sqlQueryArea.getText().trim();
+        if (sqlQuery.isEmpty()) {
+            sqlResultArea.setText("Please enter a SQL query.");
+            return;
+        }
+        String result = sqlController.executeQuery(sqlQuery);
+        sqlResultArea.setText(result);
     }
 
     private void initPosition() {
@@ -99,19 +141,6 @@ public class MainFrame extends JFrame {
         prefs.putInt(WIDTH_KEY, getWidth());
         prefs.putInt(HEIGHT_KEY, getHeight());
         prefs.putBoolean(MAXIMIZED_KEY, (getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH);
-    }
-
-    public void displayEmails(List<String> emails) {
-        for (String email : emails) {
-            textArea.append(email + "\n");
-        }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            MainFrame mainFrame = new MainFrame();
-            mainFrame.setVisible(true);
-        });
     }
 
     private void openProductManagementPanel() {
@@ -165,5 +194,12 @@ public class MainFrame extends JFrame {
     }
 
     public void start() {
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            MainFrame mainFrame = new MainFrame();
+            mainFrame.setVisible(true);
+        });
     }
 }
