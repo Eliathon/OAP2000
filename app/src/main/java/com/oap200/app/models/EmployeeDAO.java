@@ -17,7 +17,7 @@ import com.oap200.app.views.EmployeeManagementPanel;
 import com.oap200.app.utils.DbConnect;
 
 public class EmployeeDAO {
-    // Method to fetch all products from the database
+    // Method to fetch all employees from the database
     public List<String[]> fetchEmployees() {
         System.out.println("View button clicked!");
         List<String[]> employees = new ArrayList<>();
@@ -70,7 +70,7 @@ public class EmployeeDAO {
                 String[] employee = new String[] {
                         myRs.getString("employeeNumber"),
                         myRs.getString("lastName"),
-                        myRs.getString("firstLine"),
+                        myRs.getString("firstName"),
                         myRs.getString("extension"),
                         myRs.getString("email"),
                         myRs.getString("officeCode"),
@@ -85,6 +85,40 @@ public class EmployeeDAO {
         return searchResults;
     }
     
+// Method to search for employees by number in the database
+    public List<String[]> searchEmployeesByNumber(String employeeNumber) {
+        List<String[]> searchResults = new ArrayList<>();
+        try {
+            // Establish a database connection
+            DbConnect db = new DbConnect();
+            Connection myConnection = db.getConnection();
+            
+            // Execute prepared statement to search for employees after the given number
+            PreparedStatement preparedStatement = myConnection.prepareStatement("SELECT * FROM employees WHERE employeeNumber = ?");
+            preparedStatement.setString(1, employeeNumber);
+            ResultSet myRs = preparedStatement.executeQuery();
+
+            // Process the retrieved data and populate the 'searchResults' list
+            while (myRs.next()) {
+                String[] employee = new String[] {
+                        myRs.getString("employeeNumber"),
+                        myRs.getString("lastName"),
+                        myRs.getString("firstName"),
+                        myRs.getString("extension"),
+                        myRs.getString("email"),
+                        myRs.getString("officeCode"),
+                        myRs.getString("reportsTo"),
+                        myRs.getString("jobTitle"),
+                };
+                System.out.println("TEST");
+                searchResults.add(employee);
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return searchResults;
+    }
+
     // Method to delete an employee from the database
     public boolean deleteEmployee(String employeeNumber) {
         try {
@@ -107,7 +141,7 @@ public class EmployeeDAO {
         }
     }
     
-    // Method to retrieve distinct product lines from the database
+    // Method to retrieve distinct employeeroles from the database
     public static List<String> getEmployeeRoles() {
         List<String> employeeRoles = new ArrayList<>();
 
@@ -120,7 +154,7 @@ public class EmployeeDAO {
             // Execute SELECT query to retrieve the employee roles 
             ResultSet myRs = myStmt.executeQuery("SELECT DISTINCT jobTitle FROM employees");
 
-            // Process the retrieved data and populate the 'productLines' list
+            // Process the retrieved data and populate the 'employeeRoles' list
             while (myRs.next()) {
                 String role = myRs.getString("jobTitle");
                 employeeRoles.add(role);

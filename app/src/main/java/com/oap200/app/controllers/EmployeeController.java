@@ -25,6 +25,12 @@ public void handleSearchEmployees(String employeeName) {
     employeeManagementPanel.displayEmployees(searchResults);
 }
 
+//Method for searching employees by number
+public void handleSearchEmployeesByNumber(String employeeNumber){
+    List<String[]> searchResults = employeeDAO.searchEmployeesByNumber(employeeNumber);
+    employeeManagementPanel.displayEmployees(searchResults);
+}
+
 // Method to handle displaying all employees
 public void handleViewAllEmployees() {
     List<String[]> allEmployees = employeeDAO.fetchEmployees();
