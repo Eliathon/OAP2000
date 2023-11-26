@@ -25,6 +25,16 @@ public class OrderManagementPanel extends JFrame {
 private static final String PREF_X = "window_x";
    private static final String PREF_Y = "window_y";
 
+    private JTextField searchTextField;
+    private JTextField orderNumber;
+    private JTextField orderDate;
+    private JTextField requiredDate; 
+    private JTextField shippedDate; 
+    private JTextField status;
+    private JTextField comments;
+    private JTextField customerNumber;  
+
+
    private JTable OrdersTable;
 
    public OrderManagementPanel() {
@@ -59,16 +69,22 @@ private static final String PREF_X = "window_x";
         JButton deleteButton = ButtonBuilder.createDeleteButton(() -> {
             /* Action for Delete Button */});
         JButton updateButton = ButtonBuilder.createUpdateButton(() -> {
-            /* Action for Update Button */});
+            /* Action for Update Button */});   
+        JButton searchButton = ButtonBuilder.createSearchButton(() -> {
+        /* Action for Search Button */});
 
-        // Initialize JTabbedPane
+        JPanel viewSearchButtonPanel = new JPanel(new FlowLayout());
+        viewSearchButtonPanel.add(viewButton);
+        viewSearchButtonPanel.add(searchButton);
+       
+                // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // Tab 1: View Orders
         JPanel panel1 = new JPanel(new BorderLayout());
         addComponentsToPanelView(panel1);
 
-        panel1.add(viewButton, BorderLayout.SOUTH);
+        panel1.add(viewSearchButtonPanel, BorderLayout.SOUTH);
         tabbedPane.addTab("View Orders", null, panel1, "Click to view");
 
         // Tab 2: Add Order
@@ -117,13 +133,13 @@ private static final String PREF_X = "window_x";
         panel1.add(scrollPane, BorderLayout.CENTER);
 
         viewButton.addActionListener(e -> viewOrders());
+        searchButton.addActionListener(e -> searchOrders());
     }
      private void initializeFields() {
-        JTextField orderNumber = new JTextField(10);
-        JTextField requiredDate = new JTextField(10);
-        JTextField shippedDate = new JTextField(10);
-        JTextField status = new JTextField(10);
-    }
+
+        searchTextField = new JTextField(10);
+        this.orderNumber = new JTextField(10);
+     }   
 
     private void viewOrders() {
         OrderDAO OrderDAO = new OrderDAO();
@@ -167,6 +183,11 @@ private static final String PREF_X = "window_x";
     private void ordersResult() {
         String orderNumber = searchTextField.getText();
         OrdersController.handleOrdersResult(orderNumber);
+    }
+
+    private void searchOrders() {
+        String orderNumber = searchTextField.getText();
+        OrdersController.handleSearchOrders(orderNumber);
     }
 
     private void addComponentsToPanel(JPanel panel) {
