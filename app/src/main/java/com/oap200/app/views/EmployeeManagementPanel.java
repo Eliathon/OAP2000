@@ -53,6 +53,7 @@ private void initializeFields() {
         System.out.println("Initializing fields...");
         loadEmployeeRoles();
 
+        searchNumberField = new JTextField(10);
         searchNameField = new JTextField(10);
 
         this.employeeNumber = new JTextField(10);
@@ -106,12 +107,14 @@ private void initializeFields() {
         });
         JButton deleteButton = ButtonBuilder.createDeleteButton(() -> { /* Action for Delete Button */ });
         JButton updateButton = ButtonBuilder.createUpdateButton(() -> { /* Action for Update Button */ });
+        JButton searchByNumberButton = ButtonBuilder.createSearchButton(() -> searchEmployeesByNumber());
         JButton searchButton = ButtonBuilder.createSearchButton(() -> {
             searchEmployees();
         });
 
         JPanel viewSearchButtonPanel = new JPanel(new FlowLayout());
         viewSearchButtonPanel.add(viewButton);
+        viewSearchButtonPanel.add(searchByNumberButton);
         viewSearchButtonPanel.add(searchButton);
 
         // Initialize JTabbedPane
@@ -167,6 +170,7 @@ private void initializeFields() {
         panel1.add(scrollPane, BorderLayout.CENTER);
 
         viewButton.addActionListener(e -> employeeController.handleViewAllEmployees());
+        searchButton.addActionListener(e -> searchEmployeesByNumber());
         searchButton.addActionListener(e -> searchEmployees());
         deleteButton.addActionListener(e -> deleteEmployee());
         addButton.addActionListener(e -> addEmployee());
@@ -217,6 +221,11 @@ private void initializeFields() {
         String employeeName = searchNameField.getText();
         employeeController.handleSearchEmployees(employeeName);
     }
+
+private void searchEmployeesByNumber(){
+    String employeeNumber = searchNumberField.getText();
+    employeeController.handleSearchEmployeesByNumber(employeeNumber);
+}
 
     private void deleteEmployee() {
         String employeeNumber = searchNumberField.getText();
@@ -363,17 +372,25 @@ private void initializeFields() {
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 0;
         gbc.weightx = 0.3;
-        inputPanel.add(new JLabel("Employee Name:"), gbc);
+       
+      // Employee Number Field
+    inputPanel.add(new JLabel("Employee Number:"), gbc);
+    gbc.gridx = 1;
+    searchNumberField = new JTextField(10);
+    inputPanel.add(searchNumberField, gbc);
 
-        gbc.gridx = 1;
-        gbc.weightx = 0.7;
-        searchNameField = new JTextField(10);
-        inputPanel.add(searchNameField, gbc);
+       // Increment the gridy for the next row
+    gbc.gridy = 1; // Move to the next row
+    gbc.gridx = 0; // Reset the x position
 
+  // Employee Name Field
+    inputPanel.add(new JLabel("Employee Name:"), gbc);
+    gbc.gridx = 1;
+    searchNameField = new JTextField(10);
+    inputPanel.add(searchNameField, gbc);
         panelView.add(inputPanel, BorderLayout.NORTH);
 
         // Create the scrollPane with the employeeTable
