@@ -186,28 +186,50 @@ public class ProductManagementPanel extends JFrame {
 
     private void deleteProduct() {
         String productCode = searchCodeField.getText();
+    
+        // Check if the product code is empty
+        if (productCode.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid product code.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+    
         boolean deletionSuccessful = productController.handleDeleteProduct(productCode);
+    
         if (deletionSuccessful) {
             JOptionPane.showMessageDialog(this, "Product deleted successfully.", "Deletion completed", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Error deleting product.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error deleting product. Please make sure the product code is valid.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
 
     private void addProduct() {
         System.out.println("addProduct() called!");
-
+    
+        // Check if any input field is empty
+        if (productCode.getText().isEmpty() || productName.getText().isEmpty() ||
+            productScale.getText().isEmpty() || productVendor.getText().isEmpty() ||
+            productDescription.getText().isEmpty() || quantityInStock.getText().isEmpty() ||
+            buyPrice.getText().isEmpty() || MSRP.getText().isEmpty()) {
+    
+            // Display an error message
+            JOptionPane.showMessageDialog(this, "Please fill in all input fields.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+    
+        // Proceed with adding the product
         boolean additionSuccessful = productController.handleAddProduct(
                 productCode.getText(), productName.getText(), (String) productLineComboBox.getSelectedItem(),
                 productScale.getText(), productVendor.getText(), productDescription.getText(),
                 quantityInStock.getText(), buyPrice.getText(), MSRP.getText());
-
+    
         if (additionSuccessful) {
             JOptionPane.showMessageDialog(this, "Product added successfully.", "Addition completed", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this, "Error adding product.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
 
     private void addComponentsToPanelAdd(JPanel panel) {
         JPanel labelPanel = new JPanel(new GridLayout(9, 1));
