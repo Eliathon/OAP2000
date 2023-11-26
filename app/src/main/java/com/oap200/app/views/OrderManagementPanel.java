@@ -9,6 +9,9 @@ import java.awt.*;
 import java.util.List;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.prefs.Preferences;
 
 import com.oap200.app.models.OrderDAO;
@@ -117,12 +120,9 @@ private static final String PREF_X = "window_x";
     }
      private void initializeFields() {
         JTextField orderNumber = new JTextField(10);
-        JTextField orderDate = new JTextField(10);
         JTextField requiredDate = new JTextField(10);
         JTextField shippedDate = new JTextField(10);
         JTextField status = new JTextField(10);
-        JTextField comments = new JTextField(30);
-        JTextField customerNumber = new JTextField(10);
     }
 
     private void viewOrders() {
@@ -335,6 +335,33 @@ private static final String PREF_X = "window_x";
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelAdd.add(tableContainer, BorderLayout.CENTER);
     }
+    
+    private void addComponentsToPanelDelete(JPanel panelDelete) {
+        panelDelete.setLayout(new BorderLayout());
+    
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.3; // Label weight
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+    
+        // Adding the "Order Number:" label
+        inputPanel.add(new JLabel("Order Number:"), gbc);
+    
+        panelDelete.add(inputPanel, BorderLayout.NORTH);
+    
+        // Now, create the scrollPane with the orderTable right here:
+        JScrollPane scrollPane = new JScrollPane(OrdersTable);
+    
+        // Create a container panel for the table to align it to the left
+        JPanel tableContainer = new JPanel(new BorderLayout());
+        tableContainer.add(scrollPane, BorderLayout.CENTER);
+        panelDelete.add(tableContainer, BorderLayout.CENTER);
+    }
+    
+
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
