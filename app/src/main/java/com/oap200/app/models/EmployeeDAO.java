@@ -239,73 +239,34 @@ public class EmployeeDAO {
     }
     
     // Method to update an employee in the database
-    // Method to update an employee in the database
-public boolean updateEmployee(String employeeNumber, String lastName, String firstName, String extension, String email, String officeCode, Integer reportsTo, String jobTitle) {
-    // Validate employee number
-    if (employeeNumber == null || employeeNumber.trim().isEmpty()) {
-        System.out.println("Employee number is required for update.");
-        return false;
-    }
+    public boolean updateEmployee(String employeeNumber, String lastName, String firstName, String extension, String email, String officeCode, Integer reportsTo, String jobTitle) {
+        try {
+            
+            // Establish a database connection
+            DbConnect db = new DbConnect();
+            Connection myConnection = db.getConnection();
+            PreparedStatement preparedStatement = myConnection.prepareStatement(
+                    "UPDATE employees SET lastName=?, firstName=?, extension=?, email=?, officeCode=?, reportsTo=?, jobTitle=? WHERE employeeNumber=?");
 
-    StringBuilder sql = new StringBuilder("UPDATE employees SET ");
-    List<Object> parameters = new ArrayList<>();
+            // Set parameters for the UPDATE query
+           
+        preparedStatement.setString(1, lastName);
+        preparedStatement.setString(2, firstName);
+        preparedStatement.setString(3, extension);
+        preparedStatement.setString(4, email);
+        preparedStatement.setString(5, officeCode);
+           preparedStatement.setInt(6, reportsTo);
+        preparedStatement.setString(7, jobTitle);
+        preparedStatement.setString(8, employeeNumber);
 
-    // Append non-empty fields to the query
-    if (lastName != null && !lastName.isEmpty()) {
-        sql.append("lastName=?, ");
-        parameters.add(lastName);
-    }
-    if (firstName != null && !firstName.isEmpty()) {
-        sql.append("firstName=?, ");
-        parameters.add(firstName);
-    }
-    if (extension != null && !extension.isEmpty()) {
-        sql.append("extension=?, ");
-        parameters.add(extension);
-    }
-    if (email != null && !email.isEmpty()) {
-        sql.append("email=?, ");
-        parameters.add(email);
-    }
-    if (officeCode != null && !officeCode.isEmpty()) {
-        sql.append("officeCode=?, ");
-        parameters.add(officeCode);
-    }
-    if (reportsTo != null) {
-        sql.append("reportsTo=?, ");
-        parameters.add(reportsTo);
-    }
-    if (jobTitle != null && !jobTitle.isEmpty()) {
-        sql.append("jobTitle=?, ");
-        parameters.add(jobTitle);
-    }
+            // Execute the UPDATE query
+            int rowsAffected = preparedStatement.executeUpdate();
 
-    // Check if any fields were provided for update
-    if (parameters.isEmpty()) {
-        System.out.println("No fields provided for update.");
-        return false;
-    }
-
-    // Remove the trailing comma and space, then add WHERE clause
-    sql = new StringBuilder(sql.substring(0, sql.length() - 2));
-    sql.append(" WHERE employeeNumber=?");
-    parameters.add(employeeNumber); // Add employee number as the last parameter
-
-    // Execute the update
-    try (Connection myConnection = new DbConnect().getConnection(); // Make sure to create an instance of DbConnect
-         PreparedStatement preparedStatement = myConnection.prepareStatement(sql.toString())) {
-
-        // Set parameters for PreparedStatement
-        for (int i = 0; i < parameters.size(); i++) {
-            preparedStatement.setObject(i + 1, parameters.get(i));
+            // Return true if the update was successful
+            return rowsAffected > 0;
+        } catch (SQLException | ClassNotFoundException | NumberFormatException ex) {
+            ex.printStackTrace();
+            return false;
         }
-
-        int rowsAffected = preparedStatement.executeUpdate();
-        return rowsAffected > 0;
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-        return false;
     }
-}
-
 }
