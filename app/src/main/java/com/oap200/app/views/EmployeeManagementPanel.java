@@ -207,8 +207,6 @@ private void refreshTable(){
         loadEmployeeRoles();
     }
 
-    
-
     private void loadEmployeeRoles() {
         if (employeeController != null) {
             List<String> employeeRoles = employeeController.getEmployeeRoles();
