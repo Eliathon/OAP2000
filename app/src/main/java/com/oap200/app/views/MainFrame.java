@@ -3,16 +3,23 @@
 package com.oap200.app.views;
 
 import com.oap200.app.utils.ButtonBuilder;
+import com.oap200.app.controllers.ProductController;
 import com.oap200.app.controllers.SQLController;
+import com.oap200.app.models.ProductsDAO;
 import com.oap200.app.tabbedPanels.*;
-import com.oap200.app.utils.DbConnect;
 
 import javax.swing.*;
-import java.awt.*;
-import java.sql.*;
+
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
 // Import for TabbedPanels
@@ -23,6 +30,8 @@ public class MainFrame extends JFrame {
     private Preferences prefs = Preferences.userNodeForPackage(MainFrame.class);
     private JTextArea sqlQueryArea;
     private JTextArea sqlResultArea;
+    private ScheduledExecutorService executor;
+    private ProductController productController;
     private final String X_POS_KEY = "xPos";
     private final String Y_POS_KEY = "yPos";
     private final String WIDTH_KEY = "width";
@@ -89,7 +98,14 @@ public class MainFrame extends JFrame {
 
         // Execute SQL Button
         JButton executeSqlButton = new JButton("Execute SQL");
-        executeSqlButton.addActionListener(e -> executeSqlQuery());
+        executeSqlButton.addActionListener(e -> {
+            try {
+                executeSqlQuery();
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        });
 
         JPanel sqlPanel = new JPanel();
         sqlPanel.setLayout(new BorderLayout());
@@ -99,11 +115,28 @@ public class MainFrame extends JFrame {
 
         // Add SQL Panel to MainFrame
         add(sqlPanel, BorderLayout.SOUTH);
+
+        productController = new ProductController();
+
+        // Perform initial low stock check
+        checkAndNotifyLowStock();
+
+        // Setup ScheduledExecutorService
+        executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(this::checkAndNotifyLowStock, 1, 1, TimeUnit.HOURS); // Check every hour
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (executor != null && !executor.isShutdown()) {
+            executor.shutdown(); // Properly shutdown the executor
+        }
     }
 
     private SQLController sqlController = new SQLController();
 
-    private void executeSqlQuery() {
+    private void executeSqlQuery() throws Exception {
         String sqlQuery = sqlQueryArea.getText().trim();
         if (sqlQuery.isEmpty()) {
             sqlResultArea.setText("Please enter a SQL query.");
@@ -111,6 +144,20 @@ public class MainFrame extends JFrame {
         }
         String result = sqlController.executeQuery(sqlQuery);
         sqlResultArea.setText(result);
+    }
+
+    private void checkAndNotifyLowStock() {
+        List<String> lowStockItems = productController.checkLowStock();
+
+        if (!lowStockItems.isEmpty()) {
+            SwingUtilities.invokeLater(() -> {
+                JOptionPane.showMessageDialog(this, "Low stock for items: " + String.join(", ", lowStockItems));
+            });
+        } else {
+            SwingUtilities.invokeLater(() -> {
+                JOptionPane.showMessageDialog(this, "All items have sufficient stock.");
+            });
+        }
     }
 
     private void initPosition() {

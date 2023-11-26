@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.table.DefaultTableModel;
 import com.oap200.app.views.EmployeeManagementPanel;
@@ -86,7 +87,7 @@ public class EmployeeDAO {
     }
     
 // Method to search for employees by number in the database
-    public List<String[]> searchEmployeesByNumber(String employeeNumber) {
+    public List<String[]> searchEmployeesNumber(String employeeNumber) {
         List<String[]> searchResults = new ArrayList<>();
         try {
             // Establish a database connection
@@ -116,6 +117,7 @@ public class EmployeeDAO {
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
+        
         return searchResults;
     }
 
@@ -126,6 +128,12 @@ public class EmployeeDAO {
             DbConnect db = new DbConnect();
             Connection myConnection = db.getConnection();
             
+            //Update customers table to remove references to chosen employee
+            PreparedStatement updateCustomers = myConnection.prepareStatement(
+                "UPDATE customers SET salesRepEmployeeNumber = NULL WHERE salesRepEmployeeNumber = ?");
+                updateCustomers.setString(1, employeeNumber);
+                updateCustomers.executeUpdate();
+
             // Execute prepared statement to delete an employee with a given code
             PreparedStatement preparedStatement = myConnection.prepareStatement("DELETE FROM employees WHERE employeeNumber = ?");
             preparedStatement.setString(1, employeeNumber);

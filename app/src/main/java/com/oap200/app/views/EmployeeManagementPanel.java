@@ -76,6 +76,9 @@ private void initializeFields() {
 
     }
 
+private void refreshTable(){
+    employeeController.handleViewAllEmployees();
+}
     public EmployeeManagementPanel() {
         initializeFields();
         employeeController = new EmployeeController(new EmployeeDAO(), this);
@@ -107,14 +110,14 @@ private void initializeFields() {
         });
         JButton deleteButton = ButtonBuilder.createDeleteButton(() -> { /* Action for Delete Button */ });
         JButton updateButton = ButtonBuilder.createUpdateButton(() -> { /* Action for Update Button */ });
-        JButton searchByNumberButton = ButtonBuilder.createSearchButton(() -> searchEmployeesByNumber());
+        JButton searchNumberButton = ButtonBuilder.createSearchButton(() -> searchEmployeesNumber());
         JButton searchButton = ButtonBuilder.createSearchButton(() -> {
             searchEmployees();
         });
 
         JPanel viewSearchButtonPanel = new JPanel(new FlowLayout());
         viewSearchButtonPanel.add(viewButton);
-        viewSearchButtonPanel.add(searchByNumberButton);
+        viewSearchButtonPanel.add(searchNumberButton);
         viewSearchButtonPanel.add(searchButton);
 
         // Initialize JTabbedPane
@@ -169,11 +172,11 @@ private void initializeFields() {
         JScrollPane scrollPane = new JScrollPane(employeeTable);
         panel1.add(scrollPane, BorderLayout.CENTER);
 
-        viewButton.addActionListener(e -> employeeController.handleViewAllEmployees());
-        searchButton.addActionListener(e -> searchEmployeesByNumber());
-        searchButton.addActionListener(e -> searchEmployees());
-        deleteButton.addActionListener(e -> deleteEmployee());
-        addButton.addActionListener(e -> addEmployee());
+        viewButton.addActionListener(e -> {employeeController.handleViewAllEmployees();});
+        searchButton.addActionListener(e -> {searchEmployeesNumber();});
+        searchButton.addActionListener(e -> {searchEmployees(); refreshTable();});
+        deleteButton.addActionListener(e -> {deleteEmployee(); refreshTable();});
+        addButton.addActionListener(e -> {addEmployee(); refreshTable();});
         updateButton.addActionListener(e -> {
             String employeeNumberToUpdate = updateEmployeeNumber.getText();
             String newLastName = updateLastName.getText();
@@ -183,7 +186,7 @@ private void initializeFields() {
             String newOfficeCode = updateOfficeCode.getText();
             String newReportsToText = updateReportsTo.getText();
             String newJobTitle = updateJobTitle.getText();
-        
+            
             try {
                 Integer newReportsTo = Integer.parseInt(newReportsToText);
                 boolean updateSuccess = employeeController.handleUpdateEmployee(employeeNumberToUpdate, newLastName, 
@@ -199,7 +202,7 @@ private void initializeFields() {
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Invalid Reports To number format.", "Input Error", JOptionPane.ERROR_MESSAGE);
             }
-        });
+        refreshTable();});
         
         loadEmployeeRoles();
     }
@@ -222,9 +225,9 @@ private void initializeFields() {
         employeeController.handleSearchEmployees(employeeName);
     }
 
-private void searchEmployeesByNumber(){
+private void searchEmployeesNumber(){
     String employeeNumber = searchNumberField.getText();
-    employeeController.handleSearchEmployeesByNumber(employeeNumber);
+    employeeController.handleSearchEmployeesNumber(employeeNumber);
 }
 
     private void deleteEmployee() {

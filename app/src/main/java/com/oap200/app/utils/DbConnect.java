@@ -13,16 +13,19 @@ public class DbConnect implements AutoCloseable {
     private Connection myConnection;
 
     public DbConnect() throws SQLException, ClassNotFoundException {
+        // Load JDBC driver
         Class.forName("com.mysql.cj.jdbc.Driver");
+        // Establish connection
         myConnection = DriverManager.getConnection(dbUrl, user, pass);
     }
 
+    // Method to retrieve the connection if needed
     public Connection getConnection() {
         return myConnection;
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() throws Exception {
         if (myConnection != null && !myConnection.isClosed()) {
             myConnection.close();
         }
