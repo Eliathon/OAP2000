@@ -77,7 +77,7 @@ public class ProductManagementPanel extends JFrame {
         JButton deleteButton = ButtonBuilder.createDeleteButton(() -> { /* Action for Delete Button */ });
         JButton updateButton = ButtonBuilder.createUpdateButton(() -> { /* Action for Update Button */ });
         JButton searchButton = ButtonBuilder.createSearchButton(() -> {
-            searchProducts();
+         
         });
 
         JPanel viewSearchButtonPanel = new JPanel(new FlowLayout());
