@@ -79,7 +79,7 @@ public class ButtonBuilder {
 
      // Red Logout Button is created by Sebastian
     public static JButton createViewButton(Runnable action) {
-        JButton viewButton = new JButton("View");
+        JButton viewButton = new JButton("View All");
         viewButton.setForeground(Color.WHITE); // Set text color to white
         viewButton.setBackground(Color.BLACK); // Set background color to red
         viewButton.setBorderPainted(false); // Remove border
