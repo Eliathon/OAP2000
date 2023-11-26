@@ -17,16 +17,21 @@ import com.oap200.app.views.ProductManagementPanel;
 import com.oap200.app.utils.DbConnect;
 
 public class ProductsDAO {
+    // Method to fetch all products from the database
     public List<String[]> fetchProducts() {
         System.out.println("View button clicked!");
         List<String[]> products = new ArrayList<>();
 
         try {
+            // Establish a database connection
             DbConnect db = new DbConnect();
             Connection myConnection = db.getConnection();
             Statement myStmt = myConnection.createStatement();
+            
+            // Execute SELECT query to retrieve all products
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM products");
 
+            // Process the retrieved data and populate the 'products' list
             while (myRs.next()) {
                 String[] product = new String[] {
                         myRs.getString("productCode"),
@@ -38,7 +43,6 @@ public class ProductsDAO {
                         myRs.getString("quantityInStock"),
                         myRs.getString("buyPrice"),
                         myRs.getString("MSRP"),
-                      
                 };
                 products.add(product);
             }
@@ -47,17 +51,22 @@ public class ProductsDAO {
         }
         return products;
     }
-
+    
+    // Method to search for products by name in the database
     public List<String[]> searchProducts(String productName) {
         List<String[]> searchResults = new ArrayList<>();
-    
+
         try {
+            // Establish a database connection
             DbConnect db = new DbConnect();
             Connection myConnection = db.getConnection();
+            
+            // Execute prepared statement to search for products with a given name
             PreparedStatement preparedStatement = myConnection.prepareStatement("SELECT * FROM products WHERE productName LIKE ?");
             preparedStatement.setString(1, "%" + productName + "%");
             ResultSet myRs = preparedStatement.executeQuery();
-            
+
+            // Process the retrieved data and populate the 'searchResults' list
             while (myRs.next()) {
                 String[] product = new String[] {
                         myRs.getString("productCode"),
@@ -77,29 +86,43 @@ public class ProductsDAO {
         }
         return searchResults;
     }
-
+    
+    // Method to delete a product from the database
     public boolean deleteProduct(String productCode) {
         try {
+            // Establish a database connection
             DbConnect db = new DbConnect();
             Connection myConnection = db.getConnection();
+            
+            // Execute prepared statement to delete a product with a given code
             PreparedStatement preparedStatement = myConnection.prepareStatement("DELETE FROM products WHERE productCode = ?");
             preparedStatement.setString(1, productCode);
+            
+            // Get the number of rows affected after the deletion
             int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0; // Returnerer true hvis slettingen var vellykket
+            
+            // Return true if deletion was successful
+            return rowsAffected > 0;
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
             return false;
         }
     }
+    
+    // Method to retrieve distinct product lines from the database
     public static List<String> getProductLines() {
         List<String> productLines = new ArrayList<>();
 
         try {
+            // Establish a database connection
             DbConnect db = new DbConnect();
             Connection myConnection = db.getConnection();
             Statement myStmt = myConnection.createStatement();
+            
+            // Execute SELECT query to retrieve distinct product lines
             ResultSet myRs = myStmt.executeQuery("SELECT DISTINCT productLine FROM productlines");
 
+            // Process the retrieved data and populate the 'productLines' list
             while (myRs.next()) {
                 String productLine = myRs.getString("productLine");
                 productLines.add(productLine);
@@ -111,17 +134,16 @@ public class ProductsDAO {
         return productLines;
     }
     
+    // Method to add a new product to the database
     public boolean addProduct(String productCode, String productName, String productLine, String productScale, String productVendor, String productDescription, int quantityInStock, BigDecimal buyPrice, BigDecimal MSRP) {
-       
-       
         Connection myConnection = null;
-        
+
         try {
+            // Establish a database connection
             DbConnect db = new DbConnect();
             myConnection = db.getConnection();
-    
-            // Forbered INSERT-spørringen
-           // String insertQuery = "INSERT INTO products (productCode, productName, productLine, productScale, productVendor, productDescription, quantityInStock, buyPrice, MSRP) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            // Prepare the INSERT query
             PreparedStatement preparedStatement = myConnection.prepareStatement("INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement.setString(1, productCode);
             preparedStatement.setString(2, productName);
@@ -132,43 +154,44 @@ public class ProductsDAO {
             preparedStatement.setInt(7, quantityInStock);
             preparedStatement.setBigDecimal(8, buyPrice);
             preparedStatement.setBigDecimal(9, MSRP);
-            
+
+            // Validate input data
             if (productName == null || productName.trim().isEmpty() || productLine == null || productLine.trim().isEmpty()) {
                 System.out.println("Product name and product line are required.");
                 return false;
             }
-            
-    
-            // Start transaksjon
+
+            // Start transaction
             myConnection.setAutoCommit(false);
-    
-            // Utfør INSERT-spørringen
+
+            // Execute the INSERT query
             int rowsAffected = preparedStatement.executeUpdate();
-    
-            // Bekreft transaksjonen hvis tillegget var vellykket
+
+            // Confirm the transaction if the addition was successful
             if (rowsAffected > 0) {
                 myConnection.commit();
                 System.out.println("Product added successfully");
             } else {
-                // Rull tilbake transaksjonen hvis tillegget mislyktes
+                // Roll back the transaction if the addition failed
                 myConnection.rollback();
                 System.out.println("Failed to add product");
             }
-    
-            // Logg antall berørte rader (for feilsøking)
+
+            // Log the number of affected rows (for troubleshooting)
             System.out.println("Rows affected: " + rowsAffected);
-    
-            return rowsAffected > 0; // Returner true hvis tillegget var vellykket
-    
+
+            // Return true if the addition was successful
+            return rowsAffected > 0;
+
         } catch (SQLException | ClassNotFoundException | NumberFormatException ex) {
-            // Logg eventuelle unntak
+            // Log any exceptions
             ex.printStackTrace();
             return false;
-    
+
         } finally {
             try {
                 if (myConnection != null) {
-                    // Sett tilbake til autocommit=true
+                    // Set back to autocommit=true
                     myConnection.setAutoCommit(true);
                 }
             } catch (SQLException e) {
@@ -176,33 +199,35 @@ public class ProductsDAO {
             }
         }
     }
-
+    
+    // Method to update a product in the database
     public boolean updateProduct(String productCode, String newQuantityInStock, String newBuyPrice, String newMSRP) {
-    try {
-        int quantityInStock = Integer.parseInt(newQuantityInStock);
-        BigDecimal buyPrice = new BigDecimal(newBuyPrice);
-        BigDecimal msrp = new BigDecimal(newMSRP);
+        try {
+            // Parse input parameters
+            int quantityInStock = Integer.parseInt(newQuantityInStock);
+            BigDecimal buyPrice = new BigDecimal(newBuyPrice);
+            BigDecimal msrp = new BigDecimal(newMSRP);
 
-        DbConnect db = new DbConnect();
-        Connection myConnection = db.getConnection();
-        PreparedStatement preparedStatement = myConnection.prepareStatement(
-                "UPDATE products SET quantityInStock=?, buyPrice=?, MSRP=? WHERE productCode=?");
+            // Establish a database connection
+            DbConnect db = new DbConnect();
+            Connection myConnection = db.getConnection();
+            PreparedStatement preparedStatement = myConnection.prepareStatement(
+                    "UPDATE products SET quantityInStock=?, buyPrice=?, MSRP=? WHERE productCode=?");
 
-        preparedStatement.setInt(1, quantityInStock);
-        preparedStatement.setBigDecimal(2, buyPrice);
-        preparedStatement.setBigDecimal(3, msrp);
-        preparedStatement.setString(4, productCode);
+            // Set parameters for the UPDATE query
+            preparedStatement.setInt(1, quantityInStock);
+            preparedStatement.setBigDecimal(2, buyPrice);
+            preparedStatement.setBigDecimal(3, msrp);
+            preparedStatement.setString(4, productCode);
 
-        int rowsAffected = preparedStatement.executeUpdate();
+            // Execute the UPDATE query
+            int rowsAffected = preparedStatement.executeUpdate();
 
-        return rowsAffected > 0;
-    } catch (SQLException | ClassNotFoundException | NumberFormatException ex) {
-        ex.printStackTrace();
-        return false;
+            // Return true if the update was successful
+            return rowsAffected > 0;
+        } catch (SQLException | ClassNotFoundException | NumberFormatException ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
 }
-
-    
-    
-    
-    }
