@@ -1,69 +1,59 @@
-// Created by Patrik
-
+//Created by Patrik
 package main.java.com.oap200.app.controllers;
 
-import javax.swing.JTextField;
-import javax.xml.bind.ParseConversionEvent;
-import javax.swing. JOptionPane;
-
-import java.text.ParseException;
-import java.util.List;
-import java.util.zip.DataFormatException;
-
-import com.oap200.app.models.OrderDAO;
+import com.oap200.app.models.ProductsDAO;
 import com.oap200.app.views.OrderManagementPanel;
 
+import java.math.DateFormat;
+import java.util.List;
+
+import javax.swing.JOptionPane;
 public class OrdersController {
-    private OrderDAO OrderDAO;
-    private OrderManagementPanel OrderManagementPanel;
-    
-    public OrdersController() {
-        this.OrderDAO = new OrderDAO();
-        this.OrderManagementPanel = new OrderManagementPanel();
-        new OrderManagementPanel();
+
+   // Method for handling the display of products
+private OrderDAO orderDAO;
+private OrderManagementPanel orderManagementPanel;
+
+public OrderController(OrderDAO orderDAO, OrderManagementPanel orderManagementPanel) {
+    this.orderDAO = orderDAO;
+    this.orderManagementPanel = orderManagementPanel;
+}
+// Method to handle searching for orders by name
+public void handleSearchOrders(String orderNumber) {
+    List<String[]> searchResult = orderDAO.searchOrders(orderNumber);
+    orderManagementPanel.displayOrders(searchResult);
+}
+
+// Method to handle displaying all orders
+public void handleViewAllOrders() {
+    List<String[]> allOrders = orderDAO.fetchOrders();
+    orderManagementPanel.displayOrders(allOrders);
+}
+
+// Method to handle deleting a product
+public boolean handleDeleteOrders(String orderNumber) {
+    boolean deletionSuccessful = orderDAO.deleteOrders(orderNumber);
+    if (deletionSuccessful) {
+        return true;
+    } else {
+        // Handle errors here, for example, display an error message
+        return false;
     }
+}
 
-    public void fetchAndDisplayOrders() {
-        // Fetch orders from the database
-        OrderDAO.fetchOrders().forEach(order -> {
-            // Display each order in the view
-            // Displaying logic can be added here based on the view requirements
-            for (String data : order) {
-                System.out.print(data + " ");
-            }
-            System.out.println(); // Move to the next line for the next order
-        });
-    }
+// Method to handle adding a new product
+public boolean handleAddOrder(String orderNumber, String orderDate, String requiredDate, String shippedDate, String status, String comments, String customerNumber) {
+    try {
+        int OrderNumber = Integer.parseInt(orderNumber);
+        int CustomerNumber = Integer.parseInt(customerNumber);
+        DateFormat OrderDate = new DateFormat(OrderDate);
+        DateFormat RequiredDate = new DateFormat(RequiredDate);
+        DateFormat ShippedDate = new DateFormat(ShippedDate);
 
-    public void handlesearchOrders(String orderNumber) {
-    
-        List<String[]> ordersResult = OrderDAO.searchOrders(orderNumber);
-        OrderManagementPanel.displayOrders(ordersResult);
-
-        String orderNumber = orderManagementPanel.getOrderNumberTextField().getText();
-        String orderDate = orderManagementPanel.getOrderDateTextField().getText();
-        String requiredDate = orderManagementPanel.getRequiredDateTextField().getText();
-        String shippedDate = orderManagementPanel.getShippedDateTextField().getText();
-        String status = orderManagementPanel.getStatusTextField().getText();
-        String comments = orderManagementPanel.getCommentsTextField().getText();
-        String customerNumber = orderManagementPanel.getCustomerNumberTextField().getText();
-    }
-
-    //Handle a new order
-    public boolean handleAddOrder(String orderNumber, String orderDate, String requiredDate,
-    String shippedDate, String status, String comments, String customerNumber) {
-
-        try {
-            int orderNumberInt = Integer.parseInt(orderNumber);
-            int customerNumberInt = Integer.parseInt(customerNumber);
-            ParseConversionEvent orderDate = new ParseConversionEvent(orderDate);
-            ParseConversionEvent requiredDate = new ParseConversionEvent(requiredDate);
-        // Add a new order to the database
-        return OrderDAO.addOrders(orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber);
-    } catch (NumberFormatException | DataFormatException | ParseException e) {
+        return orderDAO.addOrder(orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber);
+    } catch (NumberFormatException | DateFormat  ex) {
         ex.printStackTrace();
-        
-        JOptionPane.showMessageDialog("OrderManagementPanel", "Invalid input", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(orderManagementPanel, "Error converting numbers.", "Error", JOptionPane.ERROR_MESSAGE);
         return false;
     }
 }
