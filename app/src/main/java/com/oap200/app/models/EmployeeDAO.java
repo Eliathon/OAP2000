@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.table.DefaultTableModel;
 import com.oap200.app.views.EmployeeManagementPanel;
@@ -116,7 +117,7 @@ public class EmployeeDAO {
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
-        System.out.println("HALLO SER DU DETTE");
+        
         return searchResults;
     }
 
