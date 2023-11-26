@@ -15,7 +15,6 @@ import javax.swing.table.DefaultTableModel;
 import com.oap200.app.views.ProductManagementPanel;
 import java.sql.Types;
 
-
 import com.oap200.app.utils.DbConnect;
 
 public class ProductsDAO {
@@ -209,44 +208,46 @@ public class ProductsDAO {
     }
 
     // Method to update a product in the database
-   // Method to update a product in the database
-public boolean updateProduct(String productCode, Integer newQuantityInStock, BigDecimal newBuyPrice, BigDecimal newMSRP) {
-    try {
-        // Establish a database connection
-        DbConnect db = new DbConnect();
-        Connection myConnection = db.getConnection();
-        PreparedStatement preparedStatement = myConnection.prepareStatement(
-                "UPDATE products SET quantityInStock = IFNULL(?, quantityInStock), buyPrice = IFNULL(?, buyPrice), MSRP = IFNULL(?, MSRP) WHERE productCode = ?");
+    // Method to update a product in the database
+    public boolean updateProduct(String productCode, Integer newQuantityInStock, BigDecimal newBuyPrice,
+            BigDecimal newMSRP) {
+        try {
+            // Establish a database connection
+            DbConnect db = new DbConnect();
+            Connection myConnection = db.getConnection();
+            PreparedStatement preparedStatement = myConnection.prepareStatement(
+                    "UPDATE products SET quantityInStock = IFNULL(?, quantityInStock), buyPrice = IFNULL(?, buyPrice), MSRP = IFNULL(?, MSRP) WHERE productCode = ?");
 
-        // Set parameters for the UPDATE query
-        if (newQuantityInStock != null) {
-            preparedStatement.setInt(1, newQuantityInStock);
-        } else {
-            preparedStatement.setNull(1, Types.INTEGER);
+            // Set parameters for the UPDATE query
+            if (newQuantityInStock != null) {
+                preparedStatement.setInt(1, newQuantityInStock);
+            } else {
+                preparedStatement.setNull(1, Types.INTEGER);
+            }
+
+            if (newBuyPrice != null) {
+                preparedStatement.setBigDecimal(2, newBuyPrice);
+            } else {
+                preparedStatement.setNull(2, Types.DECIMAL);
+            }
+
+            if (newMSRP != null) {
+                preparedStatement.setBigDecimal(3, newMSRP);
+            } else {
+                preparedStatement.setNull(3, Types.DECIMAL);
+            }
+
+            preparedStatement.setString(4, productCode);
+
+            // Execute the UPDATE query
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            // Return true if the update was successful
+            return rowsAffected > 0;
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+            return false;
         }
-
-        if (newBuyPrice != null) {
-            preparedStatement.setBigDecimal(2, newBuyPrice);
-        } else {
-            preparedStatement.setNull(2, Types.DECIMAL);
-        }
-
-        if (newMSRP != null) {
-            preparedStatement.setBigDecimal(3, newMSRP);
-        } else {
-            preparedStatement.setNull(3, Types.DECIMAL);
-        }
-
-        preparedStatement.setString(4, productCode);
-
-        // Execute the UPDATE query
-        int rowsAffected = preparedStatement.executeUpdate();
-
-        // Return true if the update was successful
-        return rowsAffected > 0;
-    } catch (SQLException | ClassNotFoundException ex) {
-        ex.printStackTrace();
-        return false;
     }
 
     public List<String> getLowStockProducts() throws SQLException, ClassNotFoundException {
@@ -263,6 +264,4 @@ public boolean updateProduct(String productCode, Integer newQuantityInStock, Big
         }
         return lowStockItems;
     }
-}
-
 }
