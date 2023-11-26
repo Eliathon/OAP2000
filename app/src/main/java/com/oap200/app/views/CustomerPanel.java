@@ -37,15 +37,3 @@ public class CustomerPanel extends JFrame {
         // Add the tabbedPane to this frame
         getContentPane().add(tabbedPane);
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                CustomerPanel frame = new CustomerPanel();
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setSize(400, 300); // Set the frame size
-                frame.setVisible(true); // Display the frame
-            }
-        });
-    }
-}
