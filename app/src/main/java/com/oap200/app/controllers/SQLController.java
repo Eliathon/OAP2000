@@ -4,7 +4,7 @@ import com.oap200.app.utils.DbConnect;
 import java.sql.*;
 
 public class SQLController {
-    public String executeQuery(String query) {
+    public String executeQuery(String query) throws Exception {
         StringBuilder result = new StringBuilder();
         try (DbConnect dbConnect = new DbConnect();
                 Connection conn = dbConnect.getConnection();
