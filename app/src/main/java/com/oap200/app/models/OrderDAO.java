@@ -85,7 +85,7 @@ public class OrderDAO {
         }
     }
 
-  // Method to delete a product from the database
+  // Method to delete an order from the database
   public boolean deleteOrder(String orderNumber) {
     try {
         // Establish a database connection

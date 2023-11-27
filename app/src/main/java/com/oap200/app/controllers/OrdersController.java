@@ -5,7 +5,7 @@ package main.java.com.oap200.app.controllers;
 import com.oap200.app.models.OrderDAO;
 import com.oap200.app.views.OrderManagementPanel;
 
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.List;
 
@@ -56,11 +56,16 @@ public class OrdersController {
             try {
                 int orderNum = Integer.parseInt(orderNumber);
                 int customerNum = Integer.parseInt(customerNumber);
-                DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
+               
+                //Define the DatePatern
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+
+                //Parse orderDate, requiredDate and shippedDate
                 java.util.Date parsedOrderDate = dateFormat.parse(orderDate);
                 java.util.Date parsedRequiredDate = dateFormat.parse(requiredDate);
                 java.util.Date parsedShippedDate = dateFormat.parse(shippedDate);
-    
+                
+                //Converting java.util.Date to java.sql.Date for database insertion
                 java.sql.Date sqlOrderDate = new java.sql.Date(parsedOrderDate.getTime());
                 java.sql.Date sqlRequiredDate = new java.sql.Date(parsedRequiredDate.getTime());
                 java.sql.Date sqlShippedDate = new java.sql.Date(parsedShippedDate.getTime());

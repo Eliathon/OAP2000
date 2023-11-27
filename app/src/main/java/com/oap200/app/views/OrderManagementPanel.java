@@ -1,4 +1,4 @@
-//Created by Sebastian
+//Created by Patrik
 package com.oap200.app.views;
 
 import com.oap200.app.models.OrderDAO;
@@ -87,25 +87,25 @@ public class OrderManagementPanel extends JFrame {
         // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Tab 1: View Products
+        // Tab 1: View Orders
         JPanel panel1 = new JPanel(new BorderLayout());
         addComponentsToPanelView(panel1);
         panel1.add(viewSearchButtonPanel, BorderLayout.SOUTH);
         tabbedPane.addTab("View Orders", null, panel1, "Click to view");
 
-        // Tab 2: Add Products
+        // Tab 2: Add Orders
         JPanel panel2 = new JPanel(new BorderLayout());
         addComponentsToPanelAdd(panel2);
         panel2.add(addButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Add Orders", null, panel2, "Click to add");
 
-        // Tab 3: Update Products
+        // Tab 3: Update Orders
         JPanel panel3 = new JPanel(new BorderLayout());
         addComponentsToPanelUpdate(panel3);
         panel3.add(updateButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Update Orders", null, panel3, "Click to Update");
 
-        // Tab 4: Delete Products
+        // Tab 4: Delete Orders
         JPanel panel4 = new JPanel(new BorderLayout());
         addComponentsToPanelDelete(panel4);
         panel4.add(deleteButton, BorderLayout.SOUTH);
@@ -320,7 +320,7 @@ public class OrderManagementPanel extends JFrame {
 
         panelUpdate.add(inputPanelUpdate, BorderLayout.NORTH);
 
-        // Create the scrollPane with the employeeTable
+        // Create the scrollPane with the orderTable
         JScrollPane scrollPane = new JScrollPane(ordersTable);
 
         // Create a container panel for the table to align it to the left
@@ -348,7 +348,7 @@ public class OrderManagementPanel extends JFrame {
 
         panelView.add(inputPanel, BorderLayout.NORTH);
 
-        // Create the scrollPane with the employeeTable
+        // Create the scrollPane with the orderTable
         JScrollPane scrollPane = new JScrollPane(ordersTable);
 
         // Create a container panel for the table to align it to the left
@@ -376,7 +376,7 @@ public class OrderManagementPanel extends JFrame {
 
         panelDelete.add(inputPanel, BorderLayout.NORTH);
 
-        // Create the scrollPane with the employeeTable
+        // Create the scrollPane with the orderTable
         JScrollPane scrollPane = new JScrollPane(ordersTable);
 
         // Create a container panel for the table to align it to the left
