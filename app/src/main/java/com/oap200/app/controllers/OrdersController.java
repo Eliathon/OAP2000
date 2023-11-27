@@ -6,6 +6,7 @@ import com.oap200.app.models.OrderDAO;
 import com.oap200.app.views.OrderManagementPanel;
 
 import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class OrdersController {
         this.orderManagementPanel = orderManagementPanel;
     }
 
-
+    // Method to handle searching for an order with orderNumber
     public void handleSearchOrder(String orderNumber) throws Exception {
         try {
             List<String[]> searchResult = orderDAO.searchOrder(orderNumber);
@@ -33,7 +34,8 @@ public class OrdersController {
             JOptionPane.showMessageDialog(orderManagementPanel, "An error occurred while searching for orders.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
+    // Method to handle viewing all orders
     public void handleViewAllOrder() throws Exception {
         List<String[]> allOrders = orderDAO.fetchOrders();
         orderManagementPanel.displayOrders(allOrders);
@@ -46,7 +48,7 @@ public class OrdersController {
         if (deletionSuccessful) {
             return true;
         } else {
-            // Handle errors here, for example, display an error message
+            
             return false;
         }
     }
@@ -89,29 +91,46 @@ public class OrdersController {
     // Method for updating an order
     public boolean updateOrder(String neworderNumber, String neworderDate, String newrequiredDate, String newshippedDate, String newstatus, String newcomments, String newcustomerNumber) {
         try {
-            // Check if all input values are empty
+    // Check if all input values are empty
             if (neworderNumber.isEmpty() && neworderDate.isEmpty() && newrequiredDate.isEmpty() && newshippedDate.isEmpty() && newstatus.isEmpty() && newcomments.isEmpty() && newcustomerNumber.isEmpty()) {
                 JOptionPane.showMessageDialog(orderManagementPanel, "You need to write at least one input.",
                         "Update Failed", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
+    //Define the DatePatern
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 
-            // Call the updateOrder method in the DAO with the updated values
-            boolean updateSuccessful = orderDAO.updateOrder(neworderNumber, neworderDate, newrequiredDate, newshippedDate, newstatus, newcomments, newcustomerNumber);
-
-            // Display a message dialog based on the update result
-            if (updateSuccessful) {
-                JOptionPane.showMessageDialog(orderManagementPanel, "Order updated successfully.",
-                        "Update Successful", JOptionPane.INFORMATION_MESSAGE);
+                //Parse orderDate, requiredDate and shippedDate
+                java.util.Date parsedOrderDate = dateFormat.parse(neworderDate);
+                java.util.Date parsedRequiredDate = dateFormat.parse(newrequiredDate);
+                java.util.Date parsedShippedDate = dateFormat.parse(newshippedDate);
                 
-            } else {
-                JOptionPane.showMessageDialog(orderManagementPanel, "Failed to update order.", "Update Failed",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-            return updateSuccessful;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+                //Converting java.util.Date to java.sql.Date for database insertion
+                java.sql.Date sqlOrderDate = new java.sql.Date(parsedOrderDate.getTime());
+                java.sql.Date sqlRequiredDate = new java.sql.Date(parsedRequiredDate.getTime());
+                java.sql.Date sqlShippedDate = new java.sql.Date(parsedShippedDate.getTime());
+
+        // Call the updateOrder method in the DAO with the updated values
+        boolean updateSuccessful = orderDAO.updateOrder(neworderNumber, sqlOrderDate.toString(), sqlRequiredDate.toString(), sqlShippedDate.toString(), newstatus, newcomments, newcustomerNumber);
+
+        // Display a message dialog based on the update result
+        if (updateSuccessful) {
+            JOptionPane.showMessageDialog(orderManagementPanel, "Order updated successfully.",
+                    "Update Successful", JOptionPane.INFORMATION_MESSAGE);
+
+        } else {
+            JOptionPane.showMessageDialog(orderManagementPanel, "Failed to update order.", "Update Failed",
+                    JOptionPane.ERROR_MESSAGE);
         }
+        return updateSuccessful;
+    } catch (ParseException e) {
+        JOptionPane.showMessageDialog(orderManagementPanel, "Error parsing dates.", "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+        return false;
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(orderManagementPanel, "An unexpected error occurred.", "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+        return false;
     }
+}
 }

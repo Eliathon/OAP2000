@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDAO {
-
+    // Method for fetching all orders from database and viewing them
     public List<String[]> fetchOrders() throws Exception {
         List<String[]> orders = new ArrayList<>();
 
@@ -35,7 +35,8 @@ public class OrderDAO {
         }
         return orders;
     }
-
+    
+    // Method for searching for an order by orderNumber
     public List<String[]> searchOrder(String orderNumber) throws Exception {
         List<String[]> searchResult = new ArrayList<>();
 
@@ -64,6 +65,7 @@ public class OrderDAO {
         return searchResult;
     }
 
+    // Method for adding order
     public boolean addOrder(String orderNumber, String orderDate, String requiredDate, String shippedDate, String status, String comments, String customerNumber) throws Exception {
         try (DbConnect db = new DbConnect();
              Connection myConnection = db.getConnection();
@@ -107,7 +109,7 @@ public class OrderDAO {
         return false;
     }
 }
-
+    // Method for updating an order
     public boolean updateOrder(String orderNumber, String orderDate, String requiredDate, String shippedDate, String status, String comments, String customerNumber) throws Exception {
         try (DbConnect db = new DbConnect();
              Connection myConnection = db.getConnection();

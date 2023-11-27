@@ -24,7 +24,7 @@ public class OrderManagementPanel extends JFrame {
     private JTextField searchTextField;
     private JTextField searchNumberField;
 
-    // Components for adding a product
+    // Components for adding an order
     private JTextField orderNumber;
     private JTextField orderDate;
     private JTextField requiredDate;
@@ -34,7 +34,7 @@ public class OrderManagementPanel extends JFrame {
     private JTextField customerNumber;
     
 
-    // Components for updating a product
+    // Components for updating an order
     private JTextField updateorderNumber;
     private JTextField updateorderDate;
     private JTextField updaterequiredDate;
@@ -84,7 +84,7 @@ public class OrderManagementPanel extends JFrame {
         viewSearchButtonPanel.add(viewButton);
         viewSearchButtonPanel.add(searchButton);
 
-        // Initialize JTabbedPane
+        // Initialize JTabbedPane design first created by Patrik
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // Tab 1: View Orders
@@ -162,12 +162,9 @@ public class OrderManagementPanel extends JFrame {
         });
         
     }
-
-
+    
     private void initializeFields() {
         System.out.println("Initializing fields...");
-       
-
         searchTextField = new JTextField(10);
 
         this.orderNumber = new JTextField(10);
@@ -186,11 +183,7 @@ public class OrderManagementPanel extends JFrame {
         } catch (Exception e) {
             // Handle exception
         }
-    }
-
-
-
-    
+    }  
     private void deleteOrder() {
         String orderNumber = searchNumberField.getText();
 
@@ -211,10 +204,7 @@ public class OrderManagementPanel extends JFrame {
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    
-    
-    private void addOrder() {
+     private void addOrder() {
         System.out.println("addOrder() called!");
 
         boolean additionSuccessful = OrdersController.addOrder(
@@ -228,7 +218,8 @@ public class OrderManagementPanel extends JFrame {
             JOptionPane.showMessageDialog(this, "Error adding order.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
+    
     private void addComponentsToPanelAdd(JPanel panel) {
         JPanel labelPanel = new JPanel(new GridLayout(9, 1));
         JPanel fieldPanel = new JPanel(new GridLayout(9, 1));
