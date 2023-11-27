@@ -135,6 +135,8 @@ public class ProductManagementPanel extends JFrame {
         productsTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(productsTable);
         panel1.add(scrollPane, BorderLayout.CENTER);
+       
+        
 
         viewButton.addActionListener(e -> productController.handleViewAllProducts());
         searchButton.addActionListener(e -> searchProducts());
@@ -367,6 +369,7 @@ public class ProductManagementPanel extends JFrame {
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelDelete.add(tableContainer, BorderLayout.CENTER);
+
     }
 
     public void displayProducts(List<String[]> productList) {

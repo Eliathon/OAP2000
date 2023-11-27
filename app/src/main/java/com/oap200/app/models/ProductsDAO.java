@@ -207,7 +207,7 @@ public class ProductsDAO {
         }
     }
 
-    // Method to update a product in the database
+  
     // Method to update a product in the database
     public boolean updateProduct(String productCode, Integer newQuantityInStock, BigDecimal newBuyPrice,
             BigDecimal newMSRP) {
@@ -250,7 +250,7 @@ public class ProductsDAO {
         }
     }
 
-    public List<String> getLowStockProducts() throws SQLException, ClassNotFoundException {
+     public List<String> getLowStockProducts() throws SQLException, ClassNotFoundException {
         List<String> lowStockItems = new ArrayList<>();
         String sql = "SELECT productName FROM products WHERE quantityInStock < 200";
 
@@ -263,5 +263,5 @@ public class ProductsDAO {
             }
         }
         return lowStockItems;
-    }
+    }  
 }
