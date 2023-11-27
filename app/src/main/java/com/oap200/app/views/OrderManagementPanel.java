@@ -2,8 +2,6 @@
 package com.oap200.app.views;
 
 import com.oap200.app.models.OrderDAO;
-import com.oap200.app.controllers.OrdersController;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -45,11 +43,11 @@ public class OrderManagementPanel extends JFrame {
     private JTextField updatecomments;
     private JTextField updatecustomerNumber;
 
-    private OrdersController OrdersController;
+    private main.java.com.oap200.app.controllers.OrdersController OrdersController;
 
     public OrderManagementPanel() {
         initializeFields();
-        OrdersController = new OrdersController(new OrderDAO(), this);
+        OrdersController = new main.java.com.oap200.app.controllers.OrdersController(new OrderDAO(), this);
 
         // Load the last window position
         Preferences prefs = Preferences.userNodeForPackage(OrderManagementPanel.class);
@@ -138,9 +136,17 @@ public class OrderManagementPanel extends JFrame {
         JScrollPane scrollPane = new JScrollPane(ordersTable);
         panel1.add(scrollPane, BorderLayout.CENTER);
 
-        viewButton.addActionListener(e -> OrdersController.handleViewAllOrders());
-        searchButton.addActionListener(e -> searchOrders());
+        viewButton.addActionListener(e -> {
+            try {
+                OrdersController.handleViewAllOrder();
+            } catch (Exception e1) {
+        
+                e1.printStackTrace();
+            }
+        });
+        searchButton.addActionListener(e -> searchOrder());
         deleteButton.addActionListener(e -> deleteOrder());
+           
         addButton.addActionListener(e -> addOrder());
         updateButton.addActionListener(e -> {
             String orderNumberToUpdate = updateorderNumber.getText();
@@ -151,15 +157,16 @@ public class OrderManagementPanel extends JFrame {
             String newcomments = updatecomments.getText();
             String newcustomerNumber = updatecustomerNumber.getText();
 
-            OrdersController.handleUpdateOrders(orderNumberToUpdate, neworderDate, newrequiredDate, newshippedDate, newstatus, newcomments, newcustomerNumber);
+            OrdersController.updateOrder(orderNumberToUpdate, neworderDate, newrequiredDate, newshippedDate, newstatus, newcomments, newcustomerNumber);
             System.out.println(orderNumberToUpdate + neworderDate + newrequiredDate + newshippedDate + newstatus + newcomments + newcustomerNumber);
         });
-        loadOrdersLines();
+        
     }
+
 
     private void initializeFields() {
         System.out.println("Initializing fields...");
-        loadOrdersLines();
+       
 
         searchTextField = new JTextField(10);
 
@@ -172,27 +179,45 @@ public class OrderManagementPanel extends JFrame {
         this.customerNumber = new JTextField(10);
     }
 
-    
-
-    private void searchOrders() {
-        String orderNumber = searchTextField.getText();
-        OrdersController.handleSearchOrders(orderNumber);
-    }
-
-    private void deleteOrders() {
-        String orderNumber = searchNumberField.getText();
-        boolean deletionSuccessful = OrdersController.handleDeleteOrders(orderNumber);
-        if (deletionSuccessful) {
-            JOptionPane.showMessageDialog(this, "Order deleted successfully.", "Deletion completed", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "Error deleting order.", "Error", JOptionPane.ERROR_MESSAGE);
+    private void searchOrder() {
+        try {
+            String orderNumber = searchNumberField.getText();
+            OrdersController.handleSearchOrder(orderNumber);
+        } catch (Exception e) {
+            // Handle exception
         }
     }
 
-    private void addOrders() {
+
+
+    
+    private void deleteOrder() {
+        String orderNumber = searchNumberField.getText();
+
+        // Check if the order number is empty
+        if (orderNumber.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid Order Number.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        boolean deletionSuccessful = OrdersController.handleDeleteOrder(orderNumber);
+
+        if (deletionSuccessful) {
+            JOptionPane.showMessageDialog(this, "Order deleted successfully.", "Deletion completed",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Error deleting order. Please make sure the Order Number is valid.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    
+    
+    private void addOrder() {
         System.out.println("addOrder() called!");
 
-        boolean additionSuccessful = OrdersController.handleAddOrder(
+        boolean additionSuccessful = OrdersController.addOrder(
                 orderNumber.getText(), orderDate.getText(), 
                 requiredDate.getText(), shippedDate.getText(), status.getText(),
                 comments.getText(), customerNumber.getText());
