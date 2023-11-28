@@ -2,30 +2,23 @@
 package com.oap200.app.controllers;
 
 import com.oap200.app.models.ProductsDAO;
-import com.oap200.app.utils.DbConnect;
 import com.oap200.app.views.ProductManagementPanel;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.swing.JOptionPane;
 
 public class ProductController {
-
-    // Method for handling the display of products
     private ProductsDAO productsDAO;
     private ProductManagementPanel productManagementPanel;
 
-    public ProductController() {
-        this.productsDAO = new ProductsDAO();
-        this.productManagementPanel = new ProductManagementPanel();
+    // Constructor for dependency injection without ProductManagementPanel
+    public ProductController(ProductsDAO productsDAO) {
+        this.productsDAO = productsDAO;
     }
 
+    // Constructor for dependency injection with ProductManagementPanel
     public ProductController(ProductsDAO productsDAO, ProductManagementPanel productManagementPanel) {
         this.productsDAO = productsDAO;
         this.productManagementPanel = productManagementPanel;
@@ -117,23 +110,7 @@ public class ProductController {
         }
     }
 
-    public List<String> checkLowStock() {
-        List<String> lowStockItems = new ArrayList<>();
-        String sql = "SELECT productName FROM products WHERE quantityInStock < 200";
-
-        try {
-            try (Connection conn = new DbConnect().getConnection();
-                    PreparedStatement stmt = conn.prepareStatement(sql);
-                    ResultSet rs = stmt.executeQuery()) {
-
-                while (rs.next()) {
-                    lowStockItems.add(rs.getString("productName"));
-                }
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            // Log the exception and return an empty list or handle appropriately
-        }
-        return lowStockItems;
+    public List<String> checkLowStock() throws ClassNotFoundException, SQLException {
+        return productsDAO.getLowStockProducts();
     }
 }

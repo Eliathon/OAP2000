@@ -1,6 +1,5 @@
 // Created by Patrik
 
-
 package com.oap200.app.models;
 
 import com.oap200.app.utils.DbConnect;
@@ -14,12 +13,12 @@ public class OrderDAO {
         List<String[]> orders = new ArrayList<>();
 
         try (DbConnect db = new DbConnect();
-             Connection myConnection = db.getConnection();
-             PreparedStatement statement = myConnection.prepareStatement("SELECT * FROM orders");
-             ResultSet myRs = statement.executeQuery()) {
+                Connection myConnection = db.getConnection();
+                PreparedStatement statement = myConnection.prepareStatement("SELECT * FROM orders");
+                ResultSet myRs = statement.executeQuery()) {
 
             while (myRs.next()) {
-                String[] order = new String[]{
+                String[] order = new String[] {
                         myRs.getString("orderNumber"),
                         myRs.getString("orderDate"),
                         myRs.getString("requiredDate"),
@@ -35,19 +34,20 @@ public class OrderDAO {
         }
         return orders;
     }
-    
+
     // Method for searching for an order by orderNumber
     public List<String[]> searchOrder(String orderNumber) throws Exception {
         List<String[]> searchResult = new ArrayList<>();
 
         try (DbConnect db = new DbConnect();
-             Connection myConnection = db.getConnection();
-             PreparedStatement statement = myConnection.prepareStatement("SELECT * FROM orders WHERE orderNumber LIKE ?")) {
+                Connection myConnection = db.getConnection();
+                PreparedStatement statement = myConnection
+                        .prepareStatement("SELECT * FROM orders WHERE orderNumber LIKE ?")) {
 
             statement.setString(1, "%" + orderNumber + "%");
             try (ResultSet myRs = statement.executeQuery()) {
                 while (myRs.next()) {
-                    String[] order = new String[]{
+                    String[] order = new String[] {
                             myRs.getString("orderNumber"),
                             myRs.getString("orderDate"),
                             myRs.getString("requiredDate"),
@@ -66,10 +66,12 @@ public class OrderDAO {
     }
 
     // Method for adding order
-    public boolean addOrder(String orderNumber, String orderDate, String requiredDate, String shippedDate, String status, String comments, String customerNumber) throws Exception {
+    public boolean addOrder(String orderNumber, String orderDate, String requiredDate, String shippedDate,
+            String status, String comments, String customerNumber) throws Exception {
         try (DbConnect db = new DbConnect();
-             Connection myConnection = db.getConnection();
-             PreparedStatement preparedStatement = myConnection.prepareStatement("INSERT INTO orders VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+                Connection myConnection = db.getConnection();
+                PreparedStatement preparedStatement = myConnection
+                        .prepareStatement("INSERT INTO orders VALUES (?, ?, ?, ?, ?, ?, ?)")) {
 
             preparedStatement.setString(1, orderNumber);
             preparedStatement.setString(2, orderDate);
@@ -87,34 +89,36 @@ public class OrderDAO {
         }
     }
 
-  // Method to delete an order from the database
-  public boolean deleteOrder(String orderNumber) {
-    try {
-        // Establish a database connection
-        DbConnect db = new DbConnect();
-        Connection myConnection = db.getConnection();
+    // Method to delete an order from the database
+    public boolean deleteOrder(String orderNumber) {
+        try {
+            // Establish a database connection
+            DbConnect db = new DbConnect();
+            Connection myConnection = db.getConnection();
 
-        // Execute prepared statement to delete a product with a given code
-        PreparedStatement preparedStatement = myConnection
-                .prepareStatement("DELETE FROM orders WHERE orderNumber = ?");
-        preparedStatement.setString(1, orderNumber);
+            // Execute prepared statement to delete a product with a given code
+            PreparedStatement preparedStatement = myConnection
+                    .prepareStatement("DELETE FROM orders WHERE orderNumber = ?");
+            preparedStatement.setString(1, orderNumber);
 
-        // Get the number of rows affected after the deletion
-        int rowsAffected = preparedStatement.executeUpdate();
+            // Get the number of rows affected after the deletion
+            int rowsAffected = preparedStatement.executeUpdate();
 
-        // Return true if deletion was successful
-        return rowsAffected > 0;
-    } catch (SQLException | ClassNotFoundException ex) {
-        ex.printStackTrace();
-        return false;
+            // Return true if deletion was successful
+            return rowsAffected > 0;
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
-}
+
     // Method for updating an order
-    public boolean updateOrder(String orderNumber, String orderDate, String requiredDate, String shippedDate, String status, String comments, String customerNumber) throws Exception {
+    public boolean updateOrder(String orderNumber, String orderDate, String requiredDate, String shippedDate,
+            String status, String comments, String customerNumber) throws Exception {
         try (DbConnect db = new DbConnect();
-             Connection myConnection = db.getConnection();
-             PreparedStatement preparedStatement = myConnection.prepareStatement(
-                     "UPDATE orders SET orderDate=?, requiredDate=?, shippedDate=?, status=?, comments=?, customerNumber=? WHERE orderNumber=?")) {
+                Connection myConnection = db.getConnection();
+                PreparedStatement preparedStatement = myConnection.prepareStatement(
+                        "UPDATE orders SET orderDate=?, requiredDate=?, shippedDate=?, status=?, comments=?, customerNumber=? WHERE orderNumber=?")) {
 
             preparedStatement.setString(1, orderDate);
             preparedStatement.setString(2, requiredDate);

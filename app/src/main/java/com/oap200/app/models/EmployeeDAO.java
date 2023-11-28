@@ -1,20 +1,13 @@
 //Created by Kristian
 package com.oap200.app.models;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import javax.swing.table.DefaultTableModel;
-import com.oap200.app.views.EmployeeManagementPanel;
-
 import com.oap200.app.utils.DbConnect;
 
 public class EmployeeDAO {
@@ -28,7 +21,7 @@ public class EmployeeDAO {
             DbConnect db = new DbConnect();
             Connection myConnection = db.getConnection();
             Statement myStmt = myConnection.createStatement();
-            
+
             // Execute SELECT query to retrieve all employees
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM employees");
 
@@ -51,7 +44,7 @@ public class EmployeeDAO {
         }
         return employees;
     }
-    
+
     // Method to search for employees by name in the database
     public List<String[]> searchEmployees(String lastName) {
         List<String[]> searchResults = new ArrayList<>();
@@ -60,9 +53,10 @@ public class EmployeeDAO {
             // Establish a database connection
             DbConnect db = new DbConnect();
             Connection myConnection = db.getConnection();
-            
+
             // Execute prepared statement to search for employees after the given name
-            PreparedStatement preparedStatement = myConnection.prepareStatement("SELECT * FROM employees WHERE lastName LIKE ?");
+            PreparedStatement preparedStatement = myConnection
+                    .prepareStatement("SELECT * FROM employees WHERE lastName LIKE ?");
             preparedStatement.setString(1, "%" + lastName + "%");
             ResultSet myRs = preparedStatement.executeQuery();
 
@@ -85,17 +79,18 @@ public class EmployeeDAO {
         }
         return searchResults;
     }
-    
-// Method to search for employees by number in the database
+
+    // Method to search for employees by number in the database
     public List<String[]> searchEmployeesNumber(String employeeNumber) {
         List<String[]> searchResults = new ArrayList<>();
         try {
             // Establish a database connection
             DbConnect db = new DbConnect();
             Connection myConnection = db.getConnection();
-            
+
             // Execute prepared statement to search for employees after the given number
-            PreparedStatement preparedStatement = myConnection.prepareStatement("SELECT * FROM employees WHERE employeeNumber = ?");
+            PreparedStatement preparedStatement = myConnection
+                    .prepareStatement("SELECT * FROM employees WHERE employeeNumber = ?");
             preparedStatement.setString(1, employeeNumber);
             ResultSet myRs = preparedStatement.executeQuery();
 
@@ -117,7 +112,7 @@ public class EmployeeDAO {
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
-        
+
         return searchResults;
     }
 
@@ -127,20 +122,21 @@ public class EmployeeDAO {
             // Establish a database connection
             DbConnect db = new DbConnect();
             Connection myConnection = db.getConnection();
-            
-            //Update customers table to remove references to chosen employee
+
+            // Update customers table to remove references to chosen employee
             PreparedStatement updateCustomers = myConnection.prepareStatement(
-                "UPDATE customers SET salesRepEmployeeNumber = NULL WHERE salesRepEmployeeNumber = ?");
-                updateCustomers.setString(1, employeeNumber);
-                updateCustomers.executeUpdate();
+                    "UPDATE customers SET salesRepEmployeeNumber = NULL WHERE salesRepEmployeeNumber = ?");
+            updateCustomers.setString(1, employeeNumber);
+            updateCustomers.executeUpdate();
 
             // Execute prepared statement to delete an employee with a given code
-            PreparedStatement preparedStatement = myConnection.prepareStatement("DELETE FROM employees WHERE employeeNumber = ?");
+            PreparedStatement preparedStatement = myConnection
+                    .prepareStatement("DELETE FROM employees WHERE employeeNumber = ?");
             preparedStatement.setString(1, employeeNumber);
-            
+
             // Get the number of rows affected after the deletion
             int rowsAffected = preparedStatement.executeUpdate();
-            
+
             // Return true if deletion was successful
             return rowsAffected > 0;
         } catch (SQLException | ClassNotFoundException ex) {
@@ -148,7 +144,7 @@ public class EmployeeDAO {
             return false;
         }
     }
-    
+
     // Method to retrieve distinct employeeroles from the database
     public static List<String> getEmployeeRoles() {
         List<String> employeeRoles = new ArrayList<>();
@@ -158,8 +154,8 @@ public class EmployeeDAO {
             DbConnect db = new DbConnect();
             Connection myConnection = db.getConnection();
             Statement myStmt = myConnection.createStatement();
-            
-            // Execute SELECT query to retrieve the employee roles 
+
+            // Execute SELECT query to retrieve the employee roles
             ResultSet myRs = myStmt.executeQuery("SELECT DISTINCT jobTitle FROM employees");
 
             // Process the retrieved data and populate the 'employeeRoles' list
@@ -173,9 +169,10 @@ public class EmployeeDAO {
 
         return employeeRoles;
     }
-    
+
     // Method to add a new employee to the database
-    public boolean addEmployee(String employeeNumber, String lastName, String firstName, String extension, String email, String officeCode, Integer reportsTo, String jobTitle) {
+    public boolean addEmployee(String employeeNumber, String lastName, String firstName, String extension, String email,
+            String officeCode, Integer reportsTo, String jobTitle) {
         Connection myConnection = null;
 
         try {
@@ -184,7 +181,8 @@ public class EmployeeDAO {
             myConnection = db.getConnection();
 
             // Prepare the INSERT query
-            PreparedStatement preparedStatement = myConnection.prepareStatement("INSERT INTO employees VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement preparedStatement = myConnection
+                    .prepareStatement("INSERT INTO employees VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement.setString(1, employeeNumber);
             preparedStatement.setString(2, lastName);
             preparedStatement.setString(3, firstName);
@@ -195,7 +193,8 @@ public class EmployeeDAO {
             preparedStatement.setString(8, jobTitle);
 
             // Validate input data
-            if (employeeNumber == null || employeeNumber.trim().isEmpty() || lastName == null || lastName.trim().isEmpty()) {
+            if (employeeNumber == null || employeeNumber.trim().isEmpty() || lastName == null
+                    || lastName.trim().isEmpty()) {
                 System.out.println("Employee number and last name is required.");
                 return false;
             }
@@ -238,11 +237,12 @@ public class EmployeeDAO {
             }
         }
     }
-    
+
     // Method to update an employee in the database
-    public boolean updateEmployee(String employeeNumber, String lastName, String firstName, String extension, String email, String officeCode, Integer reportsTo, String jobTitle) {
+    public boolean updateEmployee(String employeeNumber, String lastName, String firstName, String extension,
+            String email, String officeCode, Integer reportsTo, String jobTitle) {
         try {
-            
+
             // Establish a database connection
             DbConnect db = new DbConnect();
             Connection myConnection = db.getConnection();
@@ -250,15 +250,19 @@ public class EmployeeDAO {
                     "UPDATE employees SET lastName=?, firstName=?, extension=?, email=?, officeCode=?, reportsTo=?, jobTitle=? WHERE employeeNumber=?");
 
             // Set parameters for the UPDATE query
-           
-        preparedStatement.setString(1, lastName);
-        preparedStatement.setString(2, firstName);
-        preparedStatement.setString(3, extension);
-        preparedStatement.setString(4, email);
-        preparedStatement.setString(5, officeCode);
-           preparedStatement.setInt(6, reportsTo);
-        preparedStatement.setString(7, jobTitle);
-        preparedStatement.setString(8, employeeNumber);
+
+            preparedStatement.setString(1, lastName);
+            preparedStatement.setString(2, firstName);
+            preparedStatement.setString(3, extension);
+            preparedStatement.setString(4, email);
+            preparedStatement.setString(5, officeCode);
+            if (reportsTo != null) {
+                preparedStatement.setInt(6, reportsTo);
+            } else {
+                preparedStatement.setNull(6, java.sql.Types.INTEGER);
+            }
+            preparedStatement.setString(7, jobTitle);
+            preparedStatement.setString(8, employeeNumber);
 
             // Execute the UPDATE query
             int rowsAffected = preparedStatement.executeUpdate();

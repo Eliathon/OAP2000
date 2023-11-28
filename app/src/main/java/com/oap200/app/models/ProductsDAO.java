@@ -3,7 +3,6 @@ package com.oap200.app.models;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,8 +10,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.table.DefaultTableModel;
-import com.oap200.app.views.ProductManagementPanel;
 import java.sql.Types;
 
 import com.oap200.app.utils.DbConnect;
@@ -207,7 +204,6 @@ public class ProductsDAO {
         }
     }
 
-  
     // Method to update a product in the database
     public boolean updateProduct(String productCode, Integer newQuantityInStock, BigDecimal newBuyPrice,
             BigDecimal newMSRP) {
@@ -250,7 +246,7 @@ public class ProductsDAO {
         }
     }
 
-     public List<String> getLowStockProducts() throws SQLException, ClassNotFoundException {
+    public List<String> getLowStockProducts() throws SQLException, ClassNotFoundException {
         List<String> lowStockItems = new ArrayList<>();
         String sql = "SELECT productName FROM products WHERE quantityInStock < 200";
 
@@ -263,5 +259,5 @@ public class ProductsDAO {
             }
         }
         return lowStockItems;
-    }  
+    }
 }
