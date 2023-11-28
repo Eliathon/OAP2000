@@ -28,6 +28,7 @@ import java.sql.SQLException;
  * @version 1.0
  * @since 2023
  */
+//TODO: tabb scherm en print button financial, checkbox voor csv/txt, event. pictogrammen  
 
 public class ReportFinancialPanel extends JPanel implements ReportGenerator {
     private JButton generateReportButton, saveReportButton;
