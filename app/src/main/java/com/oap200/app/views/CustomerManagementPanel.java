@@ -243,47 +243,36 @@ public class CustomerManagementPanel extends JPanel {
     }
 
     private void addComponentsToPanelAdd(JPanel panel) {
-        JPanel labelPanel = new JPanel(new GridLayout(12, 1)); // Adjusted for the number of customer fields
-        JPanel fieldPanel = new JPanel(new GridLayout(12, 1)); // Adjusted for the number of customer fields
-
+        JPanel inputPanel = new JPanel(new GridLayout(13, 2));
+    
         // Adding customer-related labels and fields
-        labelPanel.add(new JLabel("Customer Number:"));
-        fieldPanel.add(customerNumber);
-        labelPanel.add(new JLabel("Customer Name:"));
-        fieldPanel.add(customerName);
-        labelPanel.add(new JLabel("Contact Last Name:"));
-        fieldPanel.add(contactLastName);
-        labelPanel.add(new JLabel("Contact First Name:"));
-        fieldPanel.add(contactFirstName);
-        labelPanel.add(new JLabel("Phone:"));
-        fieldPanel.add(phone);
-        labelPanel.add(new JLabel("Address Line 1:"));
-        fieldPanel.add(addressLine1); // Check the spelling, it should be 'addressLine1'
-        labelPanel.add(new JLabel("Address Line 2:"));
-        fieldPanel.add(addressLine2); // Check the spelling, it should be 'addressLine2'
-        labelPanel.add(new JLabel("City:"));
-        fieldPanel.add(city);
-        labelPanel.add(new JLabel("State:"));
-        fieldPanel.add(state);
-        labelPanel.add(new JLabel("Postal Code:"));
-        fieldPanel.add(postalCode);
-        labelPanel.add(new JLabel("Country:"));
-        fieldPanel.add(country);
-        labelPanel.add(new JLabel("Sales Rep Employee Number:"));
-        fieldPanel.add(salesRepEmployeeNumber);
-        labelPanel.add(new JLabel("Credit Limit:"));
-        fieldPanel.add(creditLimit);
-
+        addLabelAndField(inputPanel, "Customer Number:", customerNumber);
+        addLabelAndField(inputPanel, "Customer Name:", customerName);
+        addLabelAndField(inputPanel, "Contact Last Name:", contactLastName);
+        addLabelAndField(inputPanel, "Contact First Name:", contactFirstName);
+        addLabelAndField(inputPanel, "Phone:", phone);
+        addLabelAndField(inputPanel, "Address Line 1:", addressLine1);
+        addLabelAndField(inputPanel, "Address Line 2:", addressLine2);
+        addLabelAndField(inputPanel, "City:", city);
+        addLabelAndField(inputPanel, "State:", state);
+        addLabelAndField(inputPanel, "Postal Code:", postalCode);
+        addLabelAndField(inputPanel, "Country:", country);
+        addLabelAndField(inputPanel, "Sales Rep Employee Number:", salesRepEmployeeNumber);
+        addLabelAndField(inputPanel, "Credit Limit:", creditLimit);
+    
+        // Show the newest customer number
         String latestCustomerNumber = customerController.getLatestCustomerNumber();
-    String newCustomerNumber = generateNextCustomerNumber(latestCustomerNumber);
-    customerNumber.setText(newCustomerNumber);
-
-    fieldPanel.add(customerNumber);
-
-
-        panel.add(labelPanel, BorderLayout.WEST);
-        panel.add(fieldPanel, BorderLayout.CENTER);
+        String newCustomerNumber = generateNextCustomerNumber(latestCustomerNumber);
+        customerNumber.setText(newCustomerNumber);
+    
+        panel.add(inputPanel, BorderLayout.CENTER);
     }
+    
+    private void addLabelAndField(JPanel panel, String labelText, JTextField textField) {
+        panel.add(new JLabel(labelText));
+        panel.add(textField);
+    }
+    
 
 
 
