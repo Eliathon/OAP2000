@@ -36,17 +36,7 @@ public class CustomerManagementPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-<<<<<<< HEAD
-        JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
-            // Get the top-level frame that contains this panel
-            Window window = SwingUtilities.getWindowAncestor(CustomerManagementPanel.this);
-            if (window != null) {
-                window.dispose(); // This will close the window
-            }
-        });
-=======
         JButton backButton = ButtonBuilder.createBlueBackButton(() -> parentFrame.dispose());
->>>>>>> c8a3ea1 (x)
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
             System.exit(0); // Exit the application
             openLoginPanel();
