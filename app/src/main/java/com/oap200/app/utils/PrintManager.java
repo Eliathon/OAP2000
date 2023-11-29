@@ -19,13 +19,13 @@ public class PrintManager {
             isPrinting = true; // Zet de vlag dat het printen begonnen is
             boolean complete = table.print();
             if (complete) {
-                JOptionPane.showMessageDialog(table, "Printing completed", "Printen", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(table, "Afdrukken voltooid", "Printen", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(table, "Printing canceled", "Printen", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(table, "Afdrukken geannuleerd", "Printen", JOptionPane.WARNING_MESSAGE);
             }
         } catch (PrinterException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(table, "Printing error: " + ex.getMessage(), "Print error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(table, "Fout tijdens het afdrukken: " + ex.getMessage(), "Printfout", JOptionPane.ERROR_MESSAGE);
         } finally {
             isPrinting = false; // Reset de printvlag wanneer het printen klaar is
         }

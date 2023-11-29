@@ -26,11 +26,16 @@ public class ProductManagementPanel extends JPanel {
         setLayout(new BorderLayout());
 
         JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
+<<<<<<< HEAD
             // Get the top-level frame that contains this panel
             Window window = SwingUtilities.getWindowAncestor(ProductManagementPanel.this);
             if (window != null) {
                 window.dispose(); // This will close the window
             }
+=======
+            // Hide or remove this panel
+            this.setVisible(false); // or parentFrame.remove(this);
+>>>>>>> c8a3ea1 (x)
         });
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
             // Close the parent frame and open the LoginPanel
