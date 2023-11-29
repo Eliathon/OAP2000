@@ -8,10 +8,13 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
+import java.awt.event.ActionListener;
+
 
 public class ProductManagementPanel extends JPanel {
 
     private JTable productsTable;
+    private JTextField searchCodeDeleteField;
     private JTextField searchTextField, searchCodeField;
     private JTextField productName, productScale, productVendor, productDescription, quantityInStock,
             buyPrice, MSRP;
@@ -43,7 +46,24 @@ public class ProductManagementPanel extends JPanel {
         JButton addButton = ButtonBuilder.createAddButton(() -> addProduct());
         JButton deleteButton = ButtonBuilder.createDeleteButton(() -> deleteProduct());
         JButton updateButton = ButtonBuilder.createUpdateButton(() -> updateProduct());
-        JButton searchButton = ButtonBuilder.createSearchButton(() -> searchProducts());
+        JButton searchButton = ButtonBuilder.createSearchButton(() -> {
+            searchProducts();
+            searchProductsByCode();
+        });
+        
+        // Fjern eksisterende ActionListeners
+        ActionListener[] listeners = searchButton.getActionListeners();
+        for (ActionListener listener : listeners) {
+            searchButton.removeActionListener(listener);
+        }
+        
+        // Legg til begge lytterne
+        searchButton.addActionListener(e -> {
+            searchProducts();
+            searchProductsByCode();
+        });
+        
+        
 
         JPanel viewSearchButtonPanel = createViewSearchButtonPanel(viewButton, searchButton);
 
@@ -67,6 +87,7 @@ public class ProductManagementPanel extends JPanel {
     private void initializeFields() {
         searchTextField = new JTextField(10);
         searchCodeField = new JTextField(10);
+        searchCodeDeleteField = new JTextField(10);
 
         productName = new JTextField(10);
         productScale = new JTextField(10);
@@ -115,21 +136,45 @@ public class ProductManagementPanel extends JPanel {
 
     private JPanel createViewPanel(JPanel viewSearchButtonPanel) {
         JPanel panel = new JPanel(new BorderLayout());
+    
+        // Legg til søkefelt for produktkode
+        JPanel searchCodePanel = new JPanel(new FlowLayout());
+        searchCodePanel.add(new JLabel("Søk etter produktkode:"));
+        searchCodePanel.add(searchCodeField);
+    
+        // Legg til søkefelt for produktnavn
+        JPanel searchNamePanel = new JPanel(new FlowLayout());
+        searchNamePanel.add(new JLabel("Søk etter produktnavn:"));
+        searchNamePanel.add(searchTextField);
+    
+        // Legg til søkefeltene i hovedpanelet
+        JPanel searchPanel = new JPanel();
+        searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.PAGE_AXIS));
+        searchPanel.add(searchCodePanel);
+        searchPanel.add(searchNamePanel);
+    
+        // Legg til søke- og visknappene nederst
+        panel.add(searchPanel, BorderLayout.NORTH);
         panel.add(viewSearchButtonPanel, BorderLayout.SOUTH);
+    
         productsTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(productsTable);
+    
+        // Legg til rullefeltet i hovedpanelet
         panel.add(scrollPane, BorderLayout.CENTER);
+    
+        // Husk å returnere hovedpanelet
         return panel;
     }
+    
+    
+    
+    
 
     private JPanel createAddPanel(JButton addButton) {
         JPanel panel = new JPanel(new BorderLayout());
         JPanel labelPanel = new JPanel(new GridLayout(8, 1));
         JPanel fieldPanel = new JPanel(new GridLayout(8, 1));
-    
-        // Remove productCode field from the panel
-        // labelPanel.add(new JLabel("Product Code:"));
-        // fieldPanel.add(productCode);
     
         labelPanel.add(new JLabel("Product Name:"));
         fieldPanel.add(productName);
@@ -195,7 +240,7 @@ public class ProductManagementPanel extends JPanel {
 
         gbc.gridx = 1;
         gbc.weightx = 0.7;
-        inputPanel.add(searchCodeField, gbc);
+        inputPanel.add(searchCodeDeleteField, gbc);
 
         panel.add(inputPanel, BorderLayout.NORTH);
         panel.add(deleteButton, BorderLayout.SOUTH);
@@ -211,8 +256,14 @@ public class ProductManagementPanel extends JPanel {
         productController.handleSearchProducts(productName);
     }
 
-    private void deleteProduct() {
+    private void searchProductsByCode() {
         String productCode = searchCodeField.getText();
+        productController.handleSearchProductsByCode(productCode);
+    }
+    
+
+    private void deleteProduct() {
+        String productCode = searchCodeDeleteField.getText();
 
         // Check if the product code is empty
         if (productCode.isEmpty()) {

@@ -88,6 +88,42 @@ public class ProductsDAO {
         return searchResults;
     }
 
+    public List<String[]> searchProductsByCode(String productCode) {
+        List<String[]> searchResults = new ArrayList<>();
+    
+        try {
+            // Establish a database connection
+            DbConnect db = new DbConnect();
+            Connection myConnection = db.getConnection();
+    
+            // Execute prepared statement to search for products with a given code
+            PreparedStatement preparedStatement = myConnection
+                    .prepareStatement("SELECT * FROM products WHERE productCode = ?");
+            preparedStatement.setString(1, productCode);
+            ResultSet myRs = preparedStatement.executeQuery();
+    
+            // Process the retrieved data and populate the 'searchResults' list
+            while (myRs.next()) {
+                String[] product = new String[] {
+                        myRs.getString("productCode"),
+                        myRs.getString("productName"),
+                        myRs.getString("productLine"),
+                        myRs.getString("productScale"),
+                        myRs.getString("productVendor"),
+                        myRs.getString("productDescription"),
+                        myRs.getString("quantityInStock"),
+                        myRs.getString("buyPrice"),
+                        myRs.getString("MSRP"),
+                };
+                searchResults.add(product);
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return searchResults;
+    }
+    
+
     // Method to delete a product from the database
     public boolean deleteProduct(String productCode) {
         try {

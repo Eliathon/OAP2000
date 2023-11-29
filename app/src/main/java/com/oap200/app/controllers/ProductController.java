@@ -36,6 +36,12 @@ public class ProductController {
         productManagementPanel.displayProducts(searchResults);
     }
 
+    public void handleSearchProductsByCode(String productCode) {
+        List<String[]> searchResults = productsDAO.searchProductsByCode(productCode);
+        productManagementPanel.displayProducts(searchResults);
+    }
+    
+
     // Method to handle displaying all products
     public void handleViewAllProducts() {
         List<String[]> allProducts = productsDAO.fetchProducts();
