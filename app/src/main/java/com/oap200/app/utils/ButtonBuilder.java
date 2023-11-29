@@ -128,7 +128,7 @@ public class ButtonBuilder {
         searchButton.setForeground(Color.WHITE); // Set text color to white
         searchButton.setBackground(Color.BLACK); // Set background color to red
         searchButton.setBorderPainted(false); // Remove border
-        searchButton.setPreferredSize(new Dimension(100, 20)); // Set a specific size
+        searchButton.setPreferredSize(new Dimension(150, 20)); // Set a specific size
         searchButton.addActionListener(e -> {
             if (action != null) {
                 action.run();
@@ -143,7 +143,7 @@ public class ButtonBuilder {
         searchCodeButton.setForeground(Color.WHITE); // Set text color to white
         searchCodeButton.setBackground(Color.BLACK); // Set background color to red
         searchCodeButton.setBorderPainted(false); // Remove border
-        searchCodeButton.setPreferredSize(new Dimension(100, 20)); // Set a specific size
+        searchCodeButton.setPreferredSize(new Dimension(150, 20)); // Set a specific size
         searchCodeButton.addActionListener(e -> {
             if (action != null) {
                 action.run();
