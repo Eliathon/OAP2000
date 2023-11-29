@@ -159,8 +159,12 @@ public class CustomerManagementPanel extends JPanel {
     }
 
     private void addCustomer() {
+        // Fetch the latest customer number and increment it
+        String latestCustomerNumber = customerController.getLatestCustomerNumber();
+        String newCustomerNumber = generateNextCustomerNumber(latestCustomerNumber);
+    
         boolean additionSuccessful = customerController.handleAddCustomer(
-                customerNumber.getText(),
+                newCustomerNumber,
                 customerName.getText(),
                 contactLastName.getText(),
                 contactFirstName.getText(),
@@ -173,6 +177,7 @@ public class CustomerManagementPanel extends JPanel {
                 country.getText(),
                 salesRepEmployeeNumber.getText(),
                 creditLimit.getText());
+    
         if (additionSuccessful) {
             JOptionPane.showMessageDialog(this, "New Customer added successfully.", "Addition completed",
                     JOptionPane.INFORMATION_MESSAGE);
@@ -180,7 +185,21 @@ public class CustomerManagementPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Error adding customer.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
+    // Helper method to generate the next customer number
+    private String generateNextCustomerNumber(String latestCustomerNumber) {
+        try {
+            // Assuming your customer numbers are numeric
+            int latestNumber = Integer.parseInt(latestCustomerNumber);
+            int nextNumber = latestNumber + 1;
+            return String.valueOf(nextNumber);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            // Handle the exception based on your requirements
+            return ""; // You might want to throw an exception or return a default value
+        }
+    }
+    
     private void openLoginPanel() {
         JFrame loginFrame = new JFrame("Login");
         LoginPanel loginPanel = new LoginPanel();

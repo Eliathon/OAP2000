@@ -6,6 +6,7 @@ import com.oap200.app.models.CustomerDAO;
 import com.oap200.app.views.CustomerManagementPanel;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -23,6 +24,17 @@ public class CustomerController {
     public void handleSearchCustomer(String customerName) {
         List<String[]> searchResults = CustomerDAO.searchCustomer(customerName);
         customerManagementPanel.displayCustomers(searchResults);
+    }
+
+     public String getLatestCustomerNumber() {
+        try {
+            // Assuming you have a method in your CustomerDAO to get the latest customer number
+            return customerDAO.getLatestCustomerNumber();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            // Handle the exception based on your requirements
+            return ""; // You might want to throw an exception or return a default value
+        }
     }
 
     public void handleViewAllCustomers() {

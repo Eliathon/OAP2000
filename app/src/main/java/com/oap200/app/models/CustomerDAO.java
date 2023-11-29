@@ -49,6 +49,21 @@ public class CustomerDAO {
         return customers;
     }
 
+    public String getLatestCustomerNumber() throws SQLException, ClassNotFoundException {
+        String query = "SELECT MAX(customerNumber) FROM customers";
+        try (Connection myConnection = new DbConnect().getConnection();
+             Statement myStmt = myConnection.createStatement();
+             ResultSet myRs = myStmt.executeQuery(query)) {
+
+            if (myRs.next()) {
+                return myRs.getString(1);
+            } else {
+                // Handle the case where no customer exists yet
+                return "0"; // or any default value
+            }
+        }
+    }
+
     // Method to search for customers by name in the database
     public static List<String[]> searchCustomer(String customerName) {
         List<String[]> searchResults = new ArrayList<>();
