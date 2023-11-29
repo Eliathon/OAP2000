@@ -21,6 +21,7 @@ public class ProductManagementPanel extends JPanel {
     private JComboBox<String> productLineComboBox;
     private ProductController productController;
 
+
     public ProductManagementPanel(JFrame parentFrame) {
         productController = new ProductController(new ProductsDAO(), this);
 
@@ -49,9 +50,6 @@ public class ProductManagementPanel extends JPanel {
             searchProducts();
         });
         JButton searchCodeButton = ButtonBuilder.createSearchCodeButton(() ->searchProductsByCode() );
-        
-       
-        
         
 
         JPanel viewSearchButtonPanel = createViewSearchButtonPanel(viewButton, searchButton, searchCodeButton);
@@ -275,31 +273,33 @@ public class ProductManagementPanel extends JPanel {
 
     private void addProduct() {
         System.out.println("addProduct() called!");
-
+    
         // Check if any input field is empty
         if (productName.getText().isEmpty() ||
                 productScale.getText().isEmpty() || productVendor.getText().isEmpty() ||
                 productDescription.getText().isEmpty() || quantityInStock.getText().isEmpty() ||
                 buyPrice.getText().isEmpty() || MSRP.getText().isEmpty()) {
-
+    
             // Display an error message
             JOptionPane.showMessageDialog(this, "Please fill in all input fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+    
         // Proceed with adding the product
         boolean additionSuccessful = productController.handleAddProduct(
-        productName.getText(), (String) productLineComboBox.getSelectedItem(),
-        productScale.getText(), productVendor.getText(), productDescription.getText(),
-        quantityInStock.getText(), buyPrice.getText(), MSRP.getText());
-
-
+            productName.getText(), (String) productLineComboBox.getSelectedItem(),
+            productScale.getText(), productVendor.getText(), productDescription.getText(),
+            quantityInStock.getText(), buyPrice.getText(), MSRP.getText());
+    
         if (additionSuccessful) {
             // Hent valgt produktlinje fra JComboBox
             String selectedProductLine = (String) productLineComboBox.getSelectedItem();
-        
+    
+            // Hent den genererte produktkoden direkte fra ProductsDAO
+            String generatedProductCode = productController.getProductsDAO().getGeneratedProductCode();
+    
             String productInfoMessage = "Product added successfully with inputs:\n" +
-                  //  "Product Code: " + productCode.getText() + "\n" +
+                    "Product Code: " + generatedProductCode + "\n" +
                     "Product Name: " + productName.getText() + "\n" +
                     "Product Line: " + selectedProductLine + "\n" +
                     "Product Scale: " + productScale.getText() + "\n" +
@@ -308,15 +308,13 @@ public class ProductManagementPanel extends JPanel {
                     "Quantity In Stock: " + quantityInStock.getText() + "\n" +
                     "Buy Price: " + buyPrice.getText() + "\n" +
                     "MSRP: " + MSRP.getText();
-        
+    
             JOptionPane.showMessageDialog(this, productInfoMessage, "Addition completed", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this, "Error adding product.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
-        
-        
     }
+    
 
     private void updateProduct() {
         try {
