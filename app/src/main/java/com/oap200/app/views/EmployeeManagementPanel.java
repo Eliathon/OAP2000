@@ -13,6 +13,7 @@ import java.util.List;
 public class EmployeeManagementPanel extends JPanel {
 
     private JTable employeeTable;
+    private JTextField searchByNumberField;
     private JTextField searchNumberField, searchNameField;
     private JTextField employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle;
     private JComboBox<String> employeeRolesComboBox;
@@ -25,6 +26,7 @@ public class EmployeeManagementPanel extends JPanel {
         employeeController = new EmployeeController(new EmployeeDAO(), this);
         initializeFields();
         loadEmployeeRoles();
+searchByNumberField = new JTextField(10);
 
         setLayout(new BorderLayout());
 
@@ -97,23 +99,26 @@ public class EmployeeManagementPanel extends JPanel {
 
     private JPanel createViewPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        
-        // Create the search panel with 2 rows and 4 columns
-        JPanel searchPanel = new JPanel(new GridLayout(2, 4)); // GridLayout for two rows
     
-        // Row for searching by name
-        searchPanel.add(new JLabel("Search by Name:"));
-        searchPanel.add(searchNameField);
+        // Create the search panel for employee number with FlowLayout
+        JPanel searchByNumberPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        searchByNumberPanel.add(new JLabel("Search by Number:"));
+        searchByNumberPanel.add(searchByNumberField); // Add the new search field
+        JButton searchNumberButton = ButtonBuilder.createSearchNumberButton(() -> searchEmployeesByNumber());
+        searchByNumberPanel.add(searchNumberButton);
+    
+        // Create the search panel for employee name with FlowLayout
+        JPanel searchByNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        searchByNamePanel.add(new JLabel("Search by Name:"));
+        searchByNamePanel.add(searchNameField);
         JButton searchNameButton = ButtonBuilder.createSearchButton(() -> searchEmployeesName());
-        searchPanel.add(searchNameButton);
-        searchPanel.add(new JLabel()); // Placeholder for alignment
+        searchByNamePanel.add(searchNameButton);
     
-        // Row for searching by number
-        searchPanel.add(new JLabel("Search by Number:"));
-        searchPanel.add(searchNumberField);
-        JButton searchNumberButton = ButtonBuilder.createSearchNumberButton(() -> searchEmployeesNumber());
-        searchPanel.add(searchNumberButton);
-        searchPanel.add(new JLabel()); // Placeholder for alignment
+        // Combine both search panels into a single panel with BoxLayout
+        JPanel searchPanel = new JPanel();
+        searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.PAGE_AXIS));
+        searchPanel.add(searchByNumberPanel);
+        searchPanel.add(searchByNamePanel);
     
         // Add the search panel to the top of the view panel
         panel.add(searchPanel, BorderLayout.NORTH);
@@ -125,9 +130,10 @@ public class EmployeeManagementPanel extends JPanel {
         JPanel viewAllButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         viewAllButtonPanel.add(viewAllButton);
         panel.add(viewAllButtonPanel, BorderLayout.SOUTH);
-        
+    
         return panel;
     }
+    
     
     private JPanel createAddPanel() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -225,8 +231,8 @@ public class EmployeeManagementPanel extends JPanel {
     }
 
     
-    private void searchEmployeesNumber() {
-        String employeeNumber = searchNumberField.getText().trim();
+    private void searchEmployeesByNumber() {
+        String employeeNumber = searchByNumberField.getText().trim(); // Use the new search field
     
         if (!employeeNumber.isEmpty()) {
             employeeController.handleSearchEmployeesNumber(employeeNumber);
