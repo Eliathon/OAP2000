@@ -13,7 +13,7 @@ public class ProductManagementPanel extends JPanel {
 
     private JTable productsTable;
     private JTextField searchTextField, searchCodeField;
-    private JTextField productCode, productName, productScale, productVendor, productDescription, quantityInStock,
+    private JTextField productName, productScale, productVendor, productDescription, quantityInStock,
             buyPrice, MSRP;
     private JTextField updateProductCode, updateQuantityInStock, updateBuyPrice, updateMSRP;
     private JComboBox<String> productLineComboBox;
@@ -26,16 +26,13 @@ public class ProductManagementPanel extends JPanel {
         setLayout(new BorderLayout());
 
         JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
-<<<<<<< HEAD
             // Get the top-level frame that contains this panel
             Window window = SwingUtilities.getWindowAncestor(ProductManagementPanel.this);
             if (window != null) {
                 window.dispose(); // This will close the window
             }
-=======
             // Hide or remove this panel
             this.setVisible(false); // or parentFrame.remove(this);
->>>>>>> c8a3ea1 (x)
         });
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
             // Close the parent frame and open the LoginPanel
@@ -71,7 +68,6 @@ public class ProductManagementPanel extends JPanel {
         searchTextField = new JTextField(10);
         searchCodeField = new JTextField(10);
 
-        productCode = new JTextField(10);
         productName = new JTextField(10);
         productScale = new JTextField(10);
         productVendor = new JTextField(10);
