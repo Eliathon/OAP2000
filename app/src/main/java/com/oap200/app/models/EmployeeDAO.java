@@ -12,9 +12,9 @@ import com.oap200.app.utils.DbConnect;
 
 public class EmployeeDAO {
     
-    
-     // Method to get the next available employee number
-     public String getNextAvailableEmployeeNumber() throws SQLException, ClassNotFoundException {
+    private String generatedEmployeeNumber;
+
+    public String getNextAvailableEmployeeNumber() throws SQLException, ClassNotFoundException {
         // Initialize the DbConnect object
         DbConnect db = new DbConnect();
         // Use the object to get a connection
@@ -27,18 +27,24 @@ public class EmployeeDAO {
                 if (maxNumber != null && !maxNumber.trim().isEmpty()) {
                     // Assumes employeeNumber is a numeric string that can be parsed into an integer
                     int nextNumber = Integer.parseInt(maxNumber.trim()) + 1;
-                    return String.format("%05d", nextNumber); // Pad with zeros if necessary
+                    generatedEmployeeNumber = String.format("%04d", nextNumber); // Pad with zeros if necessary
                 } else {
                     // Default employee number to start if no employees exist
-                    return "00001";
+                    generatedEmployeeNumber = "0001";
                 }
             } else {
                 throw new SQLException("Unable to retrieve the highest employee number.");
             }
         }
+        return generatedEmployeeNumber;
     }
+
+    public String getGeneratedEmployeeNumber() {
+        return generatedEmployeeNumber;
+    }
+
     
-    
+
     
     // Method to fetch all employees from the database
     public List<String[]> fetchEmployees() {

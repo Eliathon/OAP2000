@@ -266,8 +266,23 @@ searchByNumberField = new JTextField(10);
 
 
         if (success) {
-            JOptionPane.showMessageDialog(this, "Employee added successfully", "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
+            String generatedEmployeeNumber = employeeController.getEmployeeDAO().getGeneratedEmployeeNumber();
+            String selectedEmployeeRole = (String) employeeRolesComboBox.getSelectedItem();
+
+            
+            String employeeInfoMessage = "Product added successfully with inputs:\n" +
+       //employee Number
+       "Employee Number: " + generatedEmployeeNumber + "\n" + 
+        "Last Name: " + lastName.getText() + "\n" +
+        "First Name: " + firstName.getText() + "\n" +
+        "Extension: " + extension.getText() + "\n" +
+        "Product Vendor: " + email.getText() + "\n" +
+        "Product Description: " + officeCode.getText() + "\n" +
+         "Product Description: " + reportsTo.getText() + "\n" +
+         "Job Title: " + selectedEmployeeRole;
+        
+
+JOptionPane.showMessageDialog(this, employeeInfoMessage, "Addition completed", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this, "Failed to add employee", "Error", JOptionPane.ERROR_MESSAGE);
         }
