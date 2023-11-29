@@ -151,8 +151,20 @@ public class ButtonBuilder {
         });
         return searchCodeButton;
     }
-
-    
+//Search button created by Kristian
+    public static JButton createSearchNumberButton(Runnable action) {
+        JButton searchNumberButton = new JButton("Search by number");
+        searchNumberButton.setForeground(Color.WHITE); // Set text color to white
+        searchNumberButton.setBackground(Color.BLACK); // Set background color to red
+        searchNumberButton.setBorderPainted(false); // Remove border
+        searchNumberButton.setPreferredSize(new Dimension(100, 20)); // Set a specific size
+        searchNumberButton.addActionListener(e -> {
+            if (action != null) {
+                action.run();
+            }
+        });
+        return searchNumberButton;
+    }
 
     // RadioButton creation method - Created by Dirkje J van der Poel
     public static JRadioButton createStyledRadioButton(String text, boolean selected) {

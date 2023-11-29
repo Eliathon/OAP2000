@@ -111,7 +111,7 @@ public class EmployeeManagementPanel extends JPanel {
         // Row for searching by number
         searchPanel.add(new JLabel("Search by Number:"));
         searchPanel.add(searchNumberField);
-        JButton searchNumberButton = ButtonBuilder.createSearchButton(() -> searchEmployeeNumber());
+        JButton searchNumberButton = ButtonBuilder.createSearchNumberButton(() -> searchEmployeesNumber());
         searchPanel.add(searchNumberButton);
         searchPanel.add(new JLabel()); // Placeholder for alignment
     
