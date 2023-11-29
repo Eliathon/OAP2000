@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.security.SecureRandom;
+import java.math.BigInteger;
 
 import java.sql.Types;
 
@@ -133,76 +135,119 @@ public class ProductsDAO {
 
         return productLines;
     }
+    private String generateProductCode(int codeLength) {
+        // Definer tillatte tegn for produktkoden (bokstaver og sifre)
+        String allowedCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    
+        // Start med bokstaver i begynnelsen
+        StringBuilder productCodeBuilder = new StringBuilder();
+        SecureRandom random = new SecureRandom();
+    
+        for (int i = 0; i < 2; i++) {
+            char randomChar = allowedCharacters.charAt(random.nextInt(allowedCharacters.length()));
+            productCodeBuilder.append(randomChar);
+        }
+    
+        // Legg til sifre resten av koden
+        for (int i = 2; i < codeLength; i++) {
+            char randomChar = allowedCharacters.charAt(26 + random.nextInt(10)); // Indeksene 26 til 35 representerer sifre
+            productCodeBuilder.append(randomChar);
+        }
+    
+        return productCodeBuilder.toString();
+    }
+    
 
-    // Method to add a new product to the database
-    public boolean addProduct(String productCode, String productName, String productLine, String productScale,
-            String productVendor, String productDescription, int quantityInStock, BigDecimal buyPrice,
-            BigDecimal MSRP) {
-        Connection myConnection = null;
+// Method to check if a product code already exists in the database
+private boolean doesProductCodeExist(String productCode) {
+    try (Connection myConnection = new DbConnect().getConnection();
+         PreparedStatement preparedStatement = myConnection.prepareStatement("SELECT COUNT(*) FROM products WHERE productCode = ?")) {
+        preparedStatement.setString(1, productCode);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        return resultSet.getInt(1) > 0;
+    } catch (SQLException | ClassNotFoundException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
 
+
+// Method to add a new product to the database
+public boolean addProduct(String productName, String productLine, String productScale,
+        String productVendor, String productDescription, int quantityInStockText, BigDecimal buyPriceText,
+        BigDecimal MSRPText) {
+    Connection myConnection = null;
+
+    try {
+        // Establish a database connection
+        DbConnect db = new DbConnect();
+        myConnection = db.getConnection();
+
+        // Generer en unik produktkode med tilpasset metode
+        String productCode = generateProductCode(8); // Sett lengden du ønsker
+
+        // Sjekk om produktkoden allerede eksisterer i databasen
+        while (doesProductCodeExist(productCode)) {
+            productCode = generateProductCode(8); // Generer en ny produktkode hvis den allerede eksisterer
+        }
+
+        // Prepare the INSERT query
+        PreparedStatement preparedStatement = myConnection
+                .prepareStatement("INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        preparedStatement.setString(1, productCode);
+        preparedStatement.setString(2, productName);
+        preparedStatement.setString(3, productLine);
+        preparedStatement.setString(4, productScale);
+        preparedStatement.setString(5, productVendor);
+        preparedStatement.setString(6, productDescription);
+        preparedStatement.setInt(7, quantityInStockText);
+        preparedStatement.setBigDecimal(8, buyPriceText);
+        preparedStatement.setBigDecimal(9, MSRPText);
+
+        // Start transaction
+        myConnection.setAutoCommit(false);
+
+        // Execute the INSERT query
+        int rowsAffected = preparedStatement.executeUpdate();
+
+        // Confirm the transaction if the addition was successful
+        if (rowsAffected > 0) {
+            myConnection.commit();
+            System.out.println("Product added successfully");
+        } else {
+            // Roll back the transaction if the addition failed
+            myConnection.rollback();
+            System.out.println("Failed to add product");
+        }
+
+        // Log the number of affected rows (for troubleshooting)
+        System.out.println("Rows affected: " + rowsAffected);
+
+        // Return true if the addition was successful
+        return rowsAffected > 0;
+
+    } catch (SQLException | ClassNotFoundException | NumberFormatException ex) {
+        // Log any exceptions
+        ex.printStackTrace();
+        return false;
+
+    } finally {
         try {
-            // Establish a database connection
-            DbConnect db = new DbConnect();
-            myConnection = db.getConnection();
-
-            // Prepare the INSERT query
-            PreparedStatement preparedStatement = myConnection
-                    .prepareStatement("INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement.setString(1, productCode);
-            preparedStatement.setString(2, productName);
-            preparedStatement.setString(3, productLine);
-            preparedStatement.setString(4, productScale);
-            preparedStatement.setString(5, productVendor);
-            preparedStatement.setString(6, productDescription);
-            preparedStatement.setInt(7, quantityInStock);
-            preparedStatement.setBigDecimal(8, buyPrice);
-            preparedStatement.setBigDecimal(9, MSRP);
-
-            // Validate input data
-            if (productName == null || productName.trim().isEmpty() || productLine == null
-                    || productLine.trim().isEmpty()) {
-                System.out.println("Product name and product line are required.");
-                return false;
+            if (myConnection != null) {
+                // Set back to autocommit=true
+                myConnection.setAutoCommit(true);
             }
-
-            // Start transaction
-            myConnection.setAutoCommit(false);
-
-            // Execute the INSERT query
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            // Confirm the transaction if the addition was successful
-            if (rowsAffected > 0) {
-                myConnection.commit();
-                System.out.println("Product added successfully");
-            } else {
-                // Roll back the transaction if the addition failed
-                myConnection.rollback();
-                System.out.println("Failed to add product");
-            }
-
-            // Log the number of affected rows (for troubleshooting)
-            System.out.println("Rows affected: " + rowsAffected);
-
-            // Return true if the addition was successful
-            return rowsAffected > 0;
-
-        } catch (SQLException | ClassNotFoundException | NumberFormatException ex) {
-            // Log any exceptions
-            ex.printStackTrace();
-            return false;
-
-        } finally {
-            try {
-                if (myConnection != null) {
-                    // Set back to autocommit=true
-                    myConnection.setAutoCommit(true);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
+}
+
+
+
+
+
 
     // Method to update a product in the database
     public boolean updateProduct(String productCode, Integer newQuantityInStock, BigDecimal newBuyPrice,

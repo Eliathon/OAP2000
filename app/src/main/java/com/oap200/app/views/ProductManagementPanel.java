@@ -128,11 +128,13 @@ public class ProductManagementPanel extends JPanel {
 
     private JPanel createAddPanel(JButton addButton) {
         JPanel panel = new JPanel(new BorderLayout());
-        JPanel labelPanel = new JPanel(new GridLayout(9, 1));
-        JPanel fieldPanel = new JPanel(new GridLayout(9, 1));
-
-        labelPanel.add(new JLabel("Product Code:"));
-        fieldPanel.add(productCode);
+        JPanel labelPanel = new JPanel(new GridLayout(8, 1));
+        JPanel fieldPanel = new JPanel(new GridLayout(8, 1));
+    
+        // Remove productCode field from the panel
+        // labelPanel.add(new JLabel("Product Code:"));
+        // fieldPanel.add(productCode);
+    
         labelPanel.add(new JLabel("Product Name:"));
         fieldPanel.add(productName);
         labelPanel.add(new JLabel("Product Line:"));
@@ -149,12 +151,13 @@ public class ProductManagementPanel extends JPanel {
         fieldPanel.add(buyPrice);
         labelPanel.add(new JLabel("MSRP:"));
         fieldPanel.add(MSRP);
-
+    
         panel.add(labelPanel, BorderLayout.WEST);
         panel.add(fieldPanel, BorderLayout.CENTER);
         panel.add(addButton, BorderLayout.SOUTH);
         return panel;
     }
+    
 
     private JPanel createUpdatePanel(JButton updateButton) {
         JPanel panel = new JPanel(new BorderLayout());
@@ -237,7 +240,7 @@ public class ProductManagementPanel extends JPanel {
         System.out.println("addProduct() called!");
 
         // Check if any input field is empty
-        if (productCode.getText().isEmpty() || productName.getText().isEmpty() ||
+        if (productName.getText().isEmpty() ||
                 productScale.getText().isEmpty() || productVendor.getText().isEmpty() ||
                 productDescription.getText().isEmpty() || quantityInStock.getText().isEmpty() ||
                 buyPrice.getText().isEmpty() || MSRP.getText().isEmpty()) {
@@ -249,9 +252,10 @@ public class ProductManagementPanel extends JPanel {
 
         // Proceed with adding the product
         boolean additionSuccessful = productController.handleAddProduct(
-                productCode.getText(), productName.getText(), (String) productLineComboBox.getSelectedItem(),
-                productScale.getText(), productVendor.getText(), productDescription.getText(),
-                quantityInStock.getText(), buyPrice.getText(), MSRP.getText());
+        productName.getText(), (String) productLineComboBox.getSelectedItem(),
+        productScale.getText(), productVendor.getText(), productDescription.getText(),
+        quantityInStock.getText(), buyPrice.getText(), MSRP.getText());
+
 
         if (additionSuccessful) {
             JOptionPane.showMessageDialog(this, "Product added successfully.", "Addition completed",

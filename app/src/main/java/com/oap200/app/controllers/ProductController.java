@@ -9,7 +9,13 @@ import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JOptionPane;
 
+
+
+
+
 public class ProductController {
+    
+
     private ProductsDAO productsDAO;
     private ProductManagementPanel productManagementPanel;
 
@@ -47,24 +53,33 @@ public class ProductController {
         }
     }
 
-    // Method to handle adding a new product
-    public boolean handleAddProduct(String productCode, String productName, String productLine, String productScale,
-            String productVendor, String productDescription, String quantityInStockText, String buyPriceText,
-            String MSRPText) {
-        try {
-            int quantityInStock = Integer.parseInt(quantityInStockText);
-            BigDecimal buyPrice = new BigDecimal(buyPriceText);
-            BigDecimal MSRP = new BigDecimal(MSRPText);
+    
+    public boolean handleAddProduct(String productName, String productLine, String productScale,
+    String productVendor, String productDescription, String quantityInStockText, String buyPriceText,
+    String MSRPText) {
+try {
+    // Convert quantityInStockText, buyPriceText, and MSRPText to their respective types
+    int quantityInStock = Integer.parseInt(quantityInStockText);
+    BigDecimal buyPrice = new BigDecimal(buyPriceText);
+    BigDecimal MSRP = new BigDecimal(MSRPText);
 
-            return productsDAO.addProduct(productCode, productName, productLine, productScale, productVendor,
-                    productDescription, quantityInStock, buyPrice, MSRP);
-        } catch (NumberFormatException | ArithmeticException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(productManagementPanel, "Error converting numbers.", "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-    }
+    return productsDAO.addProduct(productName, productLine, productScale, productVendor,
+            productDescription, quantityInStock, buyPrice, MSRP);
+} catch (NumberFormatException | ArithmeticException ex) {
+    ex.printStackTrace();
+    JOptionPane.showMessageDialog(productManagementPanel, "Error converting numbers.", "Error",
+            JOptionPane.ERROR_MESSAGE);
+    return false;
+}
+}
+
+
+
+
+
+
+
+
 
     // Method to retrieve the ProductsDAO instance
     public ProductsDAO getProductsDAO() {
