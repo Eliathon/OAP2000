@@ -157,7 +157,7 @@ public class ButtonBuilder {
         searchNumberButton.setForeground(Color.WHITE); // Set text color to white
         searchNumberButton.setBackground(Color.BLACK); // Set background color to red
         searchNumberButton.setBorderPainted(false); // Remove border
-        searchNumberButton.setPreferredSize(new Dimension(100, 20)); // Set a specific size
+        searchNumberButton.setPreferredSize(new Dimension(160, 20)); // Set a specific size
         searchNumberButton.addActionListener(e -> {
             if (action != null) {
                 action.run();
