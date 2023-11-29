@@ -172,26 +172,25 @@ public class ProductsDAO {
         return productLines;
     }
     private String generateProductCode(int codeLength) {
-        // Definer tillatte tegn for produktkoden (bokstaver og sifre)
-        String allowedCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        // Definer tillatte tegn for produktkoden (kun sifre)
+        String allowedCharacters = "0123456789";
     
-        // Start med bokstaver i begynnelsen
+        // Legg til sifre i produktkoden basert på lengden
         StringBuilder productCodeBuilder = new StringBuilder();
         SecureRandom random = new SecureRandom();
     
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < codeLength; i++) {
             char randomChar = allowedCharacters.charAt(random.nextInt(allowedCharacters.length()));
-            productCodeBuilder.append(randomChar);
-        }
-    
-        // Legg til sifre resten av koden
-        for (int i = 2; i < codeLength; i++) {
-            char randomChar = allowedCharacters.charAt(26 + random.nextInt(10)); // Indeksene 26 til 35 representerer sifre
             productCodeBuilder.append(randomChar);
         }
     
         return productCodeBuilder.toString();
     }
+    
+    
+    
+    
+    
     
 
 // Method to check if a product code already exists in the database
