@@ -158,7 +158,10 @@ public class CustomerManagementPanel extends JPanel {
         }
     }
 
-
+    private void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    
     
 
     private void addCustomer() {
@@ -166,6 +169,12 @@ public class CustomerManagementPanel extends JPanel {
         String latestCustomerNumber = customerController.getLatestCustomerNumber();
         String newCustomerNumber = generateNextCustomerNumber(latestCustomerNumber);
     
+        // Validate input fields
+        if (!validateCustomerInput()) {
+            return; // Validation failed, exit the method
+        }
+    
+        // Attempt to add the customer
         boolean additionSuccessful = customerController.handleAddCustomer(
                 newCustomerNumber,
                 customerName.getText(),
@@ -181,13 +190,46 @@ public class CustomerManagementPanel extends JPanel {
                 salesRepEmployeeNumber.getText(),
                 creditLimit.getText());
     
+        // Show a message based on the result
         if (additionSuccessful) {
             JOptionPane.showMessageDialog(this, "New Customer added successfully.", "Addition completed",
                     JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Error adding customer.", "Error", JOptionPane.ERROR_MESSAGE);
+            showErrorMessage("Error adding customer. Please check your input.");
         }
     }
+    
+    private boolean validateCustomerInput() {
+        // Check if essential fields are filled out
+        if (customerName.getText().isEmpty() || contactLastName.getText().isEmpty()
+                || contactFirstName.getText().isEmpty() || phone.getText().isEmpty()
+                || addressLine1.getText().isEmpty() || city.getText().isEmpty()
+                || postalCode.getText().isEmpty() || country.getText().isEmpty()
+                || creditLimit.getText().isEmpty()) {
+            showErrorMessage("Please fill out all essential fields (marked with *).");
+            return false; // Validation failed
+        }
+    
+        // Additional validation for specific fields (e.g., numeric fields)
+        if (!isValidNumericInput(salesRepEmployeeNumber.getText())) {
+            showErrorMessage("Invalid data in Sales Rep Employee Number. Please enter a valid number.");
+            return false; // Validation failed
+        }
+    
+        // Add more specific field validations as needed
+    
+        return true; // All validations passed
+    }
+    
+    private boolean isValidNumericInput(String input) {
+        try {
+            Integer.parseInt(input);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    
     
     // Helper method to generate the next customer number
     private String generateNextCustomerNumber(String latestCustomerNumber) {
