@@ -121,12 +121,14 @@ public class EmployeeManagementPanel extends JPanel {
         // The rest of your method to add the table view
         JScrollPane scrollPane = new JScrollPane(employeeTable);
         panel.add(scrollPane, BorderLayout.CENTER);
-    
+        JButton viewAllButton = ButtonBuilder.createViewButton(() -> employeeController.handleViewAllEmployees());
+        JPanel viewAllButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        viewAllButtonPanel.add(viewAllButton);
+        panel.add(viewAllButtonPanel, BorderLayout.SOUTH);
+        
         return panel;
     }
     
-    
-
     private JPanel createAddPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         JButton addButton = ButtonBuilder.createAddButton(() -> addEmployee());
