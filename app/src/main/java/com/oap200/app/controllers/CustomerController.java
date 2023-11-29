@@ -67,7 +67,7 @@ public class CustomerController {
     public boolean handleUpdateCustomer(
             String customerName, String contactLastName, String contactFirstName, String addressLine1,
             String addressLine2, String city, String state, String postalCode, String country,
-            String salesRepEmployeeNumberText, String creditLimitText) {
+            String salesRepEmployeeNumberText, String creditLimitText, String updatePhone) {
         try {
             int salesRepEmployeeNumber = Integer.parseInt(salesRepEmployeeNumberText);
             BigDecimal creditLimit = new BigDecimal(creditLimitText);

@@ -203,12 +203,13 @@ public class CustomerManagementPanel extends JPanel {
         String updatedCountry = updatecountry.getText();
         String updatedSalesRepEmployeeNumber = updatesalesRepEmployeeNumber.getText();
         String updatedCreditLimit = updatecreditLimit.getText();
+        String updatedPhone = updatePhone.getText();
 
         // Call the update method in the controller
         boolean updateSuccessful = customerController.handleUpdateCustomer(
                 updatedCustomerName, updatedContactLastName, updatedContactFirstName,
                 updatedAddressLine1, updatedAddressLine2, updatedCity, updatedState,
-                updatedPostalCode, updatedCountry, updatedSalesRepEmployeeNumber, updatedCreditLimit);
+                updatedPostalCode, updatedCountry, updatedSalesRepEmployeeNumber, updatedCreditLimit, updatedPhone);
 
         // Show a message based on the result
         if (updateSuccessful) {
@@ -351,6 +352,13 @@ public class CustomerManagementPanel extends JPanel {
         gbc.gridx = 1;
         updatecreditLimit = new JTextField(40);
         inputPanelUpdate.add(updatecreditLimit, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        inputPanelUpdate.add(new JLabel("Update Phone:"), gbc);
+        gbc.gridx = 1;
+        updatePhone = new JTextField(40);
+        inputPanelUpdate.add(updatePhone, gbc);
 
         // Filler Panel
         gbc.gridy++;
