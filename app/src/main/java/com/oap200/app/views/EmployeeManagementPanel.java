@@ -104,7 +104,7 @@ public class EmployeeManagementPanel extends JPanel {
         // Row for searching by name
         searchPanel.add(new JLabel("Search by Name:"));
         searchPanel.add(searchNameField);
-        JButton searchNameButton = ButtonBuilder.createSearchButton(() -> searchEmployees());
+        JButton searchNameButton = ButtonBuilder.createSearchButton(() -> searchEmployeesName());
         searchPanel.add(searchNameButton);
         searchPanel.add(new JLabel()); // Placeholder for alignment
     
@@ -210,22 +210,31 @@ public class EmployeeManagementPanel extends JPanel {
         loginFrame.setVisible(true);
     }
 
-    private void searchEmployees() {
-        String employeeNumber = searchNumberField.getText();
-        String employeeName = searchNameField.getText();
-
-        // Check if a search number is provided
-        if (!employeeNumber.isEmpty()) {
-            employeeController.handleSearchEmployeesNumber(employeeNumber);
-        } else if (!employeeName.isEmpty()) {
-            // If no number provided, search by name
+    private void searchEmployeesName() {
+        String employeeName = searchNameField.getText().trim();
+    
+        if (!employeeName.isEmpty()) {
             employeeController.handleSearchEmployees(employeeName);
         } else {
-            // If both fields are empty, you might want to handle this case (e.g., show a
-            // message or do nothing)
+            // Handle the case where the name field is empty (e.g., show a message)
+            JOptionPane.showMessageDialog(this, "Please enter an employee name to search.", "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    
+    private void searchEmployeesNumber() {
+        String employeeNumber = searchNumberField.getText().trim();
+    
+        if (!employeeNumber.isEmpty()) {
+            employeeController.handleSearchEmployeesNumber(employeeNumber);
+        } else {
+            // Handle the case where the number field is empty (e.g., show a message)
+            JOptionPane.showMessageDialog(this, "Please enter an employee number to search.", "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     private void addEmployee() {
         String lName = lastName.getText();
         String fName = firstName.getText();
