@@ -48,9 +48,14 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
 
     private void initializeComponents() {
         // ComboBoxes for the selection off year and quater reports
+<<<<<<< HEAD
         yearComboBox = new JComboBox<>(new String[] { "2003", "2004", "2005" });
         quarterComboBox = new JComboBox<>(new String[] { "Q1", "Q2", "Q3", "Q4", "Q All" }); // TODO mss handig met
                                                                                              // afvink box
+=======
+        yearComboBox = new JComboBox<>(new String[]{"2003", "2004", "2005"});
+        quarterComboBox = new JComboBox<>(new String[]{"Q1", "Q2", "Q3", "Q4", "Q All"}); //TODO mss handig met afvink box
+>>>>>>> c8a3ea1 (x)
 
         // Knop om het rapport te genereren
         generateReportButton = ButtonBuilder.createStyledButton("Generate Financial Report", this::generateReport);
@@ -62,6 +67,10 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
         yearlyReportRadioButton = new JRadioButton("Yearly Report");
         quarterlyReportRadioButton = new JRadioButton("Quarterly Report", true);
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> c8a3ea1 (x)
         // Groepeer de radio buttons
         ButtonGroup formatButtonGroup = new ButtonGroup();
         formatButtonGroup.add(csvRadioButton);

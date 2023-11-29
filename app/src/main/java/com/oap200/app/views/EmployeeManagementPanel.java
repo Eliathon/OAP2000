@@ -28,6 +28,7 @@ public class EmployeeManagementPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
+<<<<<<< HEAD
         JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
             // Get the top-level frame that contains this panel
             Window window = SwingUtilities.getWindowAncestor(EmployeeManagementPanel.this);
@@ -48,6 +49,11 @@ public class EmployeeManagementPanel extends JPanel {
             }
 
             // Open the LoginPanel in a new window
+=======
+        JButton backButton = ButtonBuilder.createBlueBackButton(() -> parentFrame.dispose());
+        JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
+            System.exit(0); // Exit the application
+>>>>>>> c8a3ea1 (x)
             openLoginPanel();
         });
 
