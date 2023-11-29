@@ -295,11 +295,27 @@ public class ProductManagementPanel extends JPanel {
 
 
         if (additionSuccessful) {
-            JOptionPane.showMessageDialog(this, "Product added successfully.", "Addition completed",
-                    JOptionPane.INFORMATION_MESSAGE);
+            // Hent valgt produktlinje fra JComboBox
+            String selectedProductLine = (String) productLineComboBox.getSelectedItem();
+        
+            String productInfoMessage = "Product added successfully with inputs:\n" +
+                  //  "Product Code: " + productCode.getText() + "\n" +
+                    "Product Name: " + productName.getText() + "\n" +
+                    "Product Line: " + selectedProductLine + "\n" +
+                    "Product Scale: " + productScale.getText() + "\n" +
+                    "Product Vendor: " + productVendor.getText() + "\n" +
+                    "Product Description: " + productDescription.getText() + "\n" +
+                    "Quantity In Stock: " + quantityInStock.getText() + "\n" +
+                    "Buy Price: " + buyPrice.getText() + "\n" +
+                    "MSRP: " + MSRP.getText();
+        
+            JOptionPane.showMessageDialog(this, productInfoMessage, "Addition completed", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this, "Error adding product.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+        
+        
+        
     }
 
     private void updateProduct() {
