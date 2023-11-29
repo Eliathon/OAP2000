@@ -48,24 +48,14 @@ public class ProductManagementPanel extends JPanel {
         JButton updateButton = ButtonBuilder.createUpdateButton(() -> updateProduct());
         JButton searchButton = ButtonBuilder.createSearchButton(() -> {
             searchProducts();
-            searchProductsByCode();
         });
+        JButton searchCodeButton = ButtonBuilder.createSearchCodeButton(() ->searchProductsByCode() );
         
-        // Fjern eksisterende ActionListeners
-        ActionListener[] listeners = searchButton.getActionListeners();
-        for (ActionListener listener : listeners) {
-            searchButton.removeActionListener(listener);
-        }
-        
-        // Legg til begge lytterne
-        searchButton.addActionListener(e -> {
-            searchProducts();
-            searchProductsByCode();
-        });
+       
         
         
 
-        JPanel viewSearchButtonPanel = createViewSearchButtonPanel(viewButton, searchButton);
+        JPanel viewSearchButtonPanel = createViewSearchButtonPanel(viewButton, searchButton, searchCodeButton);
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("View Products", null, createViewPanel(viewSearchButtonPanel), "Click to view");
@@ -127,10 +117,11 @@ public class ProductManagementPanel extends JPanel {
         }
     }
 
-    private JPanel createViewSearchButtonPanel(JButton viewButton, JButton searchButton) {
+    private JPanel createViewSearchButtonPanel(JButton viewButton, JButton searchButton, JButton searchCodeButton) {
         JPanel panel = new JPanel(new FlowLayout());
         panel.add(viewButton);
         panel.add(searchButton);
+        panel.add(searchCodeButton);
         return panel;
     }
 

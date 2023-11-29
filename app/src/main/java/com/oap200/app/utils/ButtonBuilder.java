@@ -124,7 +124,7 @@ public class ButtonBuilder {
 
      // Search Button is created by Sebastian
     public static JButton createSearchButton(Runnable action) {
-        JButton searchButton = new JButton("Search");
+        JButton searchButton = new JButton("Search by name");
         searchButton.setForeground(Color.WHITE); // Set text color to white
         searchButton.setBackground(Color.BLACK); // Set background color to red
         searchButton.setBorderPainted(false); // Remove border
