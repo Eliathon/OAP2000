@@ -439,7 +439,7 @@ public class CustomerManagementPanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 0.3;
-        inputPanel.add(new JLabel("Customer Number:"), gbc);
+        inputPanel.add(new JLabel("Enter Customer Number to delete:"), gbc);
 
         gbc.gridx = 1;
         gbc.weightx = 0.7;
