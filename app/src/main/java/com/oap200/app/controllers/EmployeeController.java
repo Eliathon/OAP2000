@@ -4,10 +4,12 @@ package com.oap200.app.controllers;
 import com.oap200.app.models.EmployeeDAO;
 import com.oap200.app.views.EmployeeManagementPanel;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class EmployeeController {
 
+    
     // Method for handling the display of employees
     private EmployeeDAO employeeDAO;
     private EmployeeManagementPanel employeeManagementPanel;
@@ -47,12 +49,20 @@ public class EmployeeController {
     }
 
     // Method to handle adding a new employee
-    public boolean handleAddEmployee(String employeeNumber, String lastName, String firstName, String extension,
-            String email, String officeCode, Integer reportsTo, String jobTitle) {
-        // Since all inputs should be strings, there is no need to parse them
-        return employeeDAO.addEmployee(employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo,
-                jobTitle);
+    // Method to handle adding a new employee
+public boolean handleAddEmployee(String lastName, String firstName, String extension, String email, String officeCode, Integer reportsTo, String jobTitle) {
+    try {
+        // Generate the next employee number
+        String employeeNumber = employeeDAO.getNextAvailableEmployeeNumber();
+
+        // Call addEmployee method with the new employee number
+        return employeeDAO.addEmployee(employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle);
+    } catch (SQLException | ClassNotFoundException e) {
+        e.printStackTrace();
+        return false;
     }
+}
+
 
     // Method to retrieve the EmployeeDAO instance
     public EmployeeDAO getEmployeeDAO() {

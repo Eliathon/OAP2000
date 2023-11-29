@@ -11,6 +11,35 @@ import java.util.List;
 import com.oap200.app.utils.DbConnect;
 
 public class EmployeeDAO {
+    
+    
+     // Method to get the next available employee number
+     public String getNextAvailableEmployeeNumber() throws SQLException, ClassNotFoundException {
+        // Initialize the DbConnect object
+        DbConnect db = new DbConnect();
+        // Use the object to get a connection
+        try (Connection connection = db.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(employeeNumber) as maxNumber FROM employees");
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+    
+            if (resultSet.next()) {
+                String maxNumber = resultSet.getString("maxNumber");
+                if (maxNumber != null && !maxNumber.trim().isEmpty()) {
+                    // Assumes employeeNumber is a numeric string that can be parsed into an integer
+                    int nextNumber = Integer.parseInt(maxNumber.trim()) + 1;
+                    return String.format("%05d", nextNumber); // Pad with zeros if necessary
+                } else {
+                    // Default employee number to start if no employees exist
+                    return "00001";
+                }
+            } else {
+                throw new SQLException("Unable to retrieve the highest employee number.");
+            }
+        }
+    }
+    
+    
+    
     // Method to fetch all employees from the database
     public List<String[]> fetchEmployees() {
         System.out.println("View button clicked!");
@@ -238,6 +267,8 @@ public class EmployeeDAO {
         }
     }
 
+
+    
     // Method to update an employee in the database
     public boolean updateEmployee(String employeeNumber, String lastName, String firstName, String extension,
             String email, String officeCode, Integer reportsTo, String jobTitle) {

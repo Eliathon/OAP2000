@@ -28,7 +28,6 @@ public class EmployeeManagementPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-<<<<<<< HEAD
         JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
             // Get the top-level frame that contains this panel
             Window window = SwingUtilities.getWindowAncestor(EmployeeManagementPanel.this);
@@ -49,11 +48,6 @@ public class EmployeeManagementPanel extends JPanel {
             }
 
             // Open the LoginPanel in a new window
-=======
-        JButton backButton = ButtonBuilder.createBlueBackButton(() -> parentFrame.dispose());
-        JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
-            System.exit(0); // Exit the application
->>>>>>> c8a3ea1 (x)
             openLoginPanel();
         });
 
@@ -118,8 +112,6 @@ public class EmployeeManagementPanel extends JPanel {
         JPanel panel = new JPanel(new BorderLayout());
         JButton addButton = ButtonBuilder.createAddButton(() -> addEmployee());
         JPanel addPanel = new JPanel(new GridLayout(9, 2));
-        addPanel.add(new JLabel("Employee Number:"));
-        addPanel.add(employeeNumber);
         addPanel.add(new JLabel("Last Name:"));
         addPanel.add(lastName);
         addPanel.add(new JLabel("First Names:"));
@@ -216,14 +208,14 @@ public class EmployeeManagementPanel extends JPanel {
     }
 
     private void addEmployee() {
-        String empNum = employeeNumber.getText();
         String lName = lastName.getText();
         String fName = firstName.getText();
         String ext = extension.getText();
         String mail = email.getText();
         String office = officeCode.getText();
         String reports = reportsTo.getText();
-        String title = jobTitle.getText();
+        String title = (String) employeeRolesComboBox.getSelectedItem();
+
 
         Integer reportsToInt = null;
         try {
@@ -234,8 +226,8 @@ public class EmployeeManagementPanel extends JPanel {
             return;
         }
 
-        boolean success = employeeController.handleAddEmployee(empNum, lName, fName, ext, mail, office, reportsToInt,
-                title);
+        boolean success = employeeController.handleAddEmployee(lName, fName, ext, mail, office, reportsToInt, title);
+
 
         if (success) {
             JOptionPane.showMessageDialog(this, "Employee added successfully", "Success",
