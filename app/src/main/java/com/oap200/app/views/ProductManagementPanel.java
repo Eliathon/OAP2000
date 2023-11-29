@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
-import java.awt.event.ActionListener;
 
 
 public class ProductManagementPanel extends JPanel {
@@ -130,12 +129,12 @@ public class ProductManagementPanel extends JPanel {
     
         // Legg til søkefelt for produktkode
         JPanel searchCodePanel = new JPanel(new FlowLayout());
-        searchCodePanel.add(new JLabel("Søk etter produktkode:"));
+        searchCodePanel.add(new JLabel("Search by product code:"));
         searchCodePanel.add(searchCodeField);
     
         // Legg til søkefelt for produktnavn
         JPanel searchNamePanel = new JPanel(new FlowLayout());
-        searchNamePanel.add(new JLabel("Søk etter produktnavn:"));
+        searchNamePanel.add(new JLabel("Search by product name:"));
         searchNamePanel.add(searchTextField);
     
         // Legg til søkefeltene i hovedpanelet
