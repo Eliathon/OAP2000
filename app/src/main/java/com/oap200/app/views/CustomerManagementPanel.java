@@ -158,6 +158,9 @@ public class CustomerManagementPanel extends JPanel {
         }
     }
 
+
+    
+
     private void addCustomer() {
         // Fetch the latest customer number and increment it
         String latestCustomerNumber = customerController.getLatestCustomerNumber();
@@ -271,10 +274,20 @@ public class CustomerManagementPanel extends JPanel {
         labelPanel.add(new JLabel("Credit Limit:"));
         fieldPanel.add(creditLimit);
 
+        String latestCustomerNumber = customerController.getLatestCustomerNumber();
+    String newCustomerNumber = generateNextCustomerNumber(latestCustomerNumber);
+    customerNumber.setText(newCustomerNumber);
+
+    fieldPanel.add(customerNumber);
+
+
         panel.add(labelPanel, BorderLayout.WEST);
         panel.add(fieldPanel, BorderLayout.CENTER);
     }
 
+
+
+    
     private void addComponentsToPanelUpdate(JPanel panelUpdate) {
         panelUpdate.setLayout(new BorderLayout());
 
