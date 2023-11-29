@@ -97,16 +97,35 @@ public class EmployeeManagementPanel extends JPanel {
 
     private JPanel createViewPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        JButton viewButton = ButtonBuilder.createViewButton(() -> employeeController.handleViewAllEmployees());
-        JButton searchButton = ButtonBuilder.createSearchButton(() -> searchEmployees());
-        JPanel viewSearchButtonPanel = new JPanel(new FlowLayout());
-        viewSearchButtonPanel.add(viewButton);
-        viewSearchButtonPanel.add(searchButton);
-        panel.add(viewSearchButtonPanel, BorderLayout.SOUTH);
+        
+        // Create the search panel with 2 rows and 4 columns
+        JPanel searchPanel = new JPanel(new GridLayout(2, 4)); // GridLayout for two rows
+    
+        // Row for searching by name
+        searchPanel.add(new JLabel("Search by Name:"));
+        searchPanel.add(searchNameField);
+        JButton searchNameButton = ButtonBuilder.createSearchButton(() -> searchEmployees());
+        searchPanel.add(searchNameButton);
+        searchPanel.add(new JLabel()); // Placeholder for alignment
+    
+        // Row for searching by number
+        searchPanel.add(new JLabel("Search by Number:"));
+        searchPanel.add(searchNumberField);
+        JButton searchNumberButton = ButtonBuilder.createSearchButton(() -> searchEmployeeNumber());
+        searchPanel.add(searchNumberButton);
+        searchPanel.add(new JLabel()); // Placeholder for alignment
+    
+        // Add the search panel to the top of the view panel
+        panel.add(searchPanel, BorderLayout.NORTH);
+    
+        // The rest of your method to add the table view
         JScrollPane scrollPane = new JScrollPane(employeeTable);
         panel.add(scrollPane, BorderLayout.CENTER);
+    
         return panel;
     }
+    
+    
 
     private JPanel createAddPanel() {
         JPanel panel = new JPanel(new BorderLayout());
