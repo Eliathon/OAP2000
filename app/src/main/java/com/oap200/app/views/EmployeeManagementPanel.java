@@ -171,7 +171,7 @@ searchByNumberField = new JTextField(10);
         JButton updateButton = ButtonBuilder.createUpdateButton(() -> updateEmployee());
         JPanel updatePanel = new JPanel(new GridLayout(9, 2));
         JComboBox<String> updateJobTitle = new JComboBox<>(employeeRolesComboBox.getModel());
-        updatePanel.add(new JLabel("Update Employee Number:"));
+        updatePanel.add(new JLabel("Choose Employee By Emp. Number:"));
         updatePanel.add(updateEmployeeNumber);
         updatePanel.add(new JLabel("Update Last Name:"));
         updatePanel.add(updateLastName);
@@ -252,95 +252,102 @@ searchByNumberField = new JTextField(10);
     }
     
     private void addEmployee() {
-        String lName = lastName.getText();
-        String fName = firstName.getText();
-        String ext = extension.getText();
-        String mail = email.getText();
-        String office = officeCode.getText();
-        String reports = reportsTo.getText();
+        String lName = lastName.getText().trim();
+        String fName = firstName.getText().trim();
+        String ext = extension.getText().trim();
+        String mail = email.getText().trim();
+        String office = officeCode.getText().trim();
+        String reports = reportsTo.getText().trim();
         String title = (String) employeeRolesComboBox.getSelectedItem();
-
-
+    
+        // Validate last name
+        if (lName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Last Name cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;}
+        // Validate first name
+        if (fName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "First Name cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;}
+        // Validate extension
+        if (ext.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Extension cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;}
+        // Validate email
+        if (mail.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Email cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;}
+        // Validate office code
+        if (office.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Office Code cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;}
         Integer reportsToInt = null;
         try {
             reportsToInt = reports.isEmpty() ? null : Integer.parseInt(reports);
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid Reports To number format.", "Input Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Invalid Reports To number format. Employee might not exist", "Input Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+    // Validate job title
+        if (title.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Job Title cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         boolean success = employeeController.handleAddEmployee(lName, fName, ext, mail, office, reportsToInt, title);
-
-
+    
         if (success) {
             String generatedEmployeeNumber = employeeController.getEmployeeDAO().getGeneratedEmployeeNumber();
             String selectedEmployeeRole = (String) employeeRolesComboBox.getSelectedItem();
-
-            
-            String employeeInfoMessage = "Empployee added successfully with inputs:\n \n" +
-       //employee Number
-       "Employee Number: " + generatedEmployeeNumber + "\n" + 
-        "Last Name: " + lastName.getText() + "\n" +
-        "First Name: " + firstName.getText() + "\n" +
-        "Extension: " + extension.getText() + "\n" +
-        "Email: " + email.getText() + "\n" +
-        "Office Code: " + officeCode.getText() + "\n" +
-         "Reports To: " + reportsTo.getText() + "\n" +
-         "Employee Role: " + selectedEmployeeRole;
-        
-
-JOptionPane.showMessageDialog(this, employeeInfoMessage, "Addition completed", JOptionPane.INFORMATION_MESSAGE);
+    
+            String employeeInfoMessage = "Employee added successfully with inputs:\n\n" +
+           "Employee Number: " + generatedEmployeeNumber + "\n" + 
+            "Last Name: " + lName + "\n" +
+            "First Name: " + fName + "\n" +
+            "Extension: " + ext + "\n" +
+            "Email: " + mail + "\n" +
+            "Office Code: " + office + "\n" +
+            "Reports To: " + (reportsToInt != null ? reportsToInt.toString() : "None") + "\n" +
+            "Employee Role: " + selectedEmployeeRole;
+    
+            JOptionPane.showMessageDialog(this, employeeInfoMessage, "Addition completed", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this, "Failed to add employee", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
 
     private void updateEmployee() {
         String empNum = updateEmployeeNumber.getText().trim();
+        if (empNum.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Employee number cannot be empty for an update.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+    
         String lName = updateLastName.getText().trim();
         String fName = updateFirstName.getText().trim();
         String ext = updateExtension.getText().trim();
         String mail = updateEmail.getText().trim();
         String office = updateOfficeCode.getText().trim();
         String reports = updateReportsTo.getText().trim();
-
-        // Retrieve the selected job title from the combo box
-        String jobTitle = (String) employeeRolesComboBox.getSelectedItem();
-
-        // Basic validation for employee number
-        if (empNum.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Employee number cannot be empty for an update.", "Input Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        if (jobTitle == null || jobTitle.isEmpty()) {
-            // Handle the case where jobTitle is null or empty
-            // For example, you might set it to a default value or display an error message
-        }
-
+        String jobTitle = (String) updateJobTitle.getSelectedItem();
+    
         Integer reportsToInt = null;
         try {
             if (!reports.isEmpty()) {
                 reportsToInt = Integer.parseInt(reports);
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid format for 'Reports To'.", "Input Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Invalid format for 'Reports To'.", "Input Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-        boolean success = employeeController.handleUpdateEmployee(empNum, lName, fName, ext, mail, office, reportsToInt,
-                jobTitle);
-
+    
+        boolean success = employeeController.handleUpdateEmployee(empNum, lName, fName, ext, mail, office, reportsToInt, jobTitle);
         if (success) {
-            JOptionPane.showMessageDialog(this, "Employee updated successfully", "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Employee updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Failed to update employee", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to update. This employee doesn't exist", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
 
     private void deleteEmployee() {
     String employeeNum = searchNumberField.getText();
@@ -348,8 +355,8 @@ JOptionPane.showMessageDialog(this, employeeInfoMessage, "Addition completed", J
     try {
         String[] employeeDetails = employeeController.getEmployeeDAO().getEmployeeDetails(employeeNum);
         if (employeeDetails != null && employeeController.handleDeleteEmployee(employeeNum)) {
-            String message = String.format("Employee %s, %s %s, %s, %s, %s, %s, %s has been deleted successfully.", 
-                                           employeeDetails[0], // Employee number
+            String message = String.format("Employee with these details has been deleted successfully from the system: \n Employee Number: %s \n Last Name: %s \n First Name: %s \n Extension: %s \n Email: %s \n Office Code: %s \n Reported To: %s \n Job Title: %s", 
+                                           employeeDetails[0],// Employee number
                                            employeeDetails[1], // Last Name
                                            employeeDetails[2],  // First Name
                                            employeeDetails[3],  // Extension

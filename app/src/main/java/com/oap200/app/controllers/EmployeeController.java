@@ -88,11 +88,9 @@ public boolean handleAddEmployee(String lastName, String firstName, String exten
     public boolean handleUpdateEmployee(String employeeNumber, String lastName, String firstName, String extension,
             String email, String officeCode, Integer reportsTo, String jobTitle) {
         // Basic validation (you can expand this as needed)
-        if (employeeNumber == null || employeeNumber.trim().isEmpty() ||
-                lastName == null || lastName.trim().isEmpty() ||
-                firstName == null || firstName.trim().isEmpty()) {
+        if (employeeNumber == null || employeeNumber.trim().isEmpty()) {
             // Handle invalid input
-            System.out.println("Invalid input for employee update.");
+            System.out.println("Invalid input for Employee Number. The input field is either empty, or this employee doesn't exist");
             return false;
         }
 

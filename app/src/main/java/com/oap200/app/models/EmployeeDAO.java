@@ -164,7 +164,7 @@ public class EmployeeDAO {
                         myRs.getString("reportsTo"),
                         myRs.getString("jobTitle"),
                 };
-                System.out.println("TEST");
+                
                 searchResults.add(employee);
             }
         } catch (SQLException | ClassNotFoundException ex) {
@@ -230,108 +230,116 @@ public class EmployeeDAO {
 
     // Method to add a new employee to the database
     public boolean addEmployee(String employeeNumber, String lastName, String firstName, String extension, String email,
-            String officeCode, Integer reportsTo, String jobTitle) {
-        Connection myConnection = null;
+        String officeCode, Integer reportsTo, String jobTitle) {
+    Connection myConnection = null;
 
-        try {
-            // Establish a database connection
-            DbConnect db = new DbConnect();
-            myConnection = db.getConnection();
+    try {
+        // Establish a database connection
+        DbConnect db = new DbConnect();
+        myConnection = db.getConnection();
 
-            // Prepare the INSERT query
-            PreparedStatement preparedStatement = myConnection
-                    .prepareStatement("INSERT INTO employees VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement.setString(1, employeeNumber);
-            preparedStatement.setString(2, lastName);
-            preparedStatement.setString(3, firstName);
-            preparedStatement.setString(4, extension);
-            preparedStatement.setString(5, email);
-            preparedStatement.setString(6, officeCode);
+        // Prepare the INSERT query
+        PreparedStatement preparedStatement = myConnection
+                .prepareStatement("INSERT INTO employees VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        preparedStatement.setString(1, employeeNumber);
+        preparedStatement.setString(2, lastName);
+        preparedStatement.setString(3, firstName);
+        preparedStatement.setString(4, extension);
+        preparedStatement.setString(5, email);
+        preparedStatement.setString(6, officeCode);
+        if (reportsTo != null) {
             preparedStatement.setInt(7, reportsTo);
-            preparedStatement.setString(8, jobTitle);
+        } else {
+            preparedStatement.setNull(7, java.sql.Types.INTEGER);
+        }
+        preparedStatement.setString(8, jobTitle);
 
-            // Validate input data
-            if (employeeNumber == null || employeeNumber.trim().isEmpty() || lastName == null
-                    || lastName.trim().isEmpty()) {
-                System.out.println("Employee number and last name is required.");
-                return false;
-            }
-
-            // Start transaction
-            myConnection.setAutoCommit(false);
-
-            // Execute the INSERT query
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            // Confirm the transaction if the addition was successful
-            if (rowsAffected > 0) {
-                myConnection.commit();
-                System.out.println("Employee added successfully");
-            } else {
-                // Roll back the transaction if the addition failed
-                myConnection.rollback();
-                System.out.println("Failed to add employee");
-            }
-
-            // Log the number of affected rows (for troubleshooting)
-            System.out.println("Rows affected: " + rowsAffected);
-
-            // Return true if the addition was successful
-            return rowsAffected > 0;
-
-        } catch (SQLException | ClassNotFoundException | NumberFormatException ex) {
-            // Log any exceptions
-            ex.printStackTrace();
+        // Validate input data
+        if (employeeNumber == null || employeeNumber.trim().isEmpty() || lastName == null
+                || lastName.trim().isEmpty()) {
+            System.out.println("Employee number and last name are required.");
             return false;
+        }
 
-        } finally {
-            try {
-                if (myConnection != null) {
-                    // Set back to autocommit=true
-                    myConnection.setAutoCommit(true);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+        // Start transaction
+        myConnection.setAutoCommit(false);
+
+        // Execute the INSERT query
+        int rowsAffected = preparedStatement.executeUpdate();
+
+        // Confirm the transaction if the addition was successful
+        if (rowsAffected > 0) {
+            myConnection.commit();
+            System.out.println("Employee added successfully");
+        } else {
+            // Roll back the transaction if the addition failed
+            myConnection.rollback();
+            System.out.println("Failed to add employee");
+        }
+
+        // Log the number of affected rows (for troubleshooting)
+        System.out.println("Rows affected: " + rowsAffected);
+
+        // Return true if the addition was successful
+        return rowsAffected > 0;
+
+    } catch (SQLException | ClassNotFoundException ex) {
+        // Log any exceptions
+        ex.printStackTrace();
+        return false;
+
+    } finally {
+        try {
+            if (myConnection != null) {
+                // Set back to autocommit=true
+                myConnection.setAutoCommit(true);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
+}
+
 
 
     
     // Method to update an employee in the database
     public boolean updateEmployee(String employeeNumber, String lastName, String firstName, String extension,
-            String email, String officeCode, Integer reportsTo, String jobTitle) {
-        try {
+        String email, String officeCode, Integer reportsTo, String jobTitle) {
+    try {
+        Connection myConnection = new DbConnect().getConnection();
+        String sql = "UPDATE employees SET lastName = COALESCE(?, lastName), " +
+                     "firstName = COALESCE(?, firstName), " +
+                     "extension = COALESCE(?, extension), " +
+                     "email = COALESCE(?, email), " +
+                     "officeCode = COALESCE(?, officeCode), " +
+                     "reportsTo = COALESCE(?, reportsTo), " +
+                     "jobTitle = COALESCE(?, jobTitle) WHERE employeeNumber = ?";
+        PreparedStatement preparedStatement = myConnection.prepareStatement(sql);
 
-            // Establish a database connection
-            DbConnect db = new DbConnect();
-            Connection myConnection = db.getConnection();
-            PreparedStatement preparedStatement = myConnection.prepareStatement(
-                    "UPDATE employees SET lastName=?, firstName=?, extension=?, email=?, officeCode=?, reportsTo=?, jobTitle=? WHERE employeeNumber=?");
-
-            // Set parameters for the UPDATE query
-
-            preparedStatement.setString(1, lastName);
-            preparedStatement.setString(2, firstName);
-            preparedStatement.setString(3, extension);
-            preparedStatement.setString(4, email);
-            preparedStatement.setString(5, officeCode);
-            if (reportsTo != null) {
-                preparedStatement.setInt(6, reportsTo);
-            } else {
-                preparedStatement.setNull(6, java.sql.Types.INTEGER);
-            }
-            preparedStatement.setString(7, jobTitle);
-            preparedStatement.setString(8, employeeNumber);
-
-            // Execute the UPDATE query
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            // Return true if the update was successful
-            return rowsAffected > 0;
-        } catch (SQLException | ClassNotFoundException | NumberFormatException ex) {
-            ex.printStackTrace();
-            return false;
+        preparedStatement.setString(1, isEmpty(lastName) ? null : lastName);
+        preparedStatement.setString(2, isEmpty(firstName) ? null : firstName);
+        preparedStatement.setString(3, isEmpty(extension) ? null : extension);
+        preparedStatement.setString(4, isEmpty(email) ? null : email);
+        preparedStatement.setString(5, isEmpty(officeCode) ? null : officeCode);
+        if (reportsTo == null || reportsTo == 0) {
+            preparedStatement.setNull(6, java.sql.Types.INTEGER);
+        } else {
+            preparedStatement.setInt(6, reportsTo);
         }
+        preparedStatement.setString(7, isEmpty(jobTitle) ? null : jobTitle);
+        preparedStatement.setString(8, employeeNumber);
+
+        int rowsAffected = preparedStatement.executeUpdate();
+        return rowsAffected > 0;
+    } catch (SQLException | ClassNotFoundException ex) {
+        ex.printStackTrace();
+        return false;
     }
+}
+
+private boolean isEmpty(String str) {
+    return str == null || str.trim().isEmpty();
+}
+
 }
