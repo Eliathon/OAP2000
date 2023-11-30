@@ -22,9 +22,12 @@ public class CustomerController {
     }
 
     public void handleSearchCustomer(String customerName) {
-        List<String[]> searchResults = CustomerDAO.searchCustomer(customerName);
+        List<String[]> searchResults = customerDAO.searchCustomer(customerName);
         customerManagementPanel.displayCustomers(searchResults);
     }
+    
+    
+    
 
      public String getLatestCustomerNumber() {
         try {
@@ -41,6 +44,8 @@ public class CustomerController {
         List<String[]> allCustomers = customerDAO.fetchCustomers();
         customerManagementPanel.displayCustomers(allCustomers);
     }
+    
+    
 
     public boolean handleDeleteCustomer(String customerCode) {
         boolean deletionSuccessful = customerDAO.deleteCustomer(customerCode);

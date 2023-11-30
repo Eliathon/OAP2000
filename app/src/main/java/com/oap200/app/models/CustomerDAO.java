@@ -65,7 +65,7 @@ public class CustomerDAO {
     }
 
     // Method to search for customers by name in the database
-    public static List<String[]> searchCustomer(String customerName) {
+    public List<String[]> searchCustomer(String customerName) {
         List<String[]> searchResults = new ArrayList<>();
 
         try {
@@ -128,84 +128,74 @@ public class CustomerDAO {
     }
 
     // Method to add a new customer to the database
-    public boolean addCustomer(
-            String customerNumber, String customerName, String contactLastName, String contactFirstName,
-            String phone, String addressLine1, String addressLine2, String city, String state,
-            String postalCode, String country, int salesRepEmployeeNumber, BigDecimal creditLimit) {
-        Connection myConnection = null;
+   // Method to add a new customer to the database
+   public boolean addCustomer(String customerNumber, String customerName, String contactLastName,
+   String contactFirstName, String phone, String addressLine1, String addressLine2,
+   String city, String state, String postalCode, String country,
+   int salesRepEmployeeNumber, BigDecimal creditLimit) {
+Connection myConnection = null;
 
-        try {
-            // Establish a database connection
-            DbConnect db = new DbConnect();
-            myConnection = db.getConnection();
+try {
+   // Establish a database connection
+   DbConnect db = new DbConnect();
+   myConnection = db.getConnection();
 
-            // Prepare the INSERT query for a customer
-            PreparedStatement preparedStatement = myConnection.prepareStatement(
-                    "INSERT INTO customers (customerNumber, customerName, contactLastName, contactFirstName, phone, addressLine1, addressLine2, city, state, postalCode, country, salesRepEmployeeNumber, creditLimit) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+   // Prepare the INSERT query
+   String insertQuery = "INSERT INTO customers VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+   try (PreparedStatement preparedStatement = myConnection.prepareStatement(insertQuery)) {
+       preparedStatement.setString(1, customerNumber);
+       preparedStatement.setString(2, customerName);
+       preparedStatement.setString(3, contactLastName);
+       preparedStatement.setString(4, contactFirstName);
+       preparedStatement.setString(5, phone);
+       preparedStatement.setString(6, addressLine1);
+       preparedStatement.setString(7, addressLine2);
+       preparedStatement.setString(8, city);
+       preparedStatement.setString(9, state);
+       preparedStatement.setString(10, postalCode);
+       preparedStatement.setString(11, country);
+       preparedStatement.setInt(12, salesRepEmployeeNumber);
+       preparedStatement.setBigDecimal(13, creditLimit);
 
-            preparedStatement.setString(1, customerNumber);
-            preparedStatement.setString(2, customerName);
-            preparedStatement.setString(3, contactLastName);
-            preparedStatement.setString(4, contactFirstName);
-            preparedStatement.setString(5, phone);
-            preparedStatement.setString(6, addressLine1);
-            preparedStatement.setString(7, addressLine2);
-            preparedStatement.setString(8, city);
-            preparedStatement.setString(9, state);
-            preparedStatement.setString(10, postalCode);
-            preparedStatement.setString(11, country);
-            preparedStatement.setInt(12, salesRepEmployeeNumber);
-            preparedStatement.setBigDecimal(13, creditLimit);
+       // Start transaction
+       myConnection.setAutoCommit(false);
 
-            // Start transaction
-            myConnection.setAutoCommit(false);
+       // Execute the INSERT query
+       int rowsAffected = preparedStatement.executeUpdate();
 
-            // Execute the INSERT query
-            int rowsAffected = preparedStatement.executeUpdate();
+       // Confirm the transaction if the addition was successful
+       if (rowsAffected > 0) {
+           myConnection.commit();
+           System.out.println("Customer added successfully");
+       } else {
+           // Roll back the transaction if the addition failed
+           myConnection.rollback();
+           System.out.println("Failed to add customer");
+       }
 
-            // Confirm the transaction if the addition was successful
-            if (rowsAffected > 0) {
-                myConnection.commit();
-                System.out.println("Customer added successfully");
-            } else {
-                // Roll back the transaction if the addition failed
-                myConnection.rollback();
-                System.out.println("Failed to add customer");
-            }
+       // Log the number of affected rows (for troubleshooting)
+       System.out.println("Rows affected: " + rowsAffected);
 
-            // Log the number of affected rows (for troubleshooting)
-            System.out.println("Rows affected: " + rowsAffected);
+       // Return true if the addition was successful
+       return rowsAffected > 0;
+   }
+} catch (SQLException | ClassNotFoundException | NumberFormatException ex) {
+   // Log any exceptions
+   ex.printStackTrace();
+   return false;
+} finally {
+   try {
+       if (myConnection != null) {
+           // Set back to autocommit=true
+           myConnection.setAutoCommit(true);
+       }
+   } catch (SQLException e) {
+       e.printStackTrace();
+   }
+}
+}
 
-            // Return true if the addition was successful
-            return rowsAffected > 0;
 
-        } catch (SQLException | ClassNotFoundException | NumberFormatException ex) {
-            // Log any exceptions
-            ex.printStackTrace();
-
-            // Rollback in case of exception
-            if (myConnection != null) {
-                try {
-                    myConnection.rollback();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return false;
-
-        } finally {
-            try {
-                if (myConnection != null) {
-                    // Set back to autocommit=true
-                    myConnection.setAutoCommit(true);
-                    myConnection.close(); // Close the connection
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     // Method to update a customer in the database
     public boolean UpdateCustomer(

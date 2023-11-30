@@ -7,6 +7,7 @@ import com.oap200.app.controllers.CustomerController;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
 
 public class CustomerManagementPanel extends JPanel {
@@ -436,30 +437,31 @@ public class CustomerManagementPanel extends JPanel {
 
     private void addComponentsToPanelView(JPanel panelView) {
         panelView.setLayout(new BorderLayout());
-
+    
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
+    
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 0.3;
         inputPanel.add(new JLabel("Customer name:"), gbc);
-
+    
         gbc.gridx = 1;
         gbc.weightx = 0.7;
         inputPanel.add(searchTextField, gbc);
-
+    
         panelView.add(inputPanel, BorderLayout.NORTH);
-
+    
         // Create the scrollPane with the customersTable
         JScrollPane scrollPane = new JScrollPane(customersTable);
-
+    
         // Create a container panel for the table to align it to the left
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelView.add(tableContainer, BorderLayout.CENTER);
     }
+    
 
     private void addComponentsToPanelDelete(JPanel panelDelete) {
         panelDelete.setLayout(new BorderLayout());
@@ -496,6 +498,9 @@ public class CustomerManagementPanel extends JPanel {
             model.addRow(row); // Add new data
         }
     }
+    
+
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
