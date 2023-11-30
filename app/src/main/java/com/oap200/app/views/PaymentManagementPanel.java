@@ -1,8 +1,12 @@
 package com.oap200.app.views;
 
+/**
+*@author Jesper Solberg
+*
+*/
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.*;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -11,74 +15,95 @@ import java.util.List;
 import com.oap200.app.models.PaymentsDAO;
 import com.oap200.app.utils.ButtonBuilder;
 
+/**
+ * The PaymentManagementPanel class represents a JPanel for managing payments,
+ * including viewing, sorting, and displaying payment data.
+ */
 public class PaymentManagementPanel extends JPanel {
 
-    private JTable paymentsTable;
+    private JTable paymentsTable; // Table for displaying payments
 
+    /**
+     * Constructs a PaymentManagementPanel with the specified parent frame.
+     *
+     * @param parentFrame The parent JFrame for the panel.
+     */
     public PaymentManagementPanel(JFrame parentFrame) {
-        initializeFields();
+        initializeFields(); // Initialize text fields
 
-        // Set up the layout for the frame
+        // Setting up the layout for the frame using BorderLayout
         setLayout(new BorderLayout());
 
-        // Initialize ButtonBuilder buttons
+        // Initializing navigation buttons using ButtonBuilder
         JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
-            /* Action for Back Button */});
+            /* Action for Back Button */
+        });
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
-            /* Action for Logout Button */});
+            /* Action for Logout Button */
+        });
         JButton viewButton = ButtonBuilder.createViewButton(() -> {
-            /* Action for View Button */});
+            /* Action for View Button */
+        });
+
+        // Initializing buttons for sorting
         JButton sortCustomerButton = new JButton("Sort by Customer Number");
         JButton sortCheckButton = new JButton("Sort by Check Number");
         JButton sortDateButton = new JButton("Sort by Payment Date");
         JButton sortAmountButton = new JButton("Sort by Amount");
 
+        // Adding action listeners for sorting
         sortCustomerButton.addActionListener(e -> viewSortedData("customerNumber"));
         sortCheckButton.addActionListener(e -> viewSortedData("checkNumber"));
         sortDateButton.addActionListener(e -> viewSortedData("paymentDate"));
         sortAmountButton.addActionListener(e -> viewSortedData("amount"));
 
-        // Initialize JTabbedPane
+        // Creating a JTabbedPane for tabbed navigation
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Tab 1: View Employee
+        // Creating the first tab for viewing payments
         JPanel panel1 = new JPanel(new BorderLayout());
         addComponentsToPanelView(panel1);
         panel1.add(viewButton, BorderLayout.SOUTH);
         tabbedPane.addTab("View Payments", null, panel1, "Click to view");
 
-        // Initialize Panels
+        // Initializing panels for buttons and tabbed navigation
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
         JPanel topPanel = new JPanel(new BorderLayout());
 
+        // Adding buttons to the button panel
         buttonPanel.setOpaque(true);
         buttonPanel.add(backButton);
         buttonPanel.add(logoutButton);
 
-        // Main panel for the frame
+        // Creating the main panel for the frame
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(buttonPanel, BorderLayout.NORTH);
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
 
+        // Adding panels to the top panel
         topPanel.add(buttonPanel, BorderLayout.EAST);
         topPanel.add(tabbedPane, BorderLayout.CENTER);
 
-        // Adding panels to this panel instead of the frame's content pane
+        // Adding panels to the current panel instead of the frame's content pane
         this.add(topPanel, BorderLayout.NORTH);
         this.add(mainPanel, BorderLayout.CENTER);
 
-        // Initialize the table
+        // Initializing the table
         paymentsTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(paymentsTable);
-        // Correct this line to add the scrollPane to the CENTER instead of EAST
+        // Correcting this line to add the scrollPane to the CENTER instead of EAST
         panel1.add(scrollPane, BorderLayout.CENTER);
 
+        // Adding action listeners to the view button for various views
         viewButton.addActionListener(e -> viewPayments());
         viewButton.addActionListener(e -> viewCheck());
         viewButton.addActionListener(e -> viewDate());
         viewButton.addActionListener(e -> viewAmount());
     }
 
+    /**
+     * Displays the payments in the table.
+     */
     private void viewPayments() {
         PaymentsDAO PaymentsDAO = new PaymentsDAO();
         List<String[]> paymentsList = PaymentsDAO.fetchPayments();
@@ -91,6 +116,11 @@ public class PaymentManagementPanel extends JPanel {
         paymentsTable.setModel(model);
     }
 
+    /**
+     * Displays sorted payments data based on the specified column.
+     *
+     * @param sortByColumn The column to sort the payments data by.
+     */
     private void viewSortedData(String sortByColumn) {
         PaymentsDAO paymentsDAO = new PaymentsDAO();
         List<String[]> paymentsList = paymentsDAO.fetchPaymentsOrderedBy(sortByColumn);
@@ -105,6 +135,9 @@ public class PaymentManagementPanel extends JPanel {
         paymentsTable.setModel(model);
     }
 
+    /**
+     * Displays payments data sorted by check number.
+     */
     private void viewCheck() {
         PaymentsDAO paymentsDAO = new PaymentsDAO();
         List<String[]> paymentsList = paymentsDAO.fetchPayments();
@@ -122,6 +155,9 @@ public class PaymentManagementPanel extends JPanel {
         paymentsTable.setModel(model);
     }
 
+    /**
+     * Displays payments data sorted by payment date.
+     */
     private void viewDate() {
         PaymentsDAO paymentsDAO = new PaymentsDAO();
         List<String[]> paymentsList = paymentsDAO.fetchPayments();
@@ -140,6 +176,9 @@ public class PaymentManagementPanel extends JPanel {
         paymentsTable.setModel(model);
     }
 
+    /**
+     * Displays payments data sorted by amount.
+     */
     private void viewAmount() {
         PaymentsDAO paymentsDAO = new PaymentsDAO();
         List<String[]> paymentsList = paymentsDAO.fetchPayments();
@@ -157,15 +196,23 @@ public class PaymentManagementPanel extends JPanel {
         paymentsTable.setModel(model);
     }
 
+    /**
+     * Initializes text fields with 10 columns.
+     */
     private void initializeFields() {
         new JTextField(10);
         new JTextField(10);
         new JTextField(10);
         new JTextField(10);
-
     }
 
+    /**
+     * Adds components to the panel view, including sorting buttons and the payments table.
+     *
+     * @param panelView The panel to which components are added.
+     */
     private void addComponentsToPanelView(JPanel panelView) {
+        // Adding components to the panel view
         panelView.setLayout(new BorderLayout());
 
         JPanel inputPanel = new JPanel(new GridBagLayout());
@@ -213,6 +260,11 @@ public class PaymentManagementPanel extends JPanel {
         panelView.add(tableContainer, BorderLayout.CENTER);
     }
 
+    /**
+     * The main method to run the Swing application.
+     *
+     * @param args The command-line arguments.
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame paymentFrame = new JFrame("Payment View");
