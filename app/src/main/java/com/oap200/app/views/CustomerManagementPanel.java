@@ -154,7 +154,8 @@ public class CustomerManagementPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Customer deleted successfully.", "Deletion completed",
                     JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Error deleting customer.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error deleting customer. Please check the customer number.", "Deletion failed",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
