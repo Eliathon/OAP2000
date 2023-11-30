@@ -117,7 +117,7 @@ try {
             }
         } catch (NumberFormatException | ArithmeticException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(productManagementPanel, "Error converting numbers.", "Error",
+            JOptionPane.showMessageDialog(productManagementPanel, "Error converting numbers. Make sure that quantityInStock, BuyPrice, MSRP have number as value", "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
     }
