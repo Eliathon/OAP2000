@@ -1,9 +1,4 @@
 // Created by Kristian
-/*
- The EmployeeManagementPanel class is responsible for providing a user interface
- for managing employees. It includes features to view, add, update, and delete
-employees, as well as search functionality.
- */
 
 package com.oap200.app.views;
 
