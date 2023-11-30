@@ -1,5 +1,10 @@
 package com.oap200.app.tabbedPanels;
 
+/**
+*@author Jesper Solberg
+*
+*/
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -7,14 +12,20 @@ import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
 import com.oap200.app.utils.ButtonBuilder; // Importing the ButtonBuilder class
 
-// Defining a Swing JFrame for a tabbed payment panel
+/**
+ * The TabbedPaymentPanel class represents a Swing JFrame for a tabbed payment panel,
+ * providing functionalities for viewing payments and managing window positions.
+ */
 public class TabbedPaymentPanel extends JFrame {
 
     // Preferences keys for window position
     private static final String PREF_X = "window_x";
     private static final String PREF_Y = "window_y";
 
-    // Constructor for TabbedPaymentPanel
+    /**
+     * Constructs a TabbedPaymentPanel.
+     * Initializes the window position based on preferences and sets up window listeners.
+     */
     public TabbedPaymentPanel() {
         // Loading the last window position from preferences
         Preferences prefs = Preferences.userNodeForPackage(TabbedPaymentPanel.class);
@@ -68,7 +79,11 @@ public class TabbedPaymentPanel extends JFrame {
         getContentPane().add(topPanel, BorderLayout.NORTH);
     }
 
-    // Main method to run the Swing application
+    /**
+     * The main method to run the Swing application.
+     *
+     * @param args The command-line arguments.
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             // Creating an instance of TabbedPaymentPanel
