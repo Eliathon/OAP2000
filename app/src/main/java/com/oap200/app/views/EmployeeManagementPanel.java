@@ -227,29 +227,38 @@ searchByNumberField = new JTextField(10);
     }
 
     private void searchEmployeesName() {
-        String employeeName = searchNameField.getText().trim();
-    
-        if (!employeeName.isEmpty()) {
-            employeeController.handleSearchEmployees(employeeName);
+    String employeeName = searchNameField.getText().trim();
+
+    if (!employeeName.isEmpty()) {
+        List<String[]> searchResults = employeeController.handleSearchEmployees(employeeName);
+        if (searchResults.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "This employee name doesn't exist in the database.", "Search Result", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            // Handle the case where the name field is empty (e.g., show a message)
-            JOptionPane.showMessageDialog(this, "Please enter an employee name to search.", "Input Error",
-                    JOptionPane.ERROR_MESSAGE);
+            displayEmployees(searchResults);
         }
+    } else {
+        JOptionPane.showMessageDialog(this, "Please enter an employee name to search.", "Input Error", JOptionPane.ERROR_MESSAGE);
     }
+}
+
+    
 
     
     private void searchEmployeesByNumber() {
-        String employeeNumber = searchByNumberField.getText().trim(); // Use the new search field
+        String employeeNumber = searchByNumberField.getText().trim();
     
         if (!employeeNumber.isEmpty()) {
-            employeeController.handleSearchEmployeesNumber(employeeNumber);
+            List<String[]> searchResults = employeeController.handleSearchEmployeesNumber(employeeNumber);
+            if (searchResults.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "This employee number doesn't exist in the database.", "Search Result", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                displayEmployees(searchResults);
+            }
         } else {
-            // Handle the case where the number field is empty (e.g., show a message)
-            JOptionPane.showMessageDialog(this, "Please enter an employee number to search.", "Input Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please enter an employee number to search.", "Input Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
     
     private void addEmployee() {
         String lName = lastName.getText().trim();

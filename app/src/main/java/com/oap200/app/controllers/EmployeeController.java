@@ -30,15 +30,21 @@ public class EmployeeController {
     
 
     // Method to handle searching for employees by name
-    public void handleSearchEmployees(String employeeName) {
+    public List<String[]> handleSearchEmployees(String employeeName) {
         List<String[]> searchResults = employeeDAO.searchEmployees(employeeName);
-        employeeManagementPanel.displayEmployees(searchResults);
+        if (!searchResults.isEmpty()) {
+            employeeManagementPanel.displayEmployees(searchResults);
+        }
+        return searchResults; // Return the search results
     }
 
     // Method for searching employees by number
-    public void handleSearchEmployeesNumber(String employeeNumber) {
+    public List<String[]> handleSearchEmployeesNumber(String employeeNumber) {
         List<String[]> searchResults = employeeDAO.searchEmployeesNumber(employeeNumber);
-        employeeManagementPanel.displayEmployees(searchResults);
+        if (!searchResults.isEmpty()) {
+            employeeManagementPanel.displayEmployees(searchResults);
+        }
+        return searchResults; // Return the search results
     }
 
     // Method to handle displaying all employees
