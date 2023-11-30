@@ -18,10 +18,10 @@ public class PaymentManagementPanel extends JPanel {
     public PaymentManagementPanel(JFrame parentFrame) {
         initializeFields();
 
-        // Set up the layout for the frame
+        // Layout for the frame
         setLayout(new BorderLayout());
 
-        // Initialize ButtonBuilder buttons
+        // Initializing button builder buttons.
         JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
             /* Action for Back Button */});
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
@@ -38,7 +38,7 @@ public class PaymentManagementPanel extends JPanel {
         sortDateButton.addActionListener(e -> viewSortedData("paymentDate"));
         sortAmountButton.addActionListener(e -> viewSortedData("amount"));
 
-        // Initialize JTabbedPane
+        // Initializing the JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // Tab 1: View Employee
@@ -47,7 +47,7 @@ public class PaymentManagementPanel extends JPanel {
         panel1.add(viewButton, BorderLayout.SOUTH);
         tabbedPane.addTab("View Payments", null, panel1, "Click to view");
 
-        // Initialize Panels
+        // Initializing the Panels
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
         JPanel topPanel = new JPanel(new BorderLayout());
 
@@ -70,7 +70,7 @@ public class PaymentManagementPanel extends JPanel {
         // Initialize the table
         paymentsTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(paymentsTable);
-        // Correct this line to add the scrollPane to the CENTER instead of EAST
+        // Setting up the scrollpane feature.
         panel1.add(scrollPane, BorderLayout.CENTER);
 
         viewButton.addActionListener(e -> viewPayments());
@@ -109,7 +109,7 @@ public class PaymentManagementPanel extends JPanel {
         PaymentsDAO paymentsDAO = new PaymentsDAO();
         List<String[]> paymentsList = paymentsDAO.fetchPayments();
 
-        // Sort paymentsList based on Checknumber (assuming it's a numeric value)
+        // Sorting paymentsList based on numeric values
         paymentsList.sort(Comparator.comparingDouble(row -> Double.parseDouble(row[1])));
 
         String[] columnNames = { "Customer Number", "Checknumber", "Payment Date", "Amount" };
@@ -126,7 +126,7 @@ public class PaymentManagementPanel extends JPanel {
         PaymentsDAO paymentsDAO = new PaymentsDAO();
         List<String[]> paymentsList = paymentsDAO.fetchPayments();
 
-        // Sort paymentsList based on Payment Date (assuming it's a date string in a
+        // Sorting paymentsList based on Payment Date (as a date string in a
         // sortable format)
         paymentsList.sort(Comparator.comparing(row -> LocalDate.parse(row[2])));
 
@@ -144,7 +144,7 @@ public class PaymentManagementPanel extends JPanel {
         PaymentsDAO paymentsDAO = new PaymentsDAO();
         List<String[]> paymentsList = paymentsDAO.fetchPayments();
 
-        // Sort paymentsList based on Amount (assuming it's a numeric value)
+        // Sorting paymentsList based on Amount (as a numeric value)
         paymentsList.sort(Comparator.comparingDouble(row -> Double.parseDouble(row[3])));
 
         String[] columnNames = { "Customer Number", "Checknumber", "Payment Date", "Amount" };
@@ -204,10 +204,10 @@ public class PaymentManagementPanel extends JPanel {
 
         panelView.add(inputPanel, BorderLayout.NORTH);
 
-        // Now, create the scrollPane with the paymentsTable right here:
+        // Adding scrollpane to paymentstable.
         JScrollPane scrollPane = new JScrollPane(paymentsTable);
 
-        // Create a container panel for the table to align it to the left
+        // Aligning container panels.
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelView.add(tableContainer, BorderLayout.CENTER);
