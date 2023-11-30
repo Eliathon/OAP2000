@@ -35,7 +35,13 @@ public class PaymentManagementPanel extends JPanel {
         setLayout(new BorderLayout());
 
         // Initializing navigation buttons using ButtonBuilder
-        JButton backButton = ButtonBuilder.createBlueBackButton(() -> parentFrame.dispose());
+        JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
+            // Get the top-level frame that contains this panel
+            Window window = SwingUtilities.getWindowAncestor(PaymentManagementPanel.this);
+            if (window != null) {
+                window.dispose(); // This will close the window
+            }
+        });
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
             System.exit(0); // Exit the application
             openLoginPanel();
