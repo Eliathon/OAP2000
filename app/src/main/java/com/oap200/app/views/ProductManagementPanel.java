@@ -263,7 +263,7 @@ public class ProductManagementPanel extends JPanel {
         boolean deletionSuccessful = productController.handleDeleteProduct(productCode);
 
         if (deletionSuccessful) {
-            JOptionPane.showMessageDialog(this, "Product: " + productCode + " deleted successfully.", "Deletion completed",
+            JOptionPane.showMessageDialog(this, "Product: " + productCode + " deleted successfully. The product no longer exists in the system", "Deletion completed",
                     JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this, "Error deleting product. Please make sure the product code is valid.",

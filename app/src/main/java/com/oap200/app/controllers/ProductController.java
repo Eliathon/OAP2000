@@ -115,39 +115,56 @@ JOptionPane.showMessageDialog(productManagementPanel,
         return ProductsDAO.getProductLines();
     }
 
-    // Method to handle updating a product
-    public void handleUpdateProduct(String productCode, String newQuantityInStock, String newBuyPrice, String newMSRP) {
-        try {
-            // Check if all input values are empty
-            if (newQuantityInStock.isEmpty() && newBuyPrice.isEmpty() && newMSRP.isEmpty()) {
-                JOptionPane.showMessageDialog(productManagementPanel, "You need to write at least one input.",
-                        "Update Failed", JOptionPane.ERROR_MESSAGE);
-                return;
+ // Method to handle updating a product
+public void handleUpdateProduct(String productCode, String newQuantityInStock, String newBuyPrice, String newMSRP) {
+    try {
+        // Check if all input values are empty
+        if (newQuantityInStock.isEmpty() && newBuyPrice.isEmpty() && newMSRP.isEmpty()) {
+            JOptionPane.showMessageDialog(productManagementPanel, "You need to write at least one input.",
+                    "Update Failed", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Check if the input values are empty or null, and set them accordingly
+        Integer quantityInStock = newQuantityInStock.isEmpty() ? null : Integer.parseInt(newQuantityInStock);
+        BigDecimal buyPrice = newBuyPrice.isEmpty() ? null : new BigDecimal(newBuyPrice);
+        BigDecimal msrp = newMSRP.isEmpty() ? null : new BigDecimal(newMSRP);
+
+        // Call the updateProduct method in the DAO with the updated values
+        productsDAO.updateProduct(productCode, quantityInStock, buyPrice, msrp);
+
+        // Retrieve the updated product details
+        List<String[]> updatedProduct = productsDAO.searchProductsByCode(productCode);
+
+        // Check if the product details were retrieved successfully
+        if (updatedProduct != null && !updatedProduct.isEmpty()) {
+            StringBuilder message = new StringBuilder("Product updated successfully.\n");
+
+            // Check and append details about updated values
+            if (quantityInStock != null) {
+                message.append("Quantity in Stock updated to: ").append(quantityInStock).append("\n");
+            }
+            if (buyPrice != null) {
+                message.append("Buy Price updated to: ").append(buyPrice).append("\n");
+            }
+            if (msrp != null) {
+                message.append("MSRP updated to: ").append(msrp).append("\n");
             }
 
-            // Check if the input values are empty or null, and set them accordingly
-            Integer quantityInStock = newQuantityInStock.isEmpty() ? null : Integer.parseInt(newQuantityInStock);
-            BigDecimal buyPrice = newBuyPrice.isEmpty() ? null : new BigDecimal(newBuyPrice);
-            BigDecimal msrp = newMSRP.isEmpty() ? null : new BigDecimal(newMSRP);
-
-            // Call the updateProduct method in the DAO with the updated values
-            boolean updateSuccessful = productsDAO.updateProduct(productCode, quantityInStock, buyPrice, msrp);
-
-            // Display a message dialog based on the update result
-            if (updateSuccessful) {
-                JOptionPane.showMessageDialog(productManagementPanel, "Product updated successfully.",
-                        "Update Successful", JOptionPane.INFORMATION_MESSAGE);
-                // You may want to refresh the view or take additional actions here if needed.
-            } else {
-                JOptionPane.showMessageDialog(productManagementPanel, "Failed to update product.", "Update Failed",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (NumberFormatException | ArithmeticException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(productManagementPanel, "Error converting numbers. Make sure that quantityInStock, BuyPrice, MSRP have number as value", "Error",
+            // Display the updated product details in the message
+            JOptionPane.showMessageDialog(productManagementPanel, message.toString(), "Update Successful", JOptionPane.INFORMATION_MESSAGE);
+            // You may want to refresh the view or take additional actions here if needed.
+        } else {
+            JOptionPane.showMessageDialog(productManagementPanel, "Failed to retrieve updated product details.", "Update Failed",
                     JOptionPane.ERROR_MESSAGE);
         }
+    } catch (NumberFormatException | ArithmeticException ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(productManagementPanel, "Error converting numbers. Make sure that quantityInStock, BuyPrice, MSRP have number as value", "Error",
+                JOptionPane.ERROR_MESSAGE);
     }
+}
+
 
     public List<String> checkLowStock() throws ClassNotFoundException, SQLException {
         return productsDAO.getLowStockProducts();
