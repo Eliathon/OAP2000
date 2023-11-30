@@ -14,13 +14,12 @@ import java.sql.*;
 import java.awt.*;
 
 
-public class ReportStockPanel extends JPanel implements ReportGenerator{
+public class ReportStockPanel extends JPanel implements ReportGenerator {
     private JButton generateReportButton, printButton;
     private JTable reportTable;
     private DefaultTableModel tableModel;
     private JTextField searchField;
     private TableRowSorter<DefaultTableModel> sorter;
-    //private boolean isPrinting = false; // Flag to track printing status
 
     public ReportStockPanel() {
         setLayout(new BorderLayout());
@@ -29,12 +28,10 @@ public class ReportStockPanel extends JPanel implements ReportGenerator{
     }
 
     private void initializeComponents() {
-        // Use ButtonBuilder for button creation
         generateReportButton = ButtonBuilder.createStyledButton("Generate Stock Report", this::generateReport);
-        // Gebruik ButtonBuilder en PrintManager voor de 'Print' knop
-        printButton = ButtonBuilder.createStyledButton("Print Report", () -> PrintManager.printTable(reportTable));
+        printButton = ButtonBuilder.createStyledButton("Print Report", this::handlePrintAction);
 
-        searchField = new JTextField(20); // Width of the search field
+        searchField = new JTextField(20); 
         tableModel = new DefaultTableModel();
         reportTable = new JTable(tableModel);
         sorter = new TableRowSorter<>(tableModel);
@@ -54,33 +51,18 @@ public class ReportStockPanel extends JPanel implements ReportGenerator{
 
         add(inputPanel, BorderLayout.NORTH);
         add(new JScrollPane(reportTable), BorderLayout.CENTER);
-
-        searchField.getDocument().addDocumentListener(new DocumentListener() {
-            public void changedUpdate(DocumentEvent e) {
-                newFilter();
-            }
-            public void removeUpdate(DocumentEvent e) {
-                newFilter();
-            }
-            public void insertUpdate(DocumentEvent e) {
-                newFilter();
-            }
-
-            private void newFilter() {
-                RowFilter<DefaultTableModel, Object> rf = null;
-                try {
-                    rf = RowFilter.regexFilter("(?i)" + searchField.getText(), 0, 1, 2);
-                } catch (java.util.regex.PatternSyntaxException e) {
-                    return;
-                }
-                sorter.setRowFilter(rf);
-            }
-        });
     }
 
     private void addActionsToButtons() {
         generateReportButton.addActionListener(e -> generateReport());
-        printButton.addActionListener(e -> PrintManager.printTable(reportTable));
+        printButton.addActionListener(e -> handlePrintAction());
+    }
+
+    private void handlePrintAction() {
+        if (PrintManager.isPrinting()) {
+            return; // Als er al een printtaak bezig is, doe dan niets
+        }
+        PrintManager.printTable(reportTable);
     }
 
     @Override
@@ -93,10 +75,9 @@ public class ReportStockPanel extends JPanel implements ReportGenerator{
         ResultSet rs = null;
     
         try {
-            DbConnect dbConnect = new DbConnect();
-            conn = dbConnect.getConnection();
-            pstmt = conn.prepareStatement("SELECT productCode, productName, productLine, quantityInStock, buyPrice FROM products ORDER BY quantityInStock DESC;");
-            
+            DbConnect dbConnect = new DbConnect(); // Create a new instance
+             conn = dbConnect.getConnection(); // Get the connection
+       
             rs = pstmt.executeQuery();
     
             while (rs.next()) {
