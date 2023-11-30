@@ -9,14 +9,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+// Data Access Object (DAO) class for handling payments-related database operations
 public class PaymentsDAO {
 
+     // Fetch payments from the database and return a list of String arrays
     public List<String[]> fetchPayments() {
         List<String[]> payments = new ArrayList<>();
 
         try {
+            // Establish a database connection
             DbConnect db = new DbConnect();
             Connection myConnection = db.getConnection();
+               // Create a SQL statement and execute the query to get all payments
             Statement myStmt = myConnection.createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM payments");
 
@@ -36,15 +40,19 @@ public class PaymentsDAO {
         return payments;
     }
 
+    // Fetch payments based on check information
     public List<String[]> fetchCheck() {
         List<String[]> payments = new ArrayList<>();
 
         try {
+              // Establish a database connection
             DbConnect db = new DbConnect();
             Connection myConnection = db.getConnection();
+             // Create a SQL statement and execute the query to get all checks
             Statement myStmt = myConnection.createStatement();
             ResultSet myRs = myStmt.executeQuery("SELECT * FROM payments");
 
+             // Process the result set and populate the payments list
             while (myRs.next()) {
                 String[] payment = new String[] {
                         myRs.getString("customerNumber"),
@@ -56,6 +64,7 @@ public class PaymentsDAO {
                 payments.add(payment);
             }
         } catch (SQLException | ClassNotFoundException ex) {
+            // Handle exceptions by printing the stack trace
             ex.printStackTrace();
         }
         return payments;
