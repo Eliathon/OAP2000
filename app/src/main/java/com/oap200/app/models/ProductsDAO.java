@@ -17,6 +17,7 @@ import java.sql.Types;
 import com.oap200.app.utils.DbConnect;
 
 public class ProductsDAO {
+    private static String generatedProductCode;
     // Method to fetch all products from the database
     public List<String[]> fetchProducts() {
         System.out.println("View button clicked!");
@@ -183,15 +184,16 @@ public class ProductsDAO {
             char randomChar = allowedCharacters.charAt(random.nextInt(allowedCharacters.length()));
             productCodeBuilder.append(randomChar);
         }
-    
-        return productCodeBuilder.toString();
+        generatedProductCode = productCodeBuilder.toString();
+
+        return generatedProductCode;
     }
     
-    
-    
-    
-    
-    
+    public String getGeneratedProductCode() {
+        return generatedProductCode;
+    }
+
+   
 
 // Method to check if a product code already exists in the database
 private boolean doesProductCodeExist(String productCode) {

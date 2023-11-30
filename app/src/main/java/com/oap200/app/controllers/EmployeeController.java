@@ -48,7 +48,7 @@ public class EmployeeController {
         }
     }
 
-    // Method to handle adding a new employee
+ 
     // Method to handle adding a new employee
 public boolean handleAddEmployee(String lastName, String firstName, String extension, String email, String officeCode, Integer reportsTo, String jobTitle) {
     try {
