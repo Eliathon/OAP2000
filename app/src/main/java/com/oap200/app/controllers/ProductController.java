@@ -56,9 +56,15 @@ public class ProductController {
     }
 
     
-    public boolean handleAddProduct(String productName, String productLine, String productScale,
+public boolean handleAddProduct(String productName, String productLine, String productScale,
     String productVendor, String productDescription, String quantityInStockText, String buyPriceText,
     String MSRPText) {
+// Validate numeric fields
+if (!isNumeric(quantityInStockText) || !isNumeric(buyPriceText) || !isNumeric(MSRPText)) {
+    handleConversionError("Quantity In Stock, Buy Price, and MSRP");
+    return false;
+}
+
 try {
     // Convert quantityInStockText, buyPriceText, and MSRPText to their respective types
     int quantityInStock = Integer.parseInt(quantityInStockText);
@@ -69,11 +75,32 @@ try {
             productDescription, quantityInStock, buyPrice, MSRP);
 } catch (NumberFormatException | ArithmeticException ex) {
     ex.printStackTrace();
-    JOptionPane.showMessageDialog(productManagementPanel, "Error converting numbers.", "Error",
-            JOptionPane.ERROR_MESSAGE);
+    handleConversionError("Quantity In Stock, Buy Price, or MSRP");
     return false;
 }
 }
+
+// Method to check if a string is numeric
+private boolean isNumeric(String str) {
+if (str == null || str.trim().isEmpty()) {
+    return false;
+}
+try {
+    Double.parseDouble(str);
+    return true;
+} catch (NumberFormatException e) {
+    return false;
+}
+}
+
+// Method to handle conversion error and display an error message
+private void handleConversionError(String fieldNames) {
+JOptionPane.showMessageDialog(productManagementPanel,
+        "Error converting " + fieldNames + " to numbers. Make sure that these fields have valid numerical values.",
+        "Error", JOptionPane.ERROR_MESSAGE);
+}
+
+
 
 
 

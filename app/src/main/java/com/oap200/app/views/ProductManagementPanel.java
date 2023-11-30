@@ -280,22 +280,25 @@ public class ProductManagementPanel extends JPanel {
                 productDescription.getText().isEmpty() || quantityInStock.getText().isEmpty() ||
                 buyPrice.getText().isEmpty() || MSRP.getText().isEmpty()) {
     
-            // Display an error message
-            JOptionPane.showMessageDialog(this, "Please fill in all input fields.", "Error", JOptionPane.ERROR_MESSAGE);
+            // Find the first empty field
+            String missingField = findMissingField();
+    
+            // Display an error message indicating which field is missing
+            JOptionPane.showMessageDialog(this, "Please fill in the " + missingField + " field.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
     
         // Proceed with adding the product
         boolean additionSuccessful = productController.handleAddProduct(
-            productName.getText(), (String) productLineComboBox.getSelectedItem(),
-            productScale.getText(), productVendor.getText(), productDescription.getText(),
-            quantityInStock.getText(), buyPrice.getText(), MSRP.getText());
+                productName.getText(), (String) productLineComboBox.getSelectedItem(),
+                productScale.getText(), productVendor.getText(), productDescription.getText(),
+                quantityInStock.getText(), buyPrice.getText(), MSRP.getText());
     
         if (additionSuccessful) {
-            // Hent valgt produktlinje fra JComboBox
+            // Retrieve selected product line from JComboBox
             String selectedProductLine = (String) productLineComboBox.getSelectedItem();
     
-            // Hent den genererte produktkoden direkte fra ProductsDAO
+            // Retrieve the generated product code directly from ProductsDAO
             String generatedProductCode = productController.getProductsDAO().getGeneratedProductCode();
     
             String productInfoMessage = "Product added successfully with inputs:\n" +
@@ -314,6 +317,28 @@ public class ProductManagementPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Error adding product.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    // Method to find the first empty field
+    private String findMissingField() {
+        if (productName.getText().isEmpty()) {
+            return "Product Name";
+        } else if (productScale.getText().isEmpty()) {
+            return "Product Scale";
+        } else if (productVendor.getText().isEmpty()) {
+            return "Product Vendor";
+        } else if (productDescription.getText().isEmpty()) {
+            return "Product Description";
+        } else if (quantityInStock.getText().isEmpty()) {
+            return "Quantity In Stock";
+        } else if (buyPrice.getText().isEmpty()) {
+            return "Buy Price";
+        } else if (MSRP.getText().isEmpty()) {
+            return "MSRP";
+        } else {
+            return "unknown field";
+        }
+    }
+    
     
 
     private void updateProduct() {
