@@ -23,22 +23,9 @@ public class PaymentManagementPanel extends JPanel {
 
         // Initialize ButtonBuilder buttons
         JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
-<<<<<<< HEAD
-            // Get the top-level frame that contains this panel
-            Window window = SwingUtilities.getWindowAncestor(PaymentManagementPanel.this);
-            if (window != null) {
-                window.dispose(); // This will close the window
-            }
-        });
-        JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
-            System.exit(0); // Exit the application
-            openLoginPanel();
-        });
-=======
             /* Action for Back Button */});
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
             /* Action for Logout Button */});
->>>>>>> c8a3ea1 (x)
         JButton viewButton = ButtonBuilder.createViewButton(() -> {
             /* Action for View Button */});
         JButton sortCustomerButton = new JButton("Sort by Customer Number");
@@ -178,18 +165,6 @@ public class PaymentManagementPanel extends JPanel {
 
     }
 
-<<<<<<< HEAD
-    private void openLoginPanel() {
-        JFrame loginFrame = new JFrame("Login");
-        LoginPanel loginPanel = new LoginPanel();
-        loginFrame.setContentPane(loginPanel);
-        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        loginFrame.pack();
-        loginFrame.setVisible(true);
-    }
-
-=======
->>>>>>> c8a3ea1 (x)
     private void addComponentsToPanelView(JPanel panelView) {
         panelView.setLayout(new BorderLayout());
 
