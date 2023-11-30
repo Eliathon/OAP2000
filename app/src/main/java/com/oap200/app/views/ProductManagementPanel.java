@@ -20,11 +20,14 @@ public class ProductManagementPanel extends JPanel {
     private JTextField updateProductCode, updateQuantityInStock, updateBuyPrice, updateMSRP;
     private JComboBox<String> productLineComboBox;
     private ProductController productController;
+    
+
+
 
 
     public ProductManagementPanel(JFrame parentFrame) {
         productController = new ProductController(new ProductsDAO(), this);
-
+        
         initializeFields();
         setLayout(new BorderLayout());
 
@@ -141,9 +144,13 @@ public class ProductManagementPanel extends JPanel {
         searchPanel.add(searchCodePanel);
         searchPanel.add(searchNamePanel);
     
-        // Legg til søke- og visknappene nederst
-        panel.add(searchPanel, BorderLayout.NORTH);
-        panel.add(viewSearchButtonPanel, BorderLayout.SOUTH);
+        // Legg til søkefelt og visknapper i toppanel
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(searchPanel, BorderLayout.NORTH);
+        topPanel.add(viewSearchButtonPanel, BorderLayout.SOUTH);
+    
+        // Legg til toppanel over tabellen
+        panel.add(topPanel, BorderLayout.NORTH);
     
         productsTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(productsTable);
@@ -155,17 +162,22 @@ public class ProductManagementPanel extends JPanel {
         return panel;
     }
     
-    
-    
-    
-
     private JPanel createAddPanel(JButton addButton) {
         JPanel panel = new JPanel(new BorderLayout());
+    
+        // Legg til label- og feltpanel som før
         JPanel labelPanel = new JPanel(new GridLayout(8, 1));
         JPanel fieldPanel = new JPanel(new GridLayout(8, 1));
     
         labelPanel.add(new JLabel("Product Name:"));
         fieldPanel.add(productName);
+    
+        // Oppdater størrelsen til Product Name-feltet til å være det samme som i view-panelet
+        Dimension preferredSize = productsTable.getTableHeader().getDefaultRenderer()
+                .getTableCellRendererComponent(productsTable, "Product Name", false, false, -1, 0)
+                .getPreferredSize();
+        productName.setPreferredSize(preferredSize);
+    
         labelPanel.add(new JLabel("Product Line:"));
         fieldPanel.add(productLineComboBox);
         labelPanel.add(new JLabel("Product Scale:"));
@@ -181,59 +193,81 @@ public class ProductManagementPanel extends JPanel {
         labelPanel.add(new JLabel("MSRP:"));
         fieldPanel.add(MSRP);
     
+        // Legg til label- og feltpanel på øst- og sentralposisjonen
         panel.add(labelPanel, BorderLayout.WEST);
         panel.add(fieldPanel, BorderLayout.CENTER);
-        panel.add(addButton, BorderLayout.SOUTH);
+    
+        // Legg til knappen i en egen panel for å kunne justere plassering
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));  // Endret til venstrejustering
+        buttonPanel.add(addButton);
+    
+        // Legg til knappens panel nederst
+        panel.add(buttonPanel, BorderLayout.CENTER);
+    
+        // Legg til søkefelt og visknapper i toppanel
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(labelPanel, BorderLayout.WEST);
+        topPanel.add(fieldPanel, BorderLayout.CENTER);
+    
+        // Legg til topPanel i hovedpanelet
+        panel.add(topPanel, BorderLayout.NORTH);
+    
         return panel;
     }
     
 
     private JPanel createUpdatePanel(JButton updateButton) {
         JPanel panel = new JPanel(new BorderLayout());
-        JPanel inputPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        addTextFieldToPanel(inputPanel, gbc, 0, "Update Product Code:", updateProductCode);
-        addTextFieldToPanel(inputPanel, gbc, 1, "Update Quantity In Stock:", updateQuantityInStock);
-        addTextFieldToPanel(inputPanel, gbc, 2, "Update Buy Price:", updateBuyPrice);
-        addTextFieldToPanel(inputPanel, gbc, 3, "Update MSRP:", updateMSRP);
-
-        panel.add(inputPanel, BorderLayout.NORTH);
-        panel.add(updateButton, BorderLayout.SOUTH);
+    
+        // Legg til label- og feltpanel som før
+        JPanel labelPanel = new JPanel(new GridLayout(4, 1));
+        JPanel fieldPanel = new JPanel(new GridLayout(4, 1));
+    
+        labelPanel.add(new JLabel("Update Product Code:"));
+        fieldPanel.add(updateProductCode);
+        labelPanel.add(new JLabel("Update Quantity In Stock:"));
+        fieldPanel.add(updateQuantityInStock);
+        labelPanel.add(new JLabel("Update Buy Price:"));
+        fieldPanel.add(updateBuyPrice);
+        labelPanel.add(new JLabel("Update MSRP:"));
+        fieldPanel.add(updateMSRP);
+    
+        // Legg til knappen i en egen panel for å kunne justere plassering
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));  // Endret til venstrejustering
+        buttonPanel.add(updateButton);
+        // Legg til label- og feltpanel på øst- og sentralposisjonen
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(labelPanel, BorderLayout.WEST);
+        topPanel.add(fieldPanel, BorderLayout.CENTER);
+        panel.add(buttonPanel, BorderLayout.CENTER);
+        panel.add(topPanel, BorderLayout.NORTH);
+    
         return panel;
     }
-
-    private void addTextFieldToPanel(JPanel panel, GridBagConstraints gbc, int gridy, String labelText,
-            JTextField textField) {
-        gbc.gridx = 0;
-        gbc.gridy = gridy;
-        gbc.weightx = 0.3;
-        panel.add(new JLabel(labelText), gbc);
-        gbc.gridx = 1;
-        gbc.weightx = 0.7;
-        panel.add(textField, gbc);
-    }
+    
 
     private JPanel createDeletePanel(JButton deleteButton) {
         JPanel panel = new JPanel(new BorderLayout());
-        JPanel inputPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 0.3;
-        inputPanel.add(new JLabel("Product Code:"), gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 0.7;
-        inputPanel.add(searchCodeDeleteField, gbc);
-
-        panel.add(inputPanel, BorderLayout.NORTH);
-        panel.add(deleteButton, BorderLayout.SOUTH);
+    
+        // Legg til label- og feltpanel som før
+        JPanel inputPanel = new JPanel(new GridLayout(1, 2));
+    
+        // Legg til delete-knappen i et eget panel for å plassere den til høyre
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+        buttonPanel.add(deleteButton);
+    
+        inputPanel.add(new JLabel("Product Code:"));
+        inputPanel.add(searchCodeDeleteField);
+    
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(inputPanel, BorderLayout.WEST);
+        panel.add(buttonPanel, BorderLayout.WEST);
+        panel.add(topPanel, BorderLayout.NORTH);
+    
         return panel;
     }
+    
+    
 
     private void viewProducts() {
         productController.handleViewAllProducts();
@@ -263,7 +297,7 @@ public class ProductManagementPanel extends JPanel {
         boolean deletionSuccessful = productController.handleDeleteProduct(productCode);
 
         if (deletionSuccessful) {
-            JOptionPane.showMessageDialog(this, "Product: " + productCode + " deleted successfully. The product no longer exists in the system", "Deletion completed",
+            JOptionPane.showMessageDialog(this, "Product: " + productCode + " deleted successfully. The productno longer exists in the system", "Deletion completed",
                     JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this, "Error deleting product. Please make sure the product code is valid.",
