@@ -18,14 +18,27 @@ public class PaymentManagementPanel extends JPanel {
     public PaymentManagementPanel(JFrame parentFrame) {
         initializeFields();
 
-        // Layout for the frame
+        // Set up the layout for the frame
         setLayout(new BorderLayout());
 
-        // Initializing button builder buttons.
+        // Initialize ButtonBuilder buttons
         JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
+<<<<<<< HEAD
+            // Get the top-level frame that contains this panel
+            Window window = SwingUtilities.getWindowAncestor(PaymentManagementPanel.this);
+            if (window != null) {
+                window.dispose(); // This will close the window
+            }
+        });
+        JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
+            System.exit(0); // Exit the application
+            openLoginPanel();
+        });
+=======
             /* Action for Back Button */});
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
             /* Action for Logout Button */});
+>>>>>>> c8a3ea1 (x)
         JButton viewButton = ButtonBuilder.createViewButton(() -> {
             /* Action for View Button */});
         JButton sortCustomerButton = new JButton("Sort by Customer Number");
@@ -38,7 +51,7 @@ public class PaymentManagementPanel extends JPanel {
         sortDateButton.addActionListener(e -> viewSortedData("paymentDate"));
         sortAmountButton.addActionListener(e -> viewSortedData("amount"));
 
-        // Initializing the JTabbedPane
+        // Initialize JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // Tab 1: View Employee
@@ -47,7 +60,7 @@ public class PaymentManagementPanel extends JPanel {
         panel1.add(viewButton, BorderLayout.SOUTH);
         tabbedPane.addTab("View Payments", null, panel1, "Click to view");
 
-        // Initializing the Panels
+        // Initialize Panels
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
         JPanel topPanel = new JPanel(new BorderLayout());
 
@@ -70,7 +83,7 @@ public class PaymentManagementPanel extends JPanel {
         // Initialize the table
         paymentsTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(paymentsTable);
-        // Setting up the scrollpane feature.
+        // Correct this line to add the scrollPane to the CENTER instead of EAST
         panel1.add(scrollPane, BorderLayout.CENTER);
 
         viewButton.addActionListener(e -> viewPayments());
@@ -109,7 +122,7 @@ public class PaymentManagementPanel extends JPanel {
         PaymentsDAO paymentsDAO = new PaymentsDAO();
         List<String[]> paymentsList = paymentsDAO.fetchPayments();
 
-        // Sorting paymentsList based on numeric values
+        // Sort paymentsList based on Checknumber (assuming it's a numeric value)
         paymentsList.sort(Comparator.comparingDouble(row -> Double.parseDouble(row[1])));
 
         String[] columnNames = { "Customer Number", "Checknumber", "Payment Date", "Amount" };
@@ -126,7 +139,7 @@ public class PaymentManagementPanel extends JPanel {
         PaymentsDAO paymentsDAO = new PaymentsDAO();
         List<String[]> paymentsList = paymentsDAO.fetchPayments();
 
-        // Sorting paymentsList based on Payment Date (as a date string in a
+        // Sort paymentsList based on Payment Date (assuming it's a date string in a
         // sortable format)
         paymentsList.sort(Comparator.comparing(row -> LocalDate.parse(row[2])));
 
@@ -144,7 +157,7 @@ public class PaymentManagementPanel extends JPanel {
         PaymentsDAO paymentsDAO = new PaymentsDAO();
         List<String[]> paymentsList = paymentsDAO.fetchPayments();
 
-        // Sorting paymentsList based on Amount (as a numeric value)
+        // Sort paymentsList based on Amount (assuming it's a numeric value)
         paymentsList.sort(Comparator.comparingDouble(row -> Double.parseDouble(row[3])));
 
         String[] columnNames = { "Customer Number", "Checknumber", "Payment Date", "Amount" };
@@ -165,6 +178,18 @@ public class PaymentManagementPanel extends JPanel {
 
     }
 
+<<<<<<< HEAD
+    private void openLoginPanel() {
+        JFrame loginFrame = new JFrame("Login");
+        LoginPanel loginPanel = new LoginPanel();
+        loginFrame.setContentPane(loginPanel);
+        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        loginFrame.pack();
+        loginFrame.setVisible(true);
+    }
+
+=======
+>>>>>>> c8a3ea1 (x)
     private void addComponentsToPanelView(JPanel panelView) {
         panelView.setLayout(new BorderLayout());
 
@@ -204,10 +229,10 @@ public class PaymentManagementPanel extends JPanel {
 
         panelView.add(inputPanel, BorderLayout.NORTH);
 
-        // Adding scrollpane to paymentstable.
+        // Now, create the scrollPane with the paymentsTable right here:
         JScrollPane scrollPane = new JScrollPane(paymentsTable);
 
-        // Aligning container panels.
+        // Create a container panel for the table to align it to the left
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelView.add(tableContainer, BorderLayout.CENTER);
