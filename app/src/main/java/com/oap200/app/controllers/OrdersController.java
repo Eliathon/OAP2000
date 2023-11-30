@@ -44,12 +44,11 @@ public boolean handleDeleteOrders(String orderNumber) {
 }
 
 // Method to handle adding a new product
-public boolean handleAddOrder(int orderNumber, String orderDate, String requiredDate, String shippedDate, String status, String comments, int customerNumber) {
+public boolean handleAddOrder(String orderNumber, String orderDate, String requiredDate, String shippedDate, String status, String comments, String customerNumber) {
     DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.LONG);
     
     try {
-        int OrderNumber = Integer.parseInt(orderNumber);
-        int CustomerNumber = Integer.parseInt(customerNumber);
+      
         DateFormat OrderDate = new DateFormat(OrderDate);
         DateFormat RequiredDate = new DateFormat(RequiredDate);
         DateFormat ShippedDate = new DateFormat(ShippedDate);

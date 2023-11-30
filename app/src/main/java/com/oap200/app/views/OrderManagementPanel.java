@@ -17,6 +17,8 @@ import java.util.List;
 
 public class OrderManagementPanel extends JFrame {
 
+    private MainFrame mainFrame;
+
     // Preferences keys for storing window position
     private static final String PREF_X = "window_x";
     private static final String PREF_Y = "window_y";
@@ -48,6 +50,7 @@ public class OrderManagementPanel extends JFrame {
     private OrdersController OrdersController;
 
     public OrderManagementPanel() {
+        this.mainFrame = new MainFrame();   
         initializeFields();
         OrdersController = new OrdersController(new OrderDAO(), this);
 

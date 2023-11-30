@@ -57,8 +57,8 @@ public class OrderDAO {
         Connection myConnection = db.getConnection();
 
         PreparedStatement statement = myConnection.prepareStatement("SELECT * FROM orders WHERE orderNumber LIKE ? ");
-        preparedStatement.setInt(1, "%" + orderNumber + "%");
-        ResultSet myRs = preparedStatement.executeQuery();
+        statement.setString(1, "%" + orderNumber + "%");
+        ResultSet myRs = statement.executeQuery();
 
          while (myRs.next()) {
             String[] order = new String[] {
@@ -81,7 +81,7 @@ public class OrderDAO {
     
 
     // Method for adding orders to the database
-   public boolean addOrders(int orderNumber, String orderDate, String requiredDate, String shippedDate, String status, String comments, int customerNumber) {
+   public boolean addOrders(String orderNumber, String orderDate, String requiredDate, String shippedDate, String status, String comments, String customerNumber) {
     Connection myConnection = null;
  
     try {
@@ -89,15 +89,15 @@ public class OrderDAO {
        myConnection = db.getConnection();
  
 
-       PreparedStatement preparedStatement = myConnection.prepareStatement("INSERT INTO orders VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+       PreparedStatement statement = myConnection.prepareStatement("INSERT INTO orders VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
        
-        preparedStatement.setInt(1, orderNumber);
-        preparedStatement.setDate(2, orderDate);
-        preparedStatement.setDate(3, requiredDate);
-        preparedStatement.setDate(4, shippedDate);
-        preparedStatement.setString(5, status);
-        preparedStatement.setString(6, comments);
-        preparedStatement.setInt(7, customerNumber);
+        statement.setString(1, orderNumber);
+        statement.setDate(2, orderDate);
+        statement.setDate(3, requiredDate);
+        statement.setDate(4, shippedDate);
+        statement.setString(5, status);
+        statement.setString(6, comments);
+        statement.setString(7, customerNumber);
 
         // Validate input data
         if (orderNumber == null || orderNumber.trim().isEmpty() || orderDate == null || orderDate.trim().isEmpty() || requiredDate == null || requiredDate.trim().isEmpty() || shippedDate == null || shippedDate.trim().isEmpty() || status == null || status.trim().isEmpty() || comments == null || comments.trim().isEmpty() || customerNumber == null || customerNumber.trim().isEmpty()) {
@@ -107,7 +107,7 @@ public class OrderDAO {
         
         
         myConnection.setAutoCommit(false);
-       int rowsAffected = preparedStatement.executeUpdate();
+       int rowsAffected = statement.executeUpdate();
 
        if (rowsAffected > 0) {
         myConnection.commit();
@@ -159,7 +159,7 @@ public class OrderDAO {
 }
 
 // Method for adding orders to the database
-   public boolean updateOrders(int orderNumber, String orderDate, String requiredDate, String shippedDate, String status, String comments, int customerNumber) {
+   public boolean updateOrders(String orderNumber, String orderDate, String requiredDate, String shippedDate, String status, String comments, String customerNumber) {
     Connection myConnection = null;
  
     try {
@@ -169,13 +169,13 @@ public class OrderDAO {
         "UPDATE orders SET orderNumber=?, orderDate=?, requiredDate=?, shippedDate =?, status=?, comments=?, customerNumber=? WHERE orderNumber=?");
 
        
-        preparedStatement.setInt(1, orderNumber);
+        preparedStatement.setString(1, orderNumber);
         preparedStatement.setDate(2, orderDate);
         preparedStatement.setDate(3, requiredDate);
         preparedStatement.setDate(4, shippedDate);
         preparedStatement.setString(5, status);
         preparedStatement.setString(6, comments);
-        preparedStatement.setInt(7, customerNumber);
+        preparedStatement.setString(7, customerNumber);
 
         // Validate input data
         if (orderNumber == null || orderNumber.trim().isEmpty() || orderDate == null || orderDate.trim().isEmpty() || requiredDate == null || requiredDate.trim().isEmpty() || shippedDate == null || shippedDate.trim().isEmpty() || status == null || status.trim().isEmpty() || comments == null || comments.trim().isEmpty() || customerNumber == null || customerNumber.trim().isEmpty()) {
