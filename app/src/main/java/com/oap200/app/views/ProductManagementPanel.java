@@ -219,12 +219,12 @@ public class ProductManagementPanel extends JPanel {
         JPanel panel = new JPanel(new BorderLayout());
 
         // Add label and field panel as before
-        JPanel labelPanel = new JPanel(new GridLayout(8, 1));
-        JPanel fieldPanel = new JPanel(new GridLayout(8, 1));
+        JPanel inputPanel = new JPanel(new GridLayout(8, 2));
+        
 
         // Add labels and corresponding text fields
-        labelPanel.add(new JLabel("Product Name:"));
-        fieldPanel.add(productName);
+        inputPanel.add(new JLabel("Product Name:"));
+        inputPanel.add(productName);
 
         // Update the size of the Product Name field to match the view panel
         Dimension preferredSize = productsTable.getTableHeader().getDefaultRenderer()
@@ -232,24 +232,24 @@ public class ProductManagementPanel extends JPanel {
                 .getPreferredSize();
         productName.setPreferredSize(preferredSize);
 
-        labelPanel.add(new JLabel("Product Line:"));
-        fieldPanel.add(productLineComboBox);
-        labelPanel.add(new JLabel("Product Scale:"));
-        fieldPanel.add(productScale);
-        labelPanel.add(new JLabel("Product Vendor:"));
-        fieldPanel.add(productVendor);
-        labelPanel.add(new JLabel("Product Description:"));
-        fieldPanel.add(productDescription);
-        labelPanel.add(new JLabel("Quantity In Stock:"));
-        fieldPanel.add(quantityInStock);
-        labelPanel.add(new JLabel("Buy Price:"));
-        fieldPanel.add(buyPrice);
-        labelPanel.add(new JLabel("MSRP:"));
-        fieldPanel.add(MSRP);
+        inputPanel.add(new JLabel("Product Line:"));
+        inputPanel.add(productLineComboBox);
+        inputPanel.add(new JLabel("Product Scale:"));
+        inputPanel.add(productScale);
+        inputPanel.add(new JLabel("Product Vendor:"));
+        inputPanel.add(productVendor);
+        inputPanel.add(new JLabel("Product Description:"));
+        inputPanel.add(productDescription);
+        inputPanel.add(new JLabel("Quantity In Stock:"));
+        inputPanel.add(quantityInStock);
+        inputPanel.add(new JLabel("Buy Price:"));
+        inputPanel.add(buyPrice);
+        inputPanel.add(new JLabel("MSRP:"));
+        inputPanel.add(MSRP);
 
         // Add label and field panel to the west and center positions
-        panel.add(labelPanel, BorderLayout.WEST);
-        panel.add(fieldPanel, BorderLayout.CENTER);
+        panel.add(inputPanel, BorderLayout.WEST);
+        
 
         // Add the button to a separate panel for positioning adjustment
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -258,10 +258,11 @@ public class ProductManagementPanel extends JPanel {
         // Add the button's panel at the center
         panel.add(buttonPanel, BorderLayout.CENTER);
 
-        // Add search field and view buttons to the top panel
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.add(labelPanel, BorderLayout.WEST);
-        topPanel.add(fieldPanel, BorderLayout.CENTER);
+        topPanel.add(inputPanel, BorderLayout.WEST);
+        topPanel.add(inputPanel, BorderLayout.WEST);
+        panel.add(buttonPanel, BorderLayout.WEST);
+        panel.add(topPanel, BorderLayout.NORTH);
 
         // Add the top panel to the main panel
         panel.add(topPanel, BorderLayout.NORTH);
@@ -279,27 +280,25 @@ public class ProductManagementPanel extends JPanel {
         JPanel panel = new JPanel(new BorderLayout());
 
         // Add label and field panel as before
-        JPanel labelPanel = new JPanel(new GridLayout(4, 1));
-        JPanel fieldPanel = new JPanel(new GridLayout(4, 1));
+        JPanel inputPanel = new JPanel(new GridLayout(4, 2));
 
         // Add labels and corresponding text fields for updating
-        labelPanel.add(new JLabel("Update Product Code:"));
-        fieldPanel.add(updateProductCode);
-        labelPanel.add(new JLabel("Update Quantity In Stock:"));
-        fieldPanel.add(updateQuantityInStock);
-        labelPanel.add(new JLabel("Update Buy Price:"));
-        fieldPanel.add(updateBuyPrice);
-        labelPanel.add(new JLabel("Update MSRP:"));
-        fieldPanel.add(updateMSRP);
+        inputPanel.add(new JLabel("Update Product Code:"));
+        inputPanel.add(updateProductCode);
+        inputPanel.add(new JLabel("Update Quantity In Stock:"));
+        inputPanel.add(updateQuantityInStock);
+        inputPanel.add(new JLabel("Update Buy Price:"));
+        inputPanel.add(updateBuyPrice);
+        inputPanel.add(new JLabel("Update MSRP:"));
+        inputPanel.add(updateMSRP);
 
         // Add the button to a separate panel for positioning adjustment
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         buttonPanel.add(updateButton);
 
         // Add label and field panel to the west and center positions
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.add(labelPanel, BorderLayout.WEST);
-        topPanel.add(fieldPanel, BorderLayout.CENTER);
+        topPanel.add(inputPanel, BorderLayout.WEST);
         panel.add(buttonPanel, BorderLayout.CENTER);
         panel.add(topPanel, BorderLayout.NORTH);
 
