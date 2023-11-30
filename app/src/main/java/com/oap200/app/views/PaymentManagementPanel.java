@@ -35,12 +35,16 @@ public class PaymentManagementPanel extends JPanel {
         setLayout(new BorderLayout());
 
         // Initializing navigation buttons using ButtonBuilder
-        JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
-            /* Action for Back Button */
-        });
+        JButton backButton = ButtonBuilder.createBlueBackButton(() -> parentFrame.dispose());
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
-            /* Action for Logout Button */
+            System.exit(0); // Exit the application
+            openLoginPanel();
         });
+
+        
+       
+        
+       
         JButton viewButton = ButtonBuilder.createViewButton(() -> {
             /* Action for View Button */
         });
@@ -114,6 +118,15 @@ public class PaymentManagementPanel extends JPanel {
             model.addRow(row);
         }
         paymentsTable.setModel(model);
+    }
+
+    private void openLoginPanel() {
+        JFrame loginFrame = new JFrame("Login");
+        LoginPanel loginPanel = new LoginPanel();
+        loginFrame.setContentPane(loginPanel);
+        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        loginFrame.pack();
+        loginFrame.setVisible(true);
     }
 
     /**
