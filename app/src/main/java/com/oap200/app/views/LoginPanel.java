@@ -44,11 +44,6 @@ public class LoginPanel extends JFrame {
                 dispose();
                 // Open main application window
                 new MainFrame().setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(this,
-                        "Invalid username or password",
-                        "Login Error",
-                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
