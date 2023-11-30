@@ -1,4 +1,10 @@
 // Created by Kristian
+/*
+ The EmployeeManagementPanel class is responsible for providing a user interface
+ for managing employees. It includes features to view, add, update, and delete
+employees, as well as search functionality.
+ */
+
 package com.oap200.app.views;
 
 import com.oap200.app.models.EmployeeDAO;
@@ -8,10 +14,11 @@ import com.oap200.app.utils.ButtonBuilder;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.List;
 
 public class EmployeeManagementPanel extends JPanel {
-
+//Declaration of class fields
     private JTable employeeTable;
     private JTextField searchByNumberField;
     private JTextField searchNumberField, searchNameField;
@@ -22,6 +29,7 @@ public class EmployeeManagementPanel extends JPanel {
     JComboBox<String> updateJobTitle;
     private EmployeeController employeeController;
 
+    // @param parentFrame The parent JFrame in which this panel will be displayed.
     public EmployeeManagementPanel(JFrame parentFrame) {
         employeeController = new EmployeeController(new EmployeeDAO(), this);
         initializeFields();
@@ -270,16 +278,16 @@ searchByNumberField = new JTextField(10);
             String selectedEmployeeRole = (String) employeeRolesComboBox.getSelectedItem();
 
             
-            String employeeInfoMessage = "Product added successfully with inputs:\n" +
+            String employeeInfoMessage = "Empployee added successfully with inputs:\n \n" +
        //employee Number
        "Employee Number: " + generatedEmployeeNumber + "\n" + 
         "Last Name: " + lastName.getText() + "\n" +
         "First Name: " + firstName.getText() + "\n" +
         "Extension: " + extension.getText() + "\n" +
-        "Product Vendor: " + email.getText() + "\n" +
-        "Product Description: " + officeCode.getText() + "\n" +
-         "Product Description: " + reportsTo.getText() + "\n" +
-         "Job Title: " + selectedEmployeeRole;
+        "Email: " + email.getText() + "\n" +
+        "Office Code: " + officeCode.getText() + "\n" +
+         "Reports To: " + reportsTo.getText() + "\n" +
+         "Employee Role: " + selectedEmployeeRole;
         
 
 JOptionPane.showMessageDialog(this, employeeInfoMessage, "Addition completed", JOptionPane.INFORMATION_MESSAGE);
@@ -335,9 +343,31 @@ JOptionPane.showMessageDialog(this, employeeInfoMessage, "Addition completed", J
     }
 
     private void deleteEmployee() {
-        String employeeNum = searchNumberField.getText();
-        employeeController.handleDeleteEmployee(employeeNum);
+    String employeeNum = searchNumberField.getText();
+
+    try {
+        String[] employeeDetails = employeeController.getEmployeeDAO().getEmployeeDetails(employeeNum);
+        if (employeeDetails != null && employeeController.handleDeleteEmployee(employeeNum)) {
+            String message = String.format("Employee %s, %s %s, %s, %s, %s, %s, %s has been deleted successfully.", 
+                                           employeeDetails[0], // Employee number
+                                           employeeDetails[1], // Last Name
+                                           employeeDetails[2],  // First Name
+                                           employeeDetails[3],  // Extension
+                                           employeeDetails[4],  // Email
+                                           employeeDetails[5],  // Office Code
+                                           employeeDetails[6], // Reports To
+                                           employeeDetails[7]  // Job Title
+            );
+            JOptionPane.showMessageDialog(this, message, "Employee Deleted", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to delete employee or employee not found.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    } catch (SQLException | ClassNotFoundException ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error occurred while deleting the employee.", "Error", JOptionPane.ERROR_MESSAGE);
     }
+}
+
 
     public void displayEmployees(List<String[]> employeeList) {
         // Define the column names

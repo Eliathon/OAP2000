@@ -12,6 +12,29 @@ import com.oap200.app.utils.DbConnect;
 
 public class EmployeeDAO {
     
+    public String[] getEmployeeDetails(String employeeNumber) throws SQLException, ClassNotFoundException {
+        try (Connection connection = new DbConnect().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle FROM employees WHERE employeeNumber = ?")) {
+            
+            preparedStatement.setString(1, employeeNumber);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return new String[] {
+                        resultSet.getString("employeeNumber"),
+                        resultSet.getString("lastName"),
+                        resultSet.getString("firstName"),
+                        resultSet.getString("extension"),
+                        resultSet.getString("email"),
+                        resultSet.getString("officeCode"),
+                        resultSet.getString("reportsTo"),
+                        resultSet.getString("jobTitle"),
+                    };
+                }
+            }
+        }
+        return null;
+    }    
+
     private String generatedEmployeeNumber;
 
     public String getNextAvailableEmployeeNumber() throws SQLException, ClassNotFoundException {

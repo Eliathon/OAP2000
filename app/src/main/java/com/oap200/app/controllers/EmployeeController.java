@@ -19,6 +19,16 @@ public class EmployeeController {
         this.employeeManagementPanel = employeeManagementPanel;
     }
 
+    public String[] getEmployeeDetails(String employeeNumber) {
+        try {
+            return employeeDAO.getEmployeeDetails(employeeNumber);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+
     // Method to handle searching for employees by name
     public void handleSearchEmployees(String employeeName) {
         List<String[]> searchResults = employeeDAO.searchEmployees(employeeName);
