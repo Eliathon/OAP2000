@@ -35,6 +35,22 @@ public class EmployeeDAO {
         return null;
     }    
 
+    public boolean doesEmployeeExist(String employeeNumber) {
+        try (Connection connection = new DbConnect().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM employees WHERE employeeNumber = ?")) {
+            preparedStatement.setString(1, employeeNumber);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+    
+
     private String generatedEmployeeNumber;
 
     public String getNextAvailableEmployeeNumber() throws SQLException, ClassNotFoundException {
