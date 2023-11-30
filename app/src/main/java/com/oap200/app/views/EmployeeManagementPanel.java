@@ -277,16 +277,26 @@ searchByNumberField = new JTextField(10);
             JOptionPane.showMessageDialog(this, "Email cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
             return;}
         // Validate office code
-        if (office.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Office Code cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
-            return;}
-        Integer reportsToInt = null;
-        try {
-            reportsToInt = reports.isEmpty() ? null : Integer.parseInt(reports);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid Reports To number format. Employee might not exist", "Input Error", JOptionPane.ERROR_MESSAGE);
-            return;
+    try {
+        Integer.parseInt(office);
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Office Code must be a number, and not empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    Integer reportsToInt = null;
+    try {
+        if (!reports.isEmpty()) {
+            reportsToInt = Integer.parseInt(reports);
+            // Check if employee exists
+            if (!employeeController.getEmployeeDAO().doesEmployeeExist(reports)) {
+                JOptionPane.showMessageDialog(this, "Employee for 'Reports To' does not exist.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Invalid number format for 'Reports To'.", "Input Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
     // Validate job title
         if (title.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Job Title cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
@@ -342,11 +352,21 @@ searchByNumberField = new JTextField(10);
     
         boolean success = employeeController.handleUpdateEmployee(empNum, lName, fName, ext, mail, office, reportsToInt, jobTitle);
         if (success) {
-            JOptionPane.showMessageDialog(this, "Employee updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+            StringBuilder updateMessage = new StringBuilder("Employee updated successfully with the following changes:\n\n");
+            if (!lName.isEmpty()) updateMessage.append("Last Name: ").append(lName).append("\n");
+            if (!fName.isEmpty()) updateMessage.append("First Name: ").append(fName).append("\n");
+            if (!ext.isEmpty()) updateMessage.append("Extension: ").append(ext).append("\n");
+            if (!mail.isEmpty()) updateMessage.append("Email: ").append(mail).append("\n");
+            if (!office.isEmpty()) updateMessage.append("Office Code: ").append(office).append("\n");
+            if (!reports.isEmpty()) updateMessage.append("Reports To: ").append(reports).append("\n");
+            if (jobTitle != null && !jobTitle.isEmpty()) updateMessage.append("Job Title: ").append(jobTitle).append("\n");
+    
+            JOptionPane.showMessageDialog(this, updateMessage.toString(), "Update Completed", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Failed to update. This employee doesn't exist", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to update employee", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
     
 
     private void deleteEmployee() {
@@ -355,7 +375,7 @@ searchByNumberField = new JTextField(10);
     try {
         String[] employeeDetails = employeeController.getEmployeeDAO().getEmployeeDetails(employeeNum);
         if (employeeDetails != null && employeeController.handleDeleteEmployee(employeeNum)) {
-            String message = String.format("Employee with these details has been deleted successfully from the system: \n Employee Number: %s \n Last Name: %s \n First Name: %s \n Extension: %s \n Email: %s \n Office Code: %s \n Reported To: %s \n Job Title: %s", 
+            String message = String.format("Employee with these details has been deleted successfully deleted from the system: \n Employee Number: %s \n Last Name: %s \n First Name: %s \n Extension: %s \n Email: %s \n Office Code: %s \n Reported To: %s \n Job Title: %s", 
                                            employeeDetails[0],// Employee number
                                            employeeDetails[1], // Last Name
                                            employeeDetails[2],  // First Name
@@ -367,7 +387,7 @@ searchByNumberField = new JTextField(10);
             );
             JOptionPane.showMessageDialog(this, message, "Employee Deleted", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Failed to delete employee or employee not found.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to delete employee. This might be because you typed a letter, or the employee does not exist.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     } catch (SQLException | ClassNotFoundException ex) {
         ex.printStackTrace();
