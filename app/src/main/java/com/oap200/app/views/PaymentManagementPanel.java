@@ -18,61 +18,67 @@ public class PaymentManagementPanel extends JPanel {
     public PaymentManagementPanel(JFrame parentFrame) {
         initializeFields();
 
-        // Set up the layout for the frame
+        // Setting up the layout for the frame using BorderLayout
         setLayout(new BorderLayout());
 
-        // Initialize ButtonBuilder buttons
+        // Initializing navigation buttons using ButtonBuilder
         JButton backButton = ButtonBuilder.createBlueBackButton(() -> {
             /* Action for Back Button */});
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
             /* Action for Logout Button */});
         JButton viewButton = ButtonBuilder.createViewButton(() -> {
             /* Action for View Button */});
+
+            // Initializing buttons for sorting
         JButton sortCustomerButton = new JButton("Sort by Customer Number");
         JButton sortCheckButton = new JButton("Sort by Check Number");
         JButton sortDateButton = new JButton("Sort by Payment Date");
         JButton sortAmountButton = new JButton("Sort by Amount");
 
+        // Adding action listeners for sorting
         sortCustomerButton.addActionListener(e -> viewSortedData("customerNumber"));
         sortCheckButton.addActionListener(e -> viewSortedData("checkNumber"));
         sortDateButton.addActionListener(e -> viewSortedData("paymentDate"));
         sortAmountButton.addActionListener(e -> viewSortedData("amount"));
 
-        // Initialize JTabbedPane
+        // Creating a JTabbedPane for tabbed navigation
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Tab 1: View Employee
+        // Creating the first tab for viewing payments
         JPanel panel1 = new JPanel(new BorderLayout());
         addComponentsToPanelView(panel1);
         panel1.add(viewButton, BorderLayout.SOUTH);
         tabbedPane.addTab("View Payments", null, panel1, "Click to view");
 
-        // Initialize Panels
+        // Initializing panels for buttons and tabbed navigation
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
         JPanel topPanel = new JPanel(new BorderLayout());
 
+        // Adding buttons to the button panel
         buttonPanel.setOpaque(true);
         buttonPanel.add(backButton);
         buttonPanel.add(logoutButton);
 
-        // Main panel for the frame
+        // Creating the main panel for the frame
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(buttonPanel, BorderLayout.NORTH);
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
 
+        // Adding panels to the top panel
         topPanel.add(buttonPanel, BorderLayout.EAST);
         topPanel.add(tabbedPane, BorderLayout.CENTER);
 
-        // Adding panels to this panel instead of the frame's content pane
+        // Adding panels to the current panel instead of the frame's content pane
         this.add(topPanel, BorderLayout.NORTH);
         this.add(mainPanel, BorderLayout.CENTER);
 
-        // Initialize the table
+        // Initializing the table
         paymentsTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(paymentsTable);
-        // Correct this line to add the scrollPane to the CENTER instead of EAST
+        // Correcting this line to add the scrollPane to the CENTER instead of EAST
         panel1.add(scrollPane, BorderLayout.CENTER);
 
+        // Adding action listeners to the view button for various views
         viewButton.addActionListener(e -> viewPayments());
         viewButton.addActionListener(e -> viewCheck());
         viewButton.addActionListener(e -> viewDate());
@@ -157,6 +163,7 @@ public class PaymentManagementPanel extends JPanel {
         paymentsTable.setModel(model);
     }
 
+// Initializing text fields with 10 columns
     private void initializeFields() {
         new JTextField(10);
         new JTextField(10);
@@ -166,6 +173,7 @@ public class PaymentManagementPanel extends JPanel {
     }
 
     private void addComponentsToPanelView(JPanel panelView) {
+        // Adding components to the panel view
         panelView.setLayout(new BorderLayout());
 
         JPanel inputPanel = new JPanel(new GridBagLayout());
@@ -212,7 +220,8 @@ public class PaymentManagementPanel extends JPanel {
         tableContainer.add(scrollPane, BorderLayout.CENTER);
         panelView.add(tableContainer, BorderLayout.CENTER);
     }
-
+    
+// Main method to run the Swing application
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame paymentFrame = new JFrame("Payment View");
