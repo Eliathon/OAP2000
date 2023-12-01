@@ -51,8 +51,8 @@ public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
         endDateSpinner = DateFactory.createDateSpinner(latestDate, earliestDate, latestDate);
 
         // Create buttons
-        generateReportButton = ButtonBuilder.createStyledButton("Generate Payment Report", () -> generateReport());
-        printButton = ButtonBuilder.createStyledButton("Print Report", () -> handlePrintAction());
+        generateReportButton = ButtonBuilder.createButton("Generate Report", () -> generateReport());
+        printButton = ButtonBuilder.createButton("Print Report", () -> handlePrintAction());
 
 
         // Table setup

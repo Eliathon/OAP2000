@@ -34,7 +34,7 @@ public class ButtonBuilder {
 
     // BlueBackButton is created by Johnny
     public static JButton createBlueBackButton(Runnable action) {
-        JButton backButton = new JButton("BACK");
+        JButton backButton = new JButton("Back");
         backButton.setForeground(Color.WHITE); // Set text color to white
         backButton.setBackground(Color.BLUE); // Set background color to blue
         backButton.setBorderPainted(false); // Remove border
@@ -47,7 +47,7 @@ public class ButtonBuilder {
         return backButton;
     }
 
-    // backButton is created by Johnny
+    // LogOutButton is created by Johnny
     public static JButton createRedLogoutButton(Runnable action) {
         JButton backButton = new JButton("Logout");
         backButton.setForeground(Color.WHITE); // Set text color to white
@@ -79,7 +79,7 @@ public class ButtonBuilder {
 
     // Universal button is created by Dirkje Jansje van der Poel
 public static JButton createButton(String buttonText, Runnable action) {
-    JButton button = new JButton(buttonText);
+    JButton button = new JButton(buttonText); // Create button with text
     button.setForeground(Color.WHITE); // Set text color to white
     button.setBackground(Color.BLACK); // Set background color to black
     button.setBorderPainted(false); // Remove border

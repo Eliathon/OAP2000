@@ -50,8 +50,8 @@ public class ReportSalesPanel extends JPanel implements ReportGenerator {
         endDateSpinner = DateFactory.createDateSpinner(latestDate, earliestDate, latestDate);
 
         // Initialize buttons and table
-        generateReportButton = ButtonBuilder.createStyledButton("Generate Sales Report", this::generateReport);
-        printButton = ButtonBuilder.createStyledButton("Print Report", this::handlePrintAction);
+        generateReportButton = ButtonBuilder.createButton("Generate Report", () -> generateReport());
+        printButton = ButtonBuilder.createButton("Print Report", () -> handlePrintAction());
 
         tableModel = new DefaultTableModel();
         reportTable = new JTable(tableModel);

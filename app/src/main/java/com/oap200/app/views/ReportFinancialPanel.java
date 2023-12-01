@@ -66,8 +66,8 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
         financialTable.setAutoCreateRowSorter(true);
         tableModel.addColumn("Customer Name");
         tableModel.addColumn("Total Amount");
-
-        JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      
+        JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         inputPanel.add(new JLabel("Year:"));
         inputPanel.add(yearComboBox);
         inputPanel.add(new JLabel("Quarter:"));
@@ -95,8 +95,6 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
                 generateYearlyReport(selectedYear);
             }
         });
-    
-       // TODO: Dit is degene die voor een 2de scherm zorgt :(( saveReportButton.addActionListener(e -> saveReportToFile());
     }
 
      /**

@@ -37,8 +37,11 @@ public class ReportStockPanel extends JPanel implements ReportGenerator {
      * Initializes the components of the panel.
      */
     private void initializeComponents() {
-        generateReportButton = ButtonBuilder.createStyledButton("Generate Stock Report", this::generateReport);
-        printButton = ButtonBuilder.createStyledButton("Print Report", this::handlePrintAction);
+       // generateReportButton = ButtonBuilder.createButton("Generate Stock Report", this::generateReport);
+       // printButton = ButtonBuilder.createButton("Print Report", this::handlePrintAction);
+        generateReportButton = ButtonBuilder.createButton("Generate Report", () -> generateReport());
+        printButton = ButtonBuilder.createButton("Print Report", () -> handlePrintAction());
+
 
         searchField = new JTextField(20);
         searchField.addActionListener(e -> generateReport());
