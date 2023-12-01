@@ -24,10 +24,6 @@ import java.sql.*;
  * @version 1.0
  * @since 2023
  */
-
-//TODO: tabb scherm en print button financial, checkbox voor csv/txt, event. pictogrammen  
-//TODO: print button voor tabb scherm
-
 public class ReportFinancialPanel extends JPanel implements ReportGenerator {
     private JButton generateReportButton, saveReportButton;
     private JRadioButton csvRadioButton, txtRadioButton, yearlyReportRadioButton, quarterlyReportRadioButton;
