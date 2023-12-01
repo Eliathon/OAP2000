@@ -1,18 +1,28 @@
-//Created by Dirkje J van der Poel
 package com.oap200.app.views;
 
-import java.awt.BorderLayout;
-
 import javax.swing.*;
+import java.awt.*;
 
+/**
+ * ReportManagementPanel manages the presentation of different report panels in a tabbed layout.
+ * It allows switching between various report panels such as Sales, Stock, Payments, and Financial reports.
+ *
+ * @author Dirkje Jansje van der Poel
+ */
 public class ReportManagementPanel extends JPanel {
 
-    // Main method
+    /**
+     * The main method to run the ReportManagementPanel.
+     * 
+     * @param args Command-line arguments.
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> createAndShowGUI());
     }
 
-    // GUI creation method
+    /**
+     * Creates and displays the main GUI frame.
+     */
     private static void createAndShowGUI() {
         JFrame frame = new JFrame("Company Management System");
         ReportManagementPanel reportManagementPanel = new ReportManagementPanel();
@@ -24,6 +34,9 @@ public class ReportManagementPanel extends JPanel {
         frame.setVisible(true);
     }
 
+    /**
+     * Constructs a new ReportManagementPanel with a tabbed layout.
+     */
     public ReportManagementPanel() {
         // Create the JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();

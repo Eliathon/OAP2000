@@ -1,4 +1,3 @@
-// Created by Dirkje J. van der Poel
 package com.oap200.app.views;
 
 import com.oap200.app.Interfaces.ReportGenerator;
@@ -6,6 +5,7 @@ import com.oap200.app.utils.DbConnect;
 import com.oap200.app.utils.PrintManager;
 import com.oap200.app.utils.ButtonBuilder;
 import com.oap200.app.utils.DateFactory;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
@@ -14,17 +14,30 @@ import java.util.Calendar;
 import java.util.Date;
 import java.awt.*;
 
+/**
+ * ReportPaymentsPanel is responsible for displaying and generating payment reports.
+ * It allows users to select dates and generate reports based on the selected period.
+ * The panel also provides functionality to print the generated report.
+ *
+ * @author Dirkje Jansje van der Poel
+ */
 public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
     private JButton generateReportButton, printButton;
     private JTable reportTable;
     private DefaultTableModel tableModel;
     private JSpinner startDateSpinner, endDateSpinner;
 
+     /**
+     * Constructs a ReportPaymentsPanel with initial components setup.
+     */
     public ReportPaymentsPanel() {
         setLayout(new BorderLayout());
         initializeComponents();
     }
 
+     /**
+     * Initializes and adds components to the panel.
+     */
     private void initializeComponents() {
         // Initialize date spinners
         Calendar calendar = Calendar.getInstance();
@@ -63,6 +76,9 @@ public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
         add(new JScrollPane(reportTable), BorderLayout.CENTER);
     }
 
+    /**
+     * Handles the action of printing the report table.
+     */
     private void handlePrintAction() {
         if (PrintManager.isPrinting()) {
             return;
@@ -70,6 +86,9 @@ public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
         PrintManager.printTable(reportTable);
     }
 
+     /**
+     * Generates a payment report based on selected date range and populates the table.
+     */
     @Override
     public void generateReport() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

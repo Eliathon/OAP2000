@@ -1,4 +1,3 @@
-// Created by Dirkje J. van der Poel
 package com.oap200.app.views;
 
 import com.oap200.app.Interfaces.ReportGenerator;
@@ -15,6 +14,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.awt.*;
 
+/**
+ * ReportSalesPanel is responsible for generating and displaying sales reports.
+ * It allows users to select a date range and generate corresponding sales data.
+ *
+ * @author Dirkje Jansje van der Poel
+ */
 public class ReportSalesPanel extends JPanel implements ReportGenerator {
 
     private JButton generateReportButton, printButton;
@@ -22,32 +27,31 @@ public class ReportSalesPanel extends JPanel implements ReportGenerator {
     private DefaultTableModel tableModel;
     private JSpinner startDateSpinner, endDateSpinner;
 
+    /**
+     * Constructs the ReportSalesPanel with layout and component initialization.
+     */
     public ReportSalesPanel() {
         setLayout(new BorderLayout());
         initializeComponents();
     }
 
+    /**
+     * Initializes the components of the panel.
+     */
     private void initializeComponents() {
-        // Initialize date spinners
         Calendar calendar = Calendar.getInstance();
         calendar.set(2003, Calendar.JANUARY, 1);
         Date initialDate = calendar.getTime();
-        Date earliestDate = calendar.getTime(); // January 1, 2003
-        Date latestDate = new Date(); // Current date
+        Date earliestDate = initialDate;
+        Date latestDate = new Date();
 
         startDateSpinner = DateFactory.createDateSpinner(initialDate, earliestDate, latestDate);
         endDateSpinner = DateFactory.createDateSpinner(latestDate, earliestDate, latestDate);
 
-        JSpinner.DateEditor startDateEditor = new JSpinner.DateEditor(startDateSpinner, "yyyy-MM-dd");
-        JSpinner.DateEditor endDateEditor = new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd");
-        startDateSpinner.setEditor(startDateEditor);
-        endDateSpinner.setEditor(endDateEditor);
-
-        // Button initialization with method references
+        // Initialize buttons and table
         generateReportButton = ButtonBuilder.createStyledButton("Generate Sales Report", this::generateReport);
         printButton = ButtonBuilder.createStyledButton("Print Report", this::handlePrintAction);
 
-        // Initialize table
         tableModel = new DefaultTableModel();
         reportTable = new JTable(tableModel);
         reportTable.setAutoCreateRowSorter(true);
@@ -56,7 +60,6 @@ public class ReportSalesPanel extends JPanel implements ReportGenerator {
         tableModel.addColumn("Payment Date");
         tableModel.addColumn("Amount");
 
-        // Setup input panel
         JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         inputPanel.add(new JLabel("Start Date:"));
         inputPanel.add(startDateSpinner);
@@ -69,6 +72,9 @@ public class ReportSalesPanel extends JPanel implements ReportGenerator {
         add(new JScrollPane(reportTable), BorderLayout.CENTER);
     }
 
+    /**
+     * Handles the action to print the report.
+     */
     private void handlePrintAction() {
         if (PrintManager.isPrinting()) {
             return;
@@ -76,19 +82,22 @@ public class ReportSalesPanel extends JPanel implements ReportGenerator {
         PrintManager.printTable(reportTable);
     }
 
+    /**
+     * Generates the report based on selected dates.
+     */
     @Override
     public void generateReport() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String startDate = dateFormat.format(startDateSpinner.getValue());
         String endDate = dateFormat.format(endDateSpinner.getValue());
 
-        tableModel.setRowCount(0); // Clear existing rows
+        tableModel.setRowCount(0);
 
         try (DbConnect dbConnect = new DbConnect();
              Connection conn = dbConnect.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement("SELECT customerNumber, checkNumber, paymentDate, amount " +
-                                                            "FROM payments WHERE paymentDate BETWEEN ? AND ? " +
-                                                            "ORDER BY paymentDate DESC;")) {
+             PreparedStatement pstmt = conn.prepareStatement(
+                     "SELECT customerNumber, checkNumber, paymentDate, amount FROM payments " +
+                     "WHERE paymentDate BETWEEN ? AND ? ORDER BY paymentDate DESC;")) {
             pstmt.setString(1, startDate);
             pstmt.setString(2, endDate);
             try (ResultSet rs = pstmt.executeQuery()) {

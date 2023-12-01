@@ -166,15 +166,9 @@ public class ButtonBuilder {
         return searchNumberButton;
     }
 
-    // RadioButton creation method - Created by Dirkje J van der Poel
+    // RadioButton creation method - Created by Dirkje Jansje van der Poel
     public static JRadioButton createStyledRadioButton(String text, boolean selected) {
         JRadioButton radioButton = new JRadioButton(text, selected);
-        /*TODO: Here, add any extra styling you need
-         radioButton.setForeground(Color.BLACK);
-         radioButton.setBackground(Color.WHITE);
-         ... other styling or functionalities ...
-        return radioButton;
-        */
-        return radioButton;
+            return radioButton;
     }
 }
