@@ -4,7 +4,8 @@ package com.oap200.app.models;
 
 import com.oap200.app.utils.DbConnect;  
 import com.oap200.app.views.OrderManagementPanel;
-
+import com.google.protobuf.TextFormat.ParseException;
+import com.oap200.app.controllers.OrdersController; 
 import com.oap200.app.utils.DbConnect;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -88,13 +89,16 @@ public class OrderDAO {
        DbConnect db = new DbConnect();
        myConnection = db.getConnection();
  
-
+       java.sql.Date orderDateSQL = java.sql.Date.valueOf(orderDate); 
+       java.sql.Date requiredDateSQL = java.sql.Date.valueOf(requiredDate); 
+       java.sql.Date shippedDateSQL = java.sql.Date.valueOf(shippedDate); 
+   
        PreparedStatement statement = myConnection.prepareStatement("INSERT INTO orders VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
        
         statement.setString(1, orderNumber);
-        statement.setDate(2, orderDate);
-        statement.setDate(3, requiredDate);
-        statement.setDate(4, shippedDate);
+        statement.setDate(2, orderDateSQL);
+        statement.setDate(3, requiredDateSQL);
+        statement.setDate(4, shippedDateSQL);
         statement.setString(5, status);
         statement.setString(6, comments);
         statement.setString(7, customerNumber);
@@ -165,14 +169,19 @@ public class OrderDAO {
     try {
        DbConnect db = new DbConnect();
        myConnection = db.getConnection();
+
+       java.sql.Date orderDateSQL = java.sql.Date.valueOf(orderDate); 
+       java.sql.Date requiredDateSQL = java.sql.Date.valueOf(requiredDate); 
+       java.sql.Date shippedDateSQL = java.sql.Date.valueOf(shippedDate); 
+
        PreparedStatement preparedStatement = myConnection.prepareStatement(
         "UPDATE orders SET orderNumber=?, orderDate=?, requiredDate=?, shippedDate =?, status=?, comments=?, customerNumber=? WHERE orderNumber=?");
 
        
         preparedStatement.setString(1, orderNumber);
-        preparedStatement.setDate(2, orderDate);
-        preparedStatement.setDate(3, requiredDate);
-        preparedStatement.setDate(4, shippedDate);
+        preparedStatement.setDate(2, orderDateSQL);
+        preparedStatement.setDate(3, requiredDateSQL);
+        preparedStatement.setDate(4, shippedDateSQL);
         preparedStatement.setString(5, status);
         preparedStatement.setString(6, comments);
         preparedStatement.setString(7, customerNumber);
@@ -186,7 +195,7 @@ public class OrderDAO {
        int rowsAffected = preparedStatement.executeUpdate();
 
         return rowsAffected > 0;
-     } catch (SQLException | ClassNotFoundException | DateFormat | Integer e) {
+     } catch (SQLException | ClassNotFoundException | ParseException | Integer e) {
         e.printStackTrace();
         return false;
     }

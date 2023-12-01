@@ -2,14 +2,16 @@
 
 package com.oap200.app.controllers;
 
+import com.google.protobuf.TextFormat.ParseException;
 import com.oap200.app.models.OrderDAO;
 import com.oap200.app.views.OrderManagementPanel;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
+import java.util.Date;
 import javax.swing.JOptionPane;
+
 public class OrdersController {
 
    // Method for handling the display of products
@@ -45,20 +47,30 @@ public boolean handleDeleteOrders(String orderNumber) {
 
 // Method to handle adding a new product
 public boolean handleAddOrder(String orderNumber, String orderDate, String requiredDate, String shippedDate, String status, String comments, String customerNumber) {
-    DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.LONG);
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     
     try {
-      
-        DateFormat OrderDate = new DateFormat(OrderDate);
-        DateFormat RequiredDate = new DateFormat(RequiredDate);
-        DateFormat ShippedDate = new DateFormat(ShippedDate);
+        
+        int orderNumberInt = Integer.parseInt(orderNumber);
+        int customerNumberInt = Integer.parseInt(customerNumber);
+        Date parsedOrderDate = dateFormat.parse(orderDate);
+        Date parsedRequiredDate = dateFormat.parse(requiredDate);
+        Date parsedShippedDate = dateFormat.parse(shippedDate);
+
+        Date sqlOrderDate = new java.sql.Date(parsedOrderDate.getTime());
+        Date sqlRequiredDate = new java.sql.Date(parsedRequiredDate.getTime());
+        Date sqlShippedDate = new java.sql.Date(parsedShippedDate.getTime());
+
         
         return orderDAO.addOrders(orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber);
-    } catch (NumberFormatException | DateFormat  ex) {
+    } catch (NumberFormatException | ParseException | Integer ex) {
         ex.printStackTrace();
-        JOptionPane.showMessageDialog(orderManagementPanel, "Error converting numbers.", "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(orderManagementPanel, "Error Parse Date.", "Error", JOptionPane.ERROR_MESSAGE);
         return false;
     }
+}
+public void handleUpdateOrders(String orderNumberToUpdate, String neworderDate, String newrequiredDate,
+        String newshippedDate, String newstatus, String newcomments, String newcustomerNumber) {
 }
 }
 

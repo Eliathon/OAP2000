@@ -15,7 +15,7 @@ import com.oap200.app.utils.ButtonBuilder;
 import java.util.Arrays;
 import java.util.List;
 
-public class OrderManagementPanel extends JFrame {
+public class OrderManagementPanel extends JPanel {
 
     private MainFrame mainFrame;
 
@@ -49,7 +49,7 @@ public class OrderManagementPanel extends JFrame {
 
     private OrdersController OrdersController;
 
-    public OrderManagementPanel() {
+    public OrderManagementPanel(MainFrame mainFrame2) {
         this.mainFrame = new MainFrame();   
         initializeFields();
         OrdersController = new OrdersController(new OrderDAO(), this);
@@ -73,14 +73,21 @@ public class OrderManagementPanel extends JFrame {
         setLayout(new BorderLayout());
 
         // Initialize ButtonBuilder buttons
-        JButton backButton = ButtonBuilder.createBlueBackButton(() -> { /* Action for Back Button */ });
-        JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> { /* Action for Logout Button */ });
-        JButton viewButton = ButtonBuilder.createViewButton(() -> { /* Action for View Button */ });
+        JButton backButton = ButtonBuilder.createBlueBackButton(() -> { });
+        JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {  });
+        JButton viewButton = ButtonBuilder.createViewButton(() -> { });
         JButton addButton = ButtonBuilder.createAddButton(() -> {
+            addOrder();
             System.out.println("Add Button Clicked!");
         });
-        JButton deleteButton = ButtonBuilder.createDeleteButton(() -> { /* Action for Delete Button */ });
-        JButton updateButton = ButtonBuilder.createUpdateButton(() -> { /* Action for Update Button */ });
+        JButton deleteButton = ButtonBuilder.createDeleteButton(() -> {
+            deleteOrder();
+            System.out.println("Delete Button Clicked!");
+        });
+        JButton updateButton = ButtonBuilder.createUpdateButton(() -> { 
+            updateOrder();
+            System.out.println("Update Button Clicked!");
+         });
         JButton searchButton = ButtonBuilder.createSearchButton(() -> {
     
         });
@@ -129,12 +136,12 @@ public class OrderManagementPanel extends JFrame {
         mainPanel.add(buttonPanel, BorderLayout.NORTH);
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
 
-        getContentPane().add(mainPanel, BorderLayout.CENTER);
+        add(mainPanel, BorderLayout.CENTER);
 
         topPanel.add(buttonPanel, BorderLayout.EAST);
         topPanel.add(tabbedPane, BorderLayout.CENTER);
 
-        getContentPane().add(topPanel, BorderLayout.NORTH);
+        add(topPanel, BorderLayout.NORTH);
 
         // Initialize the table
         ordersTable = new JTable();
@@ -158,6 +165,15 @@ public class OrderManagementPanel extends JFrame {
             System.out.println(orderNumberToUpdate + neworderDate + newrequiredDate + newshippedDate + newstatus + newcomments + newcustomerNumber);
         });
         loadOrdersLines();
+    }
+
+    private void updateOrder() {
+    }
+
+    private void addWindowListener(WindowAdapter windowAdapter) {
+    }
+
+    private void loadOrdersLines() {
     }
 
     private void initializeFields() {
@@ -377,7 +393,7 @@ public class OrderManagementPanel extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            OrderManagementPanel panel = new OrderManagementPanel();
+            JFrame panel = new JFrame();
             panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             panel.setTitle("Order Management");
             panel.pack();
