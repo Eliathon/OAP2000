@@ -76,6 +76,7 @@ public class EmployeeController {
     public void handleViewAllEmployees() {
         List<String[]> allEmployees = employeeDAO.fetchEmployees();
         employeeManagementPanel.displayEmployees(allEmployees);
+        
     }
 
     /**
@@ -86,13 +87,17 @@ public class EmployeeController {
      */
     public boolean handleDeleteEmployee(String employeeNumber) {
         boolean deletionSuccessful = employeeDAO.deleteEmployee(employeeNumber);
+    
+        // If deletion is successful, refresh the employee list
         if (deletionSuccessful) {
+            handleViewAllEmployees(); // Refresh the list of employees
             return true;
         } else {
             // Handle errors here, for example, display an error message
             return false;
         }
     }
+    
 
     /**
      * Handle adding a new employee.
@@ -107,18 +112,25 @@ public class EmployeeController {
      * @return True if addition is successful, false otherwise.
      */
     public boolean handleAddEmployee(String lastName, String firstName, String extension, String email,
-                                     String officeCode, Integer reportsTo, String jobTitle) {
-        try {
-            // Generate the next employee number
-            String employeeNumber = employeeDAO.getNextAvailableEmployeeNumber();
+                                 String officeCode, Integer reportsTo, String jobTitle) {
+    try {
+        // Generate the next employee number
+        String employeeNumber = employeeDAO.getNextAvailableEmployeeNumber();
 
-            // Call addEmployee method with the new employee number
-            return employeeDAO.addEmployee(employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle);
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return false;
+        // Call addEmployee method with the new employee number
+        boolean isAdded = employeeDAO.addEmployee(employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle);
+        
+        // Refresh the employee list if addition is successful
+        if (isAdded) {
+            handleViewAllEmployees();
         }
+        return isAdded;
+    } catch (SQLException | ClassNotFoundException e) {
+        e.printStackTrace();
+        return false;
     }
+}
+
 
     /**
      * Retrieve the EmployeeDAO instance.
@@ -152,16 +164,23 @@ public class EmployeeController {
      * @return True if update is successful, false otherwise.
      */
     public boolean handleUpdateEmployee(String employeeNumber, String lastName, String firstName, String extension,
-                                        String email, String officeCode, Integer reportsTo, String jobTitle) {
-        // Basic validation (you can expand this as needed)
-        if (employeeNumber == null || employeeNumber.trim().isEmpty()) {
-            // Handle invalid input
-            System.out.println("Invalid input for Employee Number. The input field is either empty, or this employee doesn't exist");
-            return false;
-        }
-
-        // Call update method in DAO and return its result
-        return employeeDAO.updateEmployee(employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo,
-                jobTitle);
+                                    String email, String officeCode, Integer reportsTo, String jobTitle) {
+    // Basic validation (you can expand this as needed)
+    if (employeeNumber == null || employeeNumber.trim().isEmpty()) {
+        // Handle invalid input
+        System.out.println("Invalid input for Employee Number. The input field is either empty, or this employee doesn't exist");
+        return false;
     }
+
+    // Call update method in DAO and check if the update is successful
+    boolean isUpdated = employeeDAO.updateEmployee(employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle);
+
+    // Refresh the employee list if update is successful
+    if (isUpdated) {
+        handleViewAllEmployees();
+    }
+
+    return isUpdated;
+}
+
 }
