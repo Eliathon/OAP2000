@@ -35,6 +35,7 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
         setLayout(new BorderLayout());
         initializeComponents();
         addActionsToButtons();
+        generateReport(); // Automatically load the data when opening the panel
     }
 
     /**
@@ -44,8 +45,8 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
         yearComboBox = new JComboBox<>(new String[]{"2003", "2004", "2005"});
         quarterComboBox = new JComboBox<>(new String[]{"Q1", "Q2", "Q3", "Q4", "Q All"});
 
-        generateReportButton = ButtonBuilder.createStyledButton("Generate Financial Report", () -> generateReport());
-        saveReportButton = ButtonBuilder.createStyledButton("Save Financial Report", () -> saveReportToFile());
+        generateReportButton = ButtonBuilder.createButton("Generate Report", () -> generateReport());
+        saveReportButton = ButtonBuilder.createButton("Save Report", () -> saveReportToFile());
 
         csvRadioButton = ButtonBuilder.createStyledRadioButton("Save as CSV", true);
         txtRadioButton = ButtonBuilder.createStyledRadioButton("Save as TXT", false);

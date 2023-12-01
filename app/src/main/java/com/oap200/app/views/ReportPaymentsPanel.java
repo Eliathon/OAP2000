@@ -33,6 +33,7 @@ public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
     public ReportPaymentsPanel() {
         setLayout(new BorderLayout());
         initializeComponents();
+        generateReport(); // Automatically load the data when opening the panel
     }
 
      /**
