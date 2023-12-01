@@ -77,7 +77,7 @@ public class ButtonBuilder {
         return updateButton;
     }
 
-    // Button is created by Dirkje Jansje van der Poel
+    // Universal button is created by Dirkje Jansje van der Poel
 public static JButton createButton(String buttonText, Runnable action) {
     JButton button = new JButton(buttonText);
     button.setForeground(Color.WHITE); // Set text color to white
