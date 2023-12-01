@@ -79,6 +79,7 @@ public class ProductController {
     public boolean handleDeleteProduct(String productCode) {
         boolean deletionSuccessful = productsDAO.deleteProduct(productCode);
         if (deletionSuccessful) {
+             handleViewAllProducts();
             return true;
         } else {
             // Handle errors here, for example, display an error message
@@ -102,6 +103,7 @@ public class ProductController {
     public boolean handleAddProduct(String productName, String productLine, String productScale,
                                     String productVendor, String productDescription, String quantityInStockText,
                                     String buyPriceText, String MSRPText) {
+                                        handleViewAllProducts();
         // Validate numeric fields
         if (!isNumeric(quantityInStockText) || !isNumeric(buyPriceText) || !isNumeric(MSRPText)) {
             handleConversionError("Quantity In Stock, Buy Price, and MSRP");
@@ -113,9 +115,14 @@ public class ProductController {
             int quantityInStock = Integer.parseInt(quantityInStockText);
             BigDecimal buyPrice = new BigDecimal(buyPriceText);
             BigDecimal MSRP = new BigDecimal(MSRPText);
-
-            return productsDAO.addProduct(productName, productLine, productScale, productVendor,
+        
+            // Call addProduct method
+            boolean productAdded = productsDAO.addProduct(productName, productLine, productScale, productVendor,
                     productDescription, quantityInStock, buyPrice, MSRP);
+            // Call handleViewAllProducts() regardless of the result of addProduct
+            handleViewAllProducts();
+            // Return the result of addProduct
+            return productAdded;
         } catch (NumberFormatException | ArithmeticException ex) {
             ex.printStackTrace();
             handleConversionError("Quantity In Stock, Buy Price, or MSRP");
@@ -183,6 +190,7 @@ public class ProductController {
             // Check if the product details were retrieved successfully
             if (updatedProduct != null && !updatedProduct.isEmpty()) {
                 StringBuilder message = new StringBuilder("Product updated successfully.\n");
+                handleViewAllProducts();
 
                 // Check and append details about updated values
                 if (quantityInStock != null) {

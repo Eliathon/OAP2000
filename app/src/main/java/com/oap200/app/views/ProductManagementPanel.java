@@ -475,6 +475,8 @@ public class ProductManagementPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Error adding product.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    
     // Method to find the first empty field
     private String findMissingField() {
         if (productName.getText().isEmpty()) {
