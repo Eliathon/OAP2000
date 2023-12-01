@@ -27,6 +27,7 @@ import com.oap200.app.controllers.ProductController;
 import com.oap200.app.utils.ButtonBuilder;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
@@ -38,6 +39,7 @@ public class ProductManagementPanel extends JPanel {
 
     // Components for managing products
     private JTable productsTable;
+    private JTable productsTableAdd;
     private JTextField searchCodeDeleteField;
     private JTextField searchTextField, searchCodeField;
     private JTextField productName, productScale, productVendor, productDescription, quantityInStock,
@@ -53,7 +55,6 @@ public class ProductManagementPanel extends JPanel {
      */
     public ProductManagementPanel(JFrame parentFrame) {
         productController = new ProductController(new ProductsDAO(), this);
-
         initializeFields();
         setLayout(new BorderLayout());
 
@@ -80,12 +81,14 @@ public class ProductManagementPanel extends JPanel {
         JButton searchCodeButton = ButtonBuilder.createSearchCodeButton(this::searchProductsByCode);
 
         JPanel viewSearchButtonPanel = createViewSearchButtonPanel(viewButton, searchButton, searchCodeButton);
+        
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("View Products", null, createViewPanel(viewSearchButtonPanel), "Click to view");
         tabbedPane.addTab("Add Products", null, createAddPanel(addButton), "Click to add");
         tabbedPane.addTab("Update Products", null, createUpdatePanel(updateButton), "Click to Update");
         tabbedPane.addTab("Delete Products", null, createDeletePanel(deleteButton), "Click to Delete");
+
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
         buttonPanel.add(backButton);
@@ -167,6 +170,7 @@ public class ProductManagementPanel extends JPanel {
         return panel;
     }
 
+
     /**
      * Creates a panel for viewing products with search fields and buttons.
      *
@@ -209,6 +213,8 @@ public class ProductManagementPanel extends JPanel {
         // Remember to return the main panel
         return panel;
     }
+
+    
     /**
      * Creates a panel for adding products with input fields and a button.
      *
@@ -254,6 +260,7 @@ public class ProductManagementPanel extends JPanel {
         // Add the button to a separate panel for positioning adjustment
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(addButton);
+       
 
         // Add the button's panel at the center
         panel.add(buttonPanel, BorderLayout.CENTER);
@@ -263,6 +270,12 @@ public class ProductManagementPanel extends JPanel {
         topPanel.add(inputPanel, BorderLayout.WEST);
         panel.add(buttonPanel, BorderLayout.WEST);
         panel.add(topPanel, BorderLayout.NORTH);
+
+        productsTableAdd = new JTable();
+        JScrollPane scrollPaneAdd = new JScrollPane(productsTableAdd);
+
+        // Add scroll pane to the main panel
+        panel.add(scrollPaneAdd, BorderLayout.CENTER);
 
         // Add the top panel to the main panel
         panel.add(topPanel, BorderLayout.NORTH);
@@ -493,6 +506,7 @@ public class ProductManagementPanel extends JPanel {
             model.addRow(row);
         }
         productsTable.setModel(model);
+        productsTableAdd.setModel(model);
     }
 
     /**
