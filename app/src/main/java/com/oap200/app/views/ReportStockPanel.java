@@ -4,15 +4,16 @@ package com.oap200.app.views;
 import com.oap200.app.utils.DbConnect;
 import com.oap200.app.utils.PrintManager;
 import com.oap200.app.Interfaces.ReportGenerator;
-import com.oap200.app.utils.ButtonBuilder; // Import the ButtonBuilder class
+import com.oap200.app.utils.ButtonBuilder;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
-import java.sql.*;
 import java.awt.*;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.sql.*;
 
 public class ReportStockPanel extends JPanel implements ReportGenerator {
     private JButton generateReportButton, printButton;
@@ -24,14 +25,28 @@ public class ReportStockPanel extends JPanel implements ReportGenerator {
     public ReportStockPanel() {
         setLayout(new BorderLayout());
         initializeComponents();
-        addActionsToButtons();
     }
 
     private void initializeComponents() {
         generateReportButton = ButtonBuilder.createStyledButton("Generate Stock Report", this::generateReport);
         printButton = ButtonBuilder.createStyledButton("Print Report", this::handlePrintAction);
 
-        searchField = new JTextField(20); 
+        searchField = new JTextField(20);
+        searchField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    generateReport();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+
         tableModel = new DefaultTableModel();
         reportTable = new JTable(tableModel);
         sorter = new TableRowSorter<>(tableModel);
@@ -53,57 +68,46 @@ public class ReportStockPanel extends JPanel implements ReportGenerator {
         add(new JScrollPane(reportTable), BorderLayout.CENTER);
     }
 
-    private void addActionsToButtons() {
-        generateReportButton.addActionListener(e -> generateReport());
-        printButton.addActionListener(e -> handlePrintAction());
-    }
-
     private void handlePrintAction() {
         if (PrintManager.isPrinting()) {
-            return; // Als er al een printtaak bezig is, doe dan niets
+            return;
         }
         PrintManager.printTable(reportTable);
     }
 
     @Override
     public void generateReport() {
+        String searchText = searchField.getText().toLowerCase();
         DefaultTableModel tableModel = (DefaultTableModel) reportTable.getModel();
-        tableModel.setRowCount(0);  // Clear existing rows
-    
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-    
-        try {
-            DbConnect dbConnect = new DbConnect(); // Create a new instance
-             conn = dbConnect.getConnection(); // Get the connection
-       
-            rs = pstmt.executeQuery();
-    
-            while (rs.next()) {
-                tableModel.addRow(new Object[]{
-                    rs.getString("productCode"),
-                    rs.getString("productName"),
-                    rs.getString("productLine"),
-                    rs.getInt("quantityInStock"),
-                    rs.getDouble("buyPrice")
-                });
+        tableModel.setRowCount(0); // Clear existing rows
+
+        try (DbConnect dbConnect = new DbConnect()) {
+            Connection conn = dbConnect.getConnection();
+            String sql = "SELECT productCode, productName, productLine, quantityInStock, buyPrice "
+                       + "FROM products "
+                       + "WHERE LOWER(productName) LIKE ? OR LOWER(productLine) LIKE ? "
+                       + "ORDER BY quantityInStock DESC;";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, "%" + searchText + "%");
+                pstmt.setString(2, "%" + searchText + "%");
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()) {
+                        tableModel.addRow(new Object[]{
+                            rs.getString("productCode"),
+                            rs.getString("productName"),
+                            rs.getString("productLine"),
+                            rs.getInt("quantityInStock"),
+                            rs.getDouble("buyPrice")
+                        });
+                    }
+                }
             }
-        } catch (SQLException ex) {
+        } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error accessing the database: " + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
-        } catch (ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "Error accessing the database: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Database driver not found: " + ex.getMessage(), "Driver Error", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            JOptionPane.showMessageDialog(this, "Error closing database connection: " + ex.getMessage(), "Connection Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-  }
-
+}

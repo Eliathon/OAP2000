@@ -1,9 +1,9 @@
 // Created by Dirkje J. van der Poel
 package com.oap200.app.views;
 
+import com.oap200.app.Interfaces.ReportGenerator;
 import com.oap200.app.utils.DbConnect;
 import com.oap200.app.utils.PrintManager;
-import com.oap200.app.Interfaces.ReportGenerator;
 import com.oap200.app.utils.ButtonBuilder;
 import com.oap200.app.utils.DateFactory;
 
@@ -16,7 +16,7 @@ import java.util.Date;
 import java.awt.*;
 
 public class ReportSalesPanel extends JPanel implements ReportGenerator {
-    
+
     private JButton generateReportButton, printButton;
     private JTable reportTable;
     private DefaultTableModel tableModel;
@@ -25,10 +25,10 @@ public class ReportSalesPanel extends JPanel implements ReportGenerator {
     public ReportSalesPanel() {
         setLayout(new BorderLayout());
         initializeComponents();
-        addActionsToButtons();
     }
 
     private void initializeComponents() {
+        // Initialize date spinners
         Calendar calendar = Calendar.getInstance();
         calendar.set(2003, Calendar.JANUARY, 1);
         Date initialDate = calendar.getTime();
@@ -43,18 +43,20 @@ public class ReportSalesPanel extends JPanel implements ReportGenerator {
         startDateSpinner.setEditor(startDateEditor);
         endDateSpinner.setEditor(endDateEditor);
 
+        // Button initialization with method references
         generateReportButton = ButtonBuilder.createStyledButton("Generate Sales Report", this::generateReport);
         printButton = ButtonBuilder.createStyledButton("Print Report", this::handlePrintAction);
 
+        // Initialize table
         tableModel = new DefaultTableModel();
         reportTable = new JTable(tableModel);
         reportTable.setAutoCreateRowSorter(true);
-
         tableModel.addColumn("Customer Number");
         tableModel.addColumn("Check Number");
         tableModel.addColumn("Payment Date");
         tableModel.addColumn("Amount");
 
+        // Setup input panel
         JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         inputPanel.add(new JLabel("Start Date:"));
         inputPanel.add(startDateSpinner);
@@ -67,56 +69,44 @@ public class ReportSalesPanel extends JPanel implements ReportGenerator {
         add(new JScrollPane(reportTable), BorderLayout.CENTER);
     }
 
-    private void addActionsToButtons() {
-        generateReportButton.addActionListener(e -> generateReport());
-        printButton.addActionListener(e -> handlePrintAction());
-    }
-
     private void handlePrintAction() {
         if (PrintManager.isPrinting()) {
-            return; // Do nothing if a print job is already in progress
+            return;
         }
         PrintManager.printTable(reportTable);
     }
 
-   @Override
-public void generateReport() {
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    String startDate = dateFormat.format(startDateSpinner.getValue());
-    String endDate = dateFormat.format(endDateSpinner.getValue());
+    @Override
+    public void generateReport() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String startDate = dateFormat.format(startDateSpinner.getValue());
+        String endDate = dateFormat.format(endDateSpinner.getValue());
 
-    DefaultTableModel tableModel = (DefaultTableModel) reportTable.getModel();
-    tableModel.setRowCount(0);  // Clear existing rows
+        tableModel.setRowCount(0); // Clear existing rows
 
-    try {
-        DbConnect dbConnect = new DbConnect(); // Maak een nieuwe instantie van DbConnect
-        Connection conn = dbConnect.getConnection(); // Gebruik de instantie om de verbinding op te halen
-
-        PreparedStatement pstmt = conn.prepareStatement("SELECT customerNumber, checkNumber, paymentDate, amount " +
-                                      "FROM payments WHERE paymentDate BETWEEN ? AND ? " +
-                                      "ORDER BY paymentDate DESC;");
-        pstmt.setString(1, startDate);
-        pstmt.setString(2, endDate);
-        ResultSet rs = pstmt.executeQuery();
-
-        while (rs.next()) {
-            tableModel.addRow(new Object[]{
-                rs.getInt("customerNumber"),
-                rs.getString("checkNumber"),
-                rs.getDate("paymentDate"),
-                rs.getDouble("amount")
-            });
+        try (DbConnect dbConnect = new DbConnect();
+             Connection conn = dbConnect.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT customerNumber, checkNumber, paymentDate, amount " +
+                                                            "FROM payments WHERE paymentDate BETWEEN ? AND ? " +
+                                                            "ORDER BY paymentDate DESC;")) {
+            pstmt.setString(1, startDate);
+            pstmt.setString(2, endDate);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    tableModel.addRow(new Object[]{
+                        rs.getInt("customerNumber"),
+                        rs.getString("checkNumber"),
+                        rs.getDate("paymentDate"),
+                        rs.getDouble("amount")
+                    });
+                }
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error accessing the database: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error closing database connection: " + ex.getMessage(), "Connection Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        rs.close();
-        pstmt.close();
-        conn.close();
-    } catch (SQLException | ClassNotFoundException ex) {
-        ex.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Error accessing the database: " + ex.getMessage(),
-                                      "Database error", JOptionPane.ERROR_MESSAGE);
-     }
-  }
+    }
 }
-
-

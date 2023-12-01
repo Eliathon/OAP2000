@@ -1,11 +1,10 @@
-// Created by Dirkje J. van der Poel    
+// Created by Dirkje J. van der Poel
 package com.oap200.app.views;
 
 import com.oap200.app.Interfaces.ReportGenerator;
 import com.oap200.app.utils.DbConnect;
 import com.oap200.app.utils.PrintManager;
 import com.oap200.app.utils.ButtonBuilder;
-//import com.oap200.app.utils.ButtonBuilder;
 import com.oap200.app.utils.DateFactory;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -24,28 +23,25 @@ public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
     public ReportPaymentsPanel() {
         setLayout(new BorderLayout());
         initializeComponents();
-        addActionsToButtons();
     }
 
     private void initializeComponents() {
+        // Initialize date spinners
         Calendar calendar = Calendar.getInstance();
         calendar.set(2003, Calendar.JANUARY, 1);
         Date initialDate = calendar.getTime();
-        Date earliestDate = calendar.getTime(); // January 1, 2003
-        Date latestDate = new Date(); // Current date
+        Date earliestDate = initialDate;
+        Date latestDate = new Date();
 
         startDateSpinner = DateFactory.createDateSpinner(initialDate, earliestDate, latestDate);
         endDateSpinner = DateFactory.createDateSpinner(latestDate, earliestDate, latestDate);
 
-        JSpinner.DateEditor startDateEditor = new JSpinner.DateEditor(startDateSpinner, "yyyy-MM-dd");
-        JSpinner.DateEditor endDateEditor = new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd");
-        startDateSpinner.setEditor(startDateEditor);
-        endDateSpinner.setEditor(endDateEditor);
-
-       generateReportButton = ButtonBuilder.createStyledButton("Generate Payment Report", null); // Set later in addActionsToButtons()
-        printButton = ButtonBuilder.createStyledButton("Print Report", null); // Set later in addActionsToButtons()
+        // Create buttons
+        generateReportButton = ButtonBuilder.createStyledButton("Generate Payment Report", () -> generateReport());
+        printButton = ButtonBuilder.createStyledButton("Print Report", () -> handlePrintAction());
 
 
+        // Table setup
         tableModel = new DefaultTableModel();
         reportTable = new JTable(tableModel);
         reportTable.setAutoCreateRowSorter(true);
@@ -54,6 +50,7 @@ public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
         tableModel.addColumn("Payment Date");
         tableModel.addColumn("Amount");
 
+        // Panel layout
         JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         inputPanel.add(new JLabel("Start Date:"));
         inputPanel.add(startDateSpinner);
@@ -64,11 +61,6 @@ public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
 
         add(inputPanel, BorderLayout.NORTH);
         add(new JScrollPane(reportTable), BorderLayout.CENTER);
-    }
-
-    private void addActionsToButtons() {
-        generateReportButton.addActionListener(e -> generateReport());
-        printButton.addActionListener(e -> handlePrintAction());
     }
 
     private void handlePrintAction() {
@@ -84,24 +76,24 @@ public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
         String startDate = dateFormat.format(startDateSpinner.getValue());
         String endDate = dateFormat.format(endDateSpinner.getValue());
 
-        DefaultTableModel tableModel = (DefaultTableModel) reportTable.getModel();
-        tableModel.setRowCount(0);
+        tableModel.setRowCount(0); // Clear existing rows
 
-        try (DbConnect dbConnect = new DbConnect()) {
-            Connection conn = dbConnect.getConnection();
-            String sql = "SELECT customerNumber, checkNumber, paymentDate, amount FROM payments WHERE paymentDate BETWEEN ? AND ? ORDER BY paymentDate DESC;";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, startDate);
-                pstmt.setString(2, endDate);
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    while (rs.next()) {
-                        tableModel.addRow(new Object[]{
+        try (DbConnect dbConnect = new DbConnect();
+             Connection conn = dbConnect.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(
+                     "SELECT customerNumber, checkNumber, paymentDate, amount FROM payments WHERE paymentDate BETWEEN ? AND ? ORDER BY paymentDate DESC;")) {
+
+            pstmt.setString(1, startDate);
+            pstmt.setString(2, endDate);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    tableModel.addRow(new Object[]{
                             rs.getInt("customerNumber"),
                             rs.getString("checkNumber"),
                             rs.getDate("paymentDate"),
                             rs.getDouble("amount")
-                        });
-                    }
+                    });
                 }
             }
         } catch (SQLException | ClassNotFoundException ex) {
