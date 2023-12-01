@@ -2,7 +2,7 @@ package com.oap200.app.views;
 
 /**
 *@author Jesper Solberg
-*
+*This panel ensures a visual help to view the paymentdata in the database.
 */
 
 import javax.swing.*;
