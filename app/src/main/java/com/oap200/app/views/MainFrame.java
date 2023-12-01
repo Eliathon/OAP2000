@@ -192,7 +192,7 @@ public class MainFrame extends JFrame {
     }
 
     private void openReportManagementPanel() {
-        openManagementPanel("Reports", new ReportManagementPanel());
+        openManagementPanel("Reports", new ReportManagementPanel1());
     }
 
     private void openManagementPanel(String title, JPanel panel) {
