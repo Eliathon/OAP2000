@@ -38,7 +38,7 @@ public class ButtonBuilder {
         backButton.setForeground(Color.WHITE); // Set text color to white
         backButton.setBackground(Color.BLUE); // Set background color to blue
         backButton.setBorderPainted(false); // Remove border
-        backButton.setPreferredSize(new Dimension(90, 20)); // Set a specific size
+        backButton.setPreferredSize(new Dimension(100, 20)); // Set a specific size
         backButton.addActionListener(e -> {
             if (action != null) {
                 action.run();

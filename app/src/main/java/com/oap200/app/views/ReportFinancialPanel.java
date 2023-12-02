@@ -45,11 +45,11 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
         yearComboBox = new JComboBox<>(new String[]{"2003", "2004", "2005"});
         quarterComboBox = new JComboBox<>(new String[]{"Q1", "Q2", "Q3", "Q4", "Q All"});
 
-        generateReportButton = ButtonBuilder.createButton("Generate Report", () -> generateReport());
-        saveReportButton = ButtonBuilder.createButton("Save Report", () -> saveReportToFile());
+        generateReportButton = ButtonBuilder.createButton("Filter", () -> generateReport());
+        saveReportButton = ButtonBuilder.createButton("Save as...", () -> saveReportToFile());
 
-        csvRadioButton = ButtonBuilder.createStyledRadioButton("Save as CSV", true);
-        txtRadioButton = ButtonBuilder.createStyledRadioButton("Save as TXT", false);
+        csvRadioButton = ButtonBuilder.createStyledRadioButton("CSV", true);
+        txtRadioButton = ButtonBuilder.createStyledRadioButton("TXT", false);
         yearlyReportRadioButton = new JRadioButton("Yearly Report");
         quarterlyReportRadioButton = new JRadioButton("Quarterly Report", true);
 
