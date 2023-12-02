@@ -154,7 +154,7 @@ public static JButton createButton(String buttonText, Runnable action) {
 
 //Search button created by Kristian
     public static JButton createSearchNumberButton(Runnable action) {
-        JButton searchNumberButton = new JButton("Search by number");
+        JButton searchNumberButton = new JButton("Search");
         searchNumberButton.setForeground(Color.WHITE); // Set text color to white
         searchNumberButton.setBackground(Color.BLACK); // Set background color to red
         searchNumberButton.setBorderPainted(false); // Remove border

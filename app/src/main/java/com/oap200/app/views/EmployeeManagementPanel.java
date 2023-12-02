@@ -226,27 +226,46 @@ private JPanel createViewSearchButtonPanel(JButton viewButton, JButton searchBut
  * @return The panel for adding a new employee.
  */
 private JPanel createAddPanel() {
-    JPanel panel = new JPanel(new BorderLayout());
+    // Main panel for adding a new employee, using BorderLayout for overall arrangement
+    JPanel addPanel = new JPanel(new BorderLayout());
+
+    // Panel to hold all the label and input field pairs, using BoxLayout for vertical stacking
+    JPanel fieldsPanel = new JPanel();
+    fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.Y_AXIS));
+
+    // Add the pairs of labels and text fields to the fieldsPanel
+    fieldsPanel.add(createFieldPanel("Last Name:", lastName));
+    fieldsPanel.add(createFieldPanel("First Names:", firstName));
+    fieldsPanel.add(createFieldPanel("Extension:", extension));
+    fieldsPanel.add(createFieldPanel("Email:", email));
+    fieldsPanel.add(createFieldPanel("Office Code:", officeCode));
+    fieldsPanel.add(createFieldPanel("Reports To:", reportsTo));
+    fieldsPanel.add(createFieldPanel("Employee Roles:", employeeRolesComboBox));
+
+    // Wrap fieldsPanel in a container to prevent it from stretching to the full width of the window
+    JPanel fieldsContainer = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    fieldsContainer.add(fieldsPanel);
+
+    // Add the fieldsContainer to the center of the addPanel
+    addPanel.add(fieldsContainer, BorderLayout.CENTER);
+
+    // Create and add the Add button to the south of addPanel
     JButton addButton = ButtonBuilder.createAddButton(() -> addEmployee());
-    JPanel addPanel = new JPanel(new GridLayout(9, 2));
-    addPanel.add(new JLabel("Last Name:"));
-    addPanel.add(lastName);
-    addPanel.add(new JLabel("First Names:"));
-    addPanel.add(firstName);
-    addPanel.add(new JLabel("Extension:"));
-    addPanel.add(extension);
-    addPanel.add(new JLabel("Email:"));
-    addPanel.add(email);
-    addPanel.add(new JLabel("Office Code:"));
-    addPanel.add(officeCode);
-    addPanel.add(new JLabel("Reports To:"));
-    addPanel.add(reportsTo);
-    addPanel.add(new JLabel("Employee Roles:"));
-    addPanel.add(employeeRolesComboBox);
-    panel.add(addPanel, BorderLayout.CENTER);
-    panel.add(addButton, BorderLayout.SOUTH);
-    return panel;
+    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    buttonPanel.add(addButton);
+    addPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+    return addPanel;
 }
+
+// Helper method to create a panel with a label and text field using FlowLayout for alignment
+private JPanel createFieldPanel(String labelText, Component field) {
+    JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    fieldPanel.add(new JLabel(labelText));
+    fieldPanel.add(field);
+    return fieldPanel;
+}
+
 
 /**
  * Creates the panel for updating employee information.
