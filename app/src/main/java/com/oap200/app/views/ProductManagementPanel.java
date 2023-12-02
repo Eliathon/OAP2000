@@ -255,18 +255,22 @@ public class ProductManagementPanel extends JPanel {
      */
     private JPanel createAddPanel(JButton addButton) {
         JPanel panel = new JPanel(new BorderLayout());
+        JPanel inputPanel = new JPanel(new GridLayout(9, 2));
         // Add label and field panel as before
-        JPanel inputPanel = new JPanel(new GridLayout(8, 2));
+         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        buttonPanel.add(addButton);
+        
         // Add labels and corresponding text fields
         inputPanel.add(new JLabel("Product Name:"));
         inputPanel.add(productName);
 
-        // Update the size of the Product Name field to match the view panel
+         // Update the size of the Product Name field to match the view panel
         Dimension preferredSize = productsTable.getTableHeader().getDefaultRenderer()
                 .getTableCellRendererComponent(productsTable, "Product Name", false, false, -1, 0)
                 .getPreferredSize();
-        productName.setPreferredSize(preferredSize);
-
+        productName.setPreferredSize(preferredSize);    
+        
+        // Add the button to a separate panel for positioning adjustment
         inputPanel.add(new JLabel("Product Line:"));
         inputPanel.add(productLineComboBox);
         inputPanel.add(new JLabel("Product Scale:"));
@@ -281,32 +285,19 @@ public class ProductManagementPanel extends JPanel {
         inputPanel.add(buyPrice);
         inputPanel.add(new JLabel("MSRP:"));
         inputPanel.add(MSRP);
+        inputPanel.add(buttonPanel);
 
         // Add label and field panel to the west and center positions
         panel.add(inputPanel, BorderLayout.WEST);
-        
-
-        // Add the button to a separate panel for positioning adjustment
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonPanel.add(addButton);
-        
-       
-
-        // Add the button's panel at the center
-        panel.add(buttonPanel, BorderLayout.CENTER);
-
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.add(inputPanel, BorderLayout.WEST);
-        topPanel.add(inputPanel, BorderLayout.WEST);
-        panel.add(buttonPanel, BorderLayout.WEST);
-        panel.add(topPanel, BorderLayout.NORTH);
 
         productsTableAdd = new JTable();
         JScrollPane scrollPaneAdd = new JScrollPane(productsTableAdd);
 
+         JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(inputPanel, BorderLayout.WEST);
+
         // Add scroll pane to the main panel
         panel.add(scrollPaneAdd, BorderLayout.CENTER);
-
         // Add the top panel to the main panel
         panel.add(topPanel, BorderLayout.NORTH);
 
@@ -323,7 +314,11 @@ public class ProductManagementPanel extends JPanel {
         JPanel panel = new JPanel(new BorderLayout());
 
         // Add label and field panel as before
-        JPanel inputPanel = new JPanel(new GridLayout(4, 2));
+        JPanel inputPanel = new JPanel(new GridLayout(5, 2));
+
+        // Add the button to a separate panel for positioning adjustment
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        buttonPanel.add(updateButton);
 
         // Add labels and corresponding text fields for updating
         inputPanel.add(new JLabel("Update Product Code:"));
@@ -334,10 +329,7 @@ public class ProductManagementPanel extends JPanel {
         inputPanel.add(updateBuyPrice);
         inputPanel.add(new JLabel("Update MSRP:"));
         inputPanel.add(updateMSRP);
-
-        // Add the button to a separate panel for positioning adjustment
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        buttonPanel.add(updateButton);
+        inputPanel.add(buttonPanel);
 
         productsTableUpdate = new JTable();
         JScrollPane scrollPaneUpdate = new JScrollPane(productsTableUpdate);
@@ -348,7 +340,6 @@ public class ProductManagementPanel extends JPanel {
         // Add label and field panel to the west and center positions
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(inputPanel, BorderLayout.WEST);
-        panel.add(buttonPanel, BorderLayout.WEST);
         panel.add(topPanel, BorderLayout.NORTH);
 
         return panel;
@@ -366,10 +357,6 @@ public class ProductManagementPanel extends JPanel {
         // Add label and field panel as before
         JPanel inputPanel = new JPanel(new GridLayout(1, 3));
 
-        // Add the delete button to a separate panel for right alignment
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-        buttonPanel.add(deleteButton);
-
          productsTableDelete = new JTable();
         JScrollPane scrollPaneDelete = new JScrollPane(productsTableDelete);
 
@@ -379,7 +366,7 @@ public class ProductManagementPanel extends JPanel {
         // Add input field for product code
         inputPanel.add(new JLabel("Product Code:"));
         inputPanel.add(searchCodeDeleteField);
-        inputPanel.add(buttonPanel);
+        inputPanel.add(deleteButton);
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(inputPanel, BorderLayout.WEST);
