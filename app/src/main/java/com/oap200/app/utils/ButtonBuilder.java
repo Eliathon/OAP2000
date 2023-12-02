@@ -34,7 +34,7 @@ public class ButtonBuilder {
 
     // BlueBackButton is created by Johnny
     public static JButton createBlueBackButton(Runnable action) {
-        JButton backButton = new JButton("BACK");
+        JButton backButton = new JButton("Back");
         backButton.setForeground(Color.WHITE); // Set text color to white
         backButton.setBackground(Color.BLUE); // Set background color to blue
         backButton.setBorderPainted(false); // Remove border
@@ -47,7 +47,7 @@ public class ButtonBuilder {
         return backButton;
     }
 
-    // Red Logout Button is created by Johnny
+    // LogOutButton is created by Johnny
     public static JButton createRedLogoutButton(Runnable action) {
         JButton backButton = new JButton("Logout");
         backButton.setForeground(Color.WHITE); // Set text color to white
@@ -62,7 +62,7 @@ public class ButtonBuilder {
         return backButton;
     }
 
-    // Red Logout Button is created by Sebastian
+    // updateButton is created by Sebastian
     public static JButton createUpdateButton(Runnable action) {
         JButton updateButton = new JButton("Update");
         updateButton.setForeground(Color.WHITE); // Set text color to white
@@ -77,7 +77,22 @@ public class ButtonBuilder {
         return updateButton;
     }
 
-     // Red Logout Button is created by Sebastian
+    // Universal button is created by Dirkje Jansje van der Poel
+public static JButton createButton(String buttonText, Runnable action) {
+    JButton button = new JButton(buttonText); // Create button with text
+    button.setForeground(Color.WHITE); // Set text color to white
+    button.setBackground(Color.BLACK); // Set background color to black
+    button.setBorderPainted(false); // Remove border
+    button.setPreferredSize(new Dimension(100, 20)); // Set a specific size
+    button.addActionListener(e -> {
+        if (action != null) {
+            action.run();
+        }
+    });
+    return button;
+}
+
+     // viewButton is created by Sebastian
     public static JButton createViewButton(Runnable action) {
         JButton viewButton = new JButton("View All");
         viewButton.setForeground(Color.WHITE); // Set text color to white
@@ -92,7 +107,7 @@ public class ButtonBuilder {
         return viewButton;
     }
 
-     // Red Logout Button is created by Sebastian
+     //addButton is created by Sebastian
     public static JButton createAddButton(Runnable action) {
         JButton addButton = new JButton("Add");
         addButton.setForeground(Color.WHITE); // Set text color to white
@@ -107,7 +122,7 @@ public class ButtonBuilder {
         return addButton;
     }
 
-     // Red Logout Button is created by Sebastian
+     // deleteButton is created by Sebastian
     public static JButton createDeleteButton(Runnable action) {
         JButton deleteButton = new JButton("Delete");
         deleteButton.setForeground(Color.WHITE); // Set text color to white
@@ -166,15 +181,9 @@ public class ButtonBuilder {
         return searchNumberButton;
     }
 
-    // RadioButton creation method - Created by Dirkje J van der Poel
+    // RadioButton creation method - Created by Dirkje Jansje van der Poel
     public static JRadioButton createStyledRadioButton(String text, boolean selected) {
         JRadioButton radioButton = new JRadioButton(text, selected);
-        /*TODO: Here, add any extra styling you need
-         radioButton.setForeground(Color.BLACK);
-         radioButton.setBackground(Color.WHITE);
-         ... other styling or functionalities ...
-        return radioButton;
-        */
-        return radioButton;
+            return radioButton;
     }
 }

@@ -40,6 +40,8 @@ public class ProductManagementPanel extends JPanel {
     // Components for managing products
     private JTable productsTable;
     private JTable productsTableAdd;
+    private JTable productsTableUpdate;
+    private JTable productsTableDelete;
     private JTextField searchCodeDeleteField;
     private JTextField searchTextField, searchCodeField;
     private JTextField productName, productScale, productVendor, productDescription, quantityInStock,
@@ -88,6 +90,26 @@ public class ProductManagementPanel extends JPanel {
         tabbedPane.addTab("Add Products", null, createAddPanel(addButton), "Click to add");
         tabbedPane.addTab("Update Products", null, createUpdatePanel(updateButton), "Click to Update");
         tabbedPane.addTab("Delete Products", null, createDeletePanel(deleteButton), "Click to Delete");
+
+
+    // Legg til ChangeListener
+    tabbedPane.addChangeListener(e -> {
+        // Sjekk om den aktive fanen er "Add Products"
+       if (tabbedPane.getSelectedIndex() == 1) {
+            // Hvis ja, kjør viewProducts-metoden
+           viewProducts();
+        }
+         if (tabbedPane.getSelectedIndex() == 2) {
+            // Hvis ja, kjør viewProducts-metoden
+            viewProducts();
+        } if (tabbedPane.getSelectedIndex() == 3) {
+            // Hvis ja, kjør viewProducts-metoden
+            viewProducts();
+        } if (tabbedPane.getSelectedIndex() == 4) {
+            // Hvis ja, kjør viewProducts-metoden
+            viewProducts();
+        }
+    });
 
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
@@ -223,11 +245,8 @@ public class ProductManagementPanel extends JPanel {
      */
     private JPanel createAddPanel(JButton addButton) {
         JPanel panel = new JPanel(new BorderLayout());
-
         // Add label and field panel as before
         JPanel inputPanel = new JPanel(new GridLayout(8, 2));
-        
-
         // Add labels and corresponding text fields
         inputPanel.add(new JLabel("Product Name:"));
         inputPanel.add(productName);
@@ -260,6 +279,7 @@ public class ProductManagementPanel extends JPanel {
         // Add the button to a separate panel for positioning adjustment
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(addButton);
+        
        
 
         // Add the button's panel at the center
@@ -309,10 +329,16 @@ public class ProductManagementPanel extends JPanel {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         buttonPanel.add(updateButton);
 
+        productsTableUpdate = new JTable();
+        JScrollPane scrollPaneUpdate = new JScrollPane(productsTableUpdate);
+
+        // Add scroll pane to the main panel
+        panel.add(scrollPaneUpdate, BorderLayout.CENTER);
+
         // Add label and field panel to the west and center positions
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(inputPanel, BorderLayout.WEST);
-        panel.add(buttonPanel, BorderLayout.CENTER);
+        panel.add(buttonPanel, BorderLayout.WEST);
         panel.add(topPanel, BorderLayout.NORTH);
 
         return panel;
@@ -333,6 +359,12 @@ public class ProductManagementPanel extends JPanel {
         // Add the delete button to a separate panel for right alignment
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
         buttonPanel.add(deleteButton);
+
+         productsTableDelete = new JTable();
+        JScrollPane scrollPaneDelete = new JScrollPane(productsTableDelete);
+
+        // Add scroll pane to the main panel
+        panel.add(scrollPaneDelete, BorderLayout.CENTER);
 
         // Add input field for product code
         inputPanel.add(new JLabel("Product Code:"));
@@ -443,6 +475,8 @@ public class ProductManagementPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Error adding product.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    
     // Method to find the first empty field
     private String findMissingField() {
         if (productName.getText().isEmpty()) {
@@ -507,6 +541,8 @@ public class ProductManagementPanel extends JPanel {
         }
         productsTable.setModel(model);
         productsTableAdd.setModel(model);
+        productsTableUpdate.setModel(model);
+        productsTableDelete.setModel(model);
     }
 
     /**

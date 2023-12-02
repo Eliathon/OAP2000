@@ -1,12 +1,11 @@
-// Created by Dirkje J. van der Poel    
 package com.oap200.app.views;
 
 import com.oap200.app.Interfaces.ReportGenerator;
 import com.oap200.app.utils.DbConnect;
 import com.oap200.app.utils.PrintManager;
 import com.oap200.app.utils.ButtonBuilder;
-//import com.oap200.app.utils.ButtonBuilder;
 import com.oap200.app.utils.DateFactory;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
@@ -15,37 +14,48 @@ import java.util.Calendar;
 import java.util.Date;
 import java.awt.*;
 
+/**
+ * ReportPaymentsPanel is responsible for displaying and generating payment reports.
+ * It allows users to select dates and generate reports based on the selected period.
+ * The panel also provides functionality to print the generated report.
+ *
+ * @author Dirkje Jansje van der Poel
+ */
 public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
     private JButton generateReportButton, printButton;
     private JTable reportTable;
     private DefaultTableModel tableModel;
     private JSpinner startDateSpinner, endDateSpinner;
 
+     /**
+     * Constructs a ReportPaymentsPanel with initial components setup.
+     */
     public ReportPaymentsPanel() {
         setLayout(new BorderLayout());
         initializeComponents();
-        addActionsToButtons();
+        generateReport(); // Automatically load the data when opening the panel
     }
 
+     /**
+     * Initializes and adds components to the panel.
+     */
     private void initializeComponents() {
+        // Initialize date spinners
         Calendar calendar = Calendar.getInstance();
         calendar.set(2003, Calendar.JANUARY, 1);
         Date initialDate = calendar.getTime();
-        Date earliestDate = calendar.getTime(); // January 1, 2003
-        Date latestDate = new Date(); // Current date
+        Date earliestDate = initialDate;
+        Date latestDate = new Date();
 
         startDateSpinner = DateFactory.createDateSpinner(initialDate, earliestDate, latestDate);
         endDateSpinner = DateFactory.createDateSpinner(latestDate, earliestDate, latestDate);
 
-        JSpinner.DateEditor startDateEditor = new JSpinner.DateEditor(startDateSpinner, "yyyy-MM-dd");
-        JSpinner.DateEditor endDateEditor = new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd");
-        startDateSpinner.setEditor(startDateEditor);
-        endDateSpinner.setEditor(endDateEditor);
-
-       generateReportButton = ButtonBuilder.createStyledButton("Generate Payment Report", null); // Set later in addActionsToButtons()
-        printButton = ButtonBuilder.createStyledButton("Print Report", null); // Set later in addActionsToButtons()
+        // Create buttons
+        generateReportButton = ButtonBuilder.createButton("Generate Report", () -> generateReport());
+        printButton = ButtonBuilder.createButton("Print Report", () -> handlePrintAction());
 
 
+        // Table setup
         tableModel = new DefaultTableModel();
         reportTable = new JTable(tableModel);
         reportTable.setAutoCreateRowSorter(true);
@@ -54,6 +64,7 @@ public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
         tableModel.addColumn("Payment Date");
         tableModel.addColumn("Amount");
 
+        // Panel layout
         JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         inputPanel.add(new JLabel("Start Date:"));
         inputPanel.add(startDateSpinner);
@@ -66,11 +77,9 @@ public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
         add(new JScrollPane(reportTable), BorderLayout.CENTER);
     }
 
-    private void addActionsToButtons() {
-        generateReportButton.addActionListener(e -> generateReport());
-        printButton.addActionListener(e -> handlePrintAction());
-    }
-
+    /**
+     * Handles the action of printing the report table.
+     */
     private void handlePrintAction() {
         if (PrintManager.isPrinting()) {
             return;
@@ -78,30 +87,33 @@ public class ReportPaymentsPanel extends JPanel implements ReportGenerator {
         PrintManager.printTable(reportTable);
     }
 
+     /**
+     * Generates a payment report based on selected date range and populates the table.
+     */
     @Override
     public void generateReport() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String startDate = dateFormat.format(startDateSpinner.getValue());
         String endDate = dateFormat.format(endDateSpinner.getValue());
 
-        DefaultTableModel tableModel = (DefaultTableModel) reportTable.getModel();
-        tableModel.setRowCount(0);
+        tableModel.setRowCount(0); // Clear existing rows
 
-        try (DbConnect dbConnect = new DbConnect()) {
-            Connection conn = dbConnect.getConnection();
-            String sql = "SELECT customerNumber, checkNumber, paymentDate, amount FROM payments WHERE paymentDate BETWEEN ? AND ? ORDER BY paymentDate DESC;";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, startDate);
-                pstmt.setString(2, endDate);
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    while (rs.next()) {
-                        tableModel.addRow(new Object[]{
+        try (DbConnect dbConnect = new DbConnect();
+             Connection conn = dbConnect.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(
+                     "SELECT customerNumber, checkNumber, paymentDate, amount FROM payments WHERE paymentDate BETWEEN ? AND ? ORDER BY paymentDate DESC;")) {
+
+            pstmt.setString(1, startDate);
+            pstmt.setString(2, endDate);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    tableModel.addRow(new Object[]{
                             rs.getInt("customerNumber"),
                             rs.getString("checkNumber"),
                             rs.getDate("paymentDate"),
                             rs.getDouble("amount")
-                        });
-                    }
+                    });
                 }
             }
         } catch (SQLException | ClassNotFoundException ex) {
