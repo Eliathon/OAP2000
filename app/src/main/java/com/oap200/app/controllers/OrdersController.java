@@ -1,5 +1,3 @@
-// Created by Patrik
-
 package com.oap200.app.controllers;
 
 
@@ -14,6 +12,7 @@ import java.util.List;
 import java.util.Date;
 import javax.swing.JOptionPane;
 
+// Created by Patrik
 public class OrdersController {
 
    // Method for handling the display of products

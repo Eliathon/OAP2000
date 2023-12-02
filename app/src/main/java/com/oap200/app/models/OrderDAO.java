@@ -1,5 +1,3 @@
-// Created by Patrik
-
 package com.oap200.app.models;
 
 import com.oap200.app.utils.DbConnect;  
@@ -21,6 +19,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+// Created by Patrik
 public class OrderDAO {
 
     // Method for fetching all orders and displaying them in a table
@@ -154,6 +153,18 @@ public boolean addOrders(int orderNumber, String orderDate, String requiredDate,
     }
 }
 
+// Method to validate date format
+public boolean isValidDate(String dateStr, String dateFormat) {
+    DateFormat sdf = new SimpleDateFormat(dateFormat);
+    sdf.setLenient(false);
+
+    try {
+        sdf.parse(dateStr);
+        return true;
+    } catch (ParseException e) {
+        return false;
+    }
+}
 
 
     // Method for deleting orders from the database

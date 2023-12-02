@@ -1,4 +1,3 @@
-//Created by Patrik
 package com.oap200.app.views;
 
 import com.oap200.app.models.OrderDAO;
@@ -15,6 +14,7 @@ import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
 import java.util.Arrays;
 import java.util.List;
+// Created by Patrik
 
 public class OrderManagementPanel extends JPanel {
 
@@ -227,10 +227,8 @@ public class OrderManagementPanel extends JPanel {
             return;
         }
 
-        if (isValidDate(orderDateText)) {
-            String orderDate = "yyyy-mm-dd";
-            String format = "yyyy-MM-dd";
-            JOptionPane.showMessageDialog(this, "Order date requires yyyy-mm-dd date format.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (!isValidDate(orderDateText, "yyyy-MM-dd")){
+            JOptionPane.showMessageDialog(this, "Order date requires yyyy-MM-dd date format.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
