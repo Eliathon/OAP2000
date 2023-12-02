@@ -3,15 +3,16 @@ package com.oap200.app.views;
 
 import com.oap200.app.models.OrderDAO;
 import com.oap200.app.controllers.*;
+import com.oap200.app.utils.ButtonBuilder;
 
+import java.lang.Integer;
+import java.text.ParseException;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
-import com.oap200.app.utils.ButtonBuilder;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -77,15 +78,15 @@ public class OrderManagementPanel extends JPanel {
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {  });
         JButton viewButton = ButtonBuilder.createViewButton(() -> { });
         JButton addButton = ButtonBuilder.createAddButton(() -> {
-            addOrder();
+        
             System.out.println("Add Button Clicked!");
         });
         JButton deleteButton = ButtonBuilder.createDeleteButton(() -> {
-            deleteOrder();
+           
             System.out.println("Delete Button Clicked!");
         });
         JButton updateButton = ButtonBuilder.createUpdateButton(() -> { 
-            updateOrder();
+           
             System.out.println("Update Button Clicked!");
          });
         JButton searchButton = ButtonBuilder.createSearchButton(() -> {
@@ -152,14 +153,15 @@ public class OrderManagementPanel extends JPanel {
         searchButton.addActionListener(e -> searchOrders());
         deleteButton.addActionListener(e -> deleteOrder());
         addButton.addActionListener(e -> addOrder());
-        updateButton.addActionListener(e -> {
-            String orderNumberToUpdate = updateorderNumber.getText();
+        updateButton.addActionListener(e -> 
+         {
+            int orderNumberToUpdate = Integer.parseInt(updateorderNumber.getText());
             String neworderDate = updateorderDate.getText();
             String newrequiredDate = updaterequiredDate.getText();
             String newshippedDate = updateshippedDate.getText();
             String newstatus = updatestatus.getText();
             String newcomments = updatecomments.getText();
-            String newcustomerNumber = updatecustomerNumber.getText();
+            int newcustomerNumber = Integer.parseInt(updatecustomerNumber.getText());
 
             OrdersController.handleUpdateOrders(orderNumberToUpdate, neworderDate, newrequiredDate, newshippedDate, newstatus, newcomments, newcustomerNumber);
             System.out.println(orderNumberToUpdate + neworderDate + newrequiredDate + newshippedDate + newstatus + newcomments + newcustomerNumber);
@@ -210,17 +212,72 @@ public class OrderManagementPanel extends JPanel {
 
     private void addOrder() {
         System.out.println("addOrder() called!");
+    
+        String orderNumberText = orderNumber.getText();
+        String orderDateText = orderDate.getText();
+        String requiredDateText = requiredDate.getText();
+        String shippedDateText = shippedDate.getText();
+        String customerNumberText = customerNumber.getText();
 
-        boolean additionSuccessful = OrdersController.handleAddOrder(
-                orderNumber.getText(), orderDate.getText(), 
-                requiredDate.getText(), shippedDate.getText(), status.getText(),
-                comments.getText(), customerNumber.getText());
-
-        if (additionSuccessful) {
-            JOptionPane.showMessageDialog(this, "Order added successfully.", "Addition completed", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "Error adding order.", "Error", JOptionPane.ERROR_MESSAGE);
+           // Validate Order Number
+           try {
+            Integer.parseInt(orderNumberText);
+         } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Order number cannot be empty and must contain numeric values.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        if (isValidDate(orderDateText)) {
+            String orderDate = "yyyy-mm-dd";
+            String format = "yyyy-MM-dd";
+            JOptionPane.showMessageDialog(this, "Order date requires yyyy-mm-dd date format.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (!requiredDateText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Required date requires yyyy-mm-dd date format.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (!shippedDateText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Shipped date requires yyyy-mm-dd date format.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+       try {
+            Integer.parseInt(customerNumberText);
+         } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Customer number cannot be empty and must contain numeric values.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+       }
+       
+         try {
+                int orderNumberInt = Integer.parseInt(orderNumberText);
+                int customerNumberInt = Integer.parseInt(customerNumberText);
+         
+                boolean additionSuccessful = OrdersController.handleAddOrder(
+                        orderNumberInt, orderDate.getText(),
+                        requiredDate.getText(), shippedDate.getText(), status.getText(),
+                        comments.getText(), customerNumberInt);
+    
+                if (additionSuccessful) {
+                    JOptionPane.showMessageDialog(this, "Order added successfully.", "Addition completed",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error adding order.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                // Handle invalid number format
+                JOptionPane.showMessageDialog(this, "Invalid number format.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        
+        
+    }
+    
+
+
+    private boolean isValidDate(String orderDateText) {
+        return false;
     }
 
     private void addComponentsToPanelAdd(JPanel panel) {
@@ -236,7 +293,7 @@ public class OrderManagementPanel extends JPanel {
         labelPanel.add(new JLabel("Shipped Date:"));
         fieldPanel.add(shippedDate);
         labelPanel.add(new JLabel("Status:"));
-        fieldPanel.add(status);
+        fieldPanel.add(new JComboBox<>(new String[] { "Shipped", "Pending", "Cancelled" }));
         labelPanel.add(new JLabel("Comments:"));
         fieldPanel.add(comments);
         labelPanel.add(new JLabel("Customer Number:"));
