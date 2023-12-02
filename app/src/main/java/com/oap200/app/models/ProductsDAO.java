@@ -101,9 +101,9 @@ public class ProductsDAO {
 
         try (Connection myConnection = new DbConnect().getConnection();
              PreparedStatement preparedStatement = myConnection
-                     .prepareStatement("SELECT * FROM products WHERE productCode = ?")) {
+                     .prepareStatement("SELECT * FROM products WHERE productCode LIKE ?")) {
 
-            preparedStatement.setString(1, productCode);
+            preparedStatement.setString(1, productCode + "%");
             ResultSet myRs = preparedStatement.executeQuery();
 
             // Process the retrieved data and populate the 'searchResults' list
