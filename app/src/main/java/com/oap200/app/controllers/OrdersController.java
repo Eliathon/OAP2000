@@ -72,7 +72,9 @@ public boolean handleAddOrder(int orderNumber, String orderDate, String required
 
     
 
+// Created by Patrik and Sebastian
 
+// Method to handle updating an Order
 public boolean handleUpdateOrders(int orderNumberToUpdate, String neworderDate, String newrequiredDate,
         String newshippedDate, String newstatus, String newcomments) {
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
