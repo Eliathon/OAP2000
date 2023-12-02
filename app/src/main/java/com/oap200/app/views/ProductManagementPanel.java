@@ -71,8 +71,18 @@ public class ProductManagementPanel extends JPanel {
             this.setVisible(false); // or parentFrame.remove(this);
         });
         JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {
-            // Close the parent frame and open the LoginPanel
-            parentFrame.dispose();
+            // Close the current window
+            Window currentWindow = SwingUtilities.getWindowAncestor(ProductManagementPanel.this);
+            if (currentWindow != null) {
+                currentWindow.dispose();
+            }
+
+            // Close the MainFrame
+            if (parentFrame != null) {
+                parentFrame.dispose();
+            }
+
+            // Open the LoginPanel in a new window
             openLoginPanel();
         });
         JButton viewButton = ButtonBuilder.createViewButton(this::viewProducts);
@@ -80,13 +90,13 @@ public class ProductManagementPanel extends JPanel {
         JButton deleteButton = ButtonBuilder.createDeleteButton(this::deleteProduct);
         JButton updateButton = ButtonBuilder.createUpdateButton(this::updateProduct);
         JButton searchButton = ButtonBuilder.createSearchButton(this::searchProducts);
-        JButton searchCodeButton = ButtonBuilder.createSearchCodeButton(this::searchProductsByCode);
+        JButton searchCodeButton = ButtonBuilder.createSearchButton(this::searchProductsByCode);
 
-        JPanel viewSearchButtonPanel = createViewSearchButtonPanel(viewButton, searchButton, searchCodeButton);
+        JPanel viewSearchButtonPanel = createViewSearchButtonPanel(viewButton);
         
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("View Products", null, createViewPanel(viewSearchButtonPanel), "Click to view");
+        tabbedPane.addTab("View Products", null, createViewPanel(viewSearchButtonPanel, searchCodeButton, searchButton), "Click to view");
         tabbedPane.addTab("Add Products", null, createAddPanel(addButton), "Click to add");
         tabbedPane.addTab("Update Products", null, createUpdatePanel(updateButton), "Click to Update");
         tabbedPane.addTab("Delete Products", null, createDeletePanel(deleteButton), "Click to Delete");
@@ -184,11 +194,9 @@ public class ProductManagementPanel extends JPanel {
      * @param searchCodeButton  The button for searching products by code.
      * @return A JPanel with the specified buttons.
      */
-    private JPanel createViewSearchButtonPanel(JButton viewButton, JButton searchButton, JButton searchCodeButton) {
+    private JPanel createViewSearchButtonPanel(JButton viewButton) {
         JPanel panel = new JPanel(new FlowLayout());
         panel.add(viewButton);
-        panel.add(searchButton);
-        panel.add(searchCodeButton);
         return panel;
     }
 
@@ -199,18 +207,20 @@ public class ProductManagementPanel extends JPanel {
      * @param viewSearchButtonPanel The panel with view and search buttons.
      * @return A JPanel for viewing products.
      */
-    private JPanel createViewPanel(JPanel viewSearchButtonPanel) {
+    private JPanel createViewPanel(JPanel viewSearchButtonPanel, JButton searchCodeButton, JButton searchButton) {
         JPanel panel = new JPanel(new BorderLayout());
 
         // Add search field for product code
         JPanel searchCodePanel = new JPanel(new FlowLayout());
         searchCodePanel.add(new JLabel("Search by product code:"));
         searchCodePanel.add(searchCodeField);
+        searchCodePanel.add(searchCodeButton);
 
         // Add search field for product name
         JPanel searchNamePanel = new JPanel(new FlowLayout());
         searchNamePanel.add(new JLabel("Search by product name:"));
         searchNamePanel.add(searchTextField);
+        searchNamePanel.add(searchButton);
 
         // Add search fields to the main panel
         JPanel searchPanel = new JPanel();
@@ -354,7 +364,7 @@ public class ProductManagementPanel extends JPanel {
         JPanel panel = new JPanel(new BorderLayout());
 
         // Add label and field panel as before
-        JPanel inputPanel = new JPanel(new GridLayout(1, 2));
+        JPanel inputPanel = new JPanel(new GridLayout(1, 3));
 
         // Add the delete button to a separate panel for right alignment
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
@@ -369,10 +379,10 @@ public class ProductManagementPanel extends JPanel {
         // Add input field for product code
         inputPanel.add(new JLabel("Product Code:"));
         inputPanel.add(searchCodeDeleteField);
+        inputPanel.add(buttonPanel);
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(inputPanel, BorderLayout.WEST);
-        panel.add(buttonPanel, BorderLayout.WEST);
         panel.add(topPanel, BorderLayout.NORTH);
 
         return panel;

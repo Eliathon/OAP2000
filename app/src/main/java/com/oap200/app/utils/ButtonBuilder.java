@@ -139,7 +139,7 @@ public static JButton createButton(String buttonText, Runnable action) {
 
      // Search Button is created by Sebastian
     public static JButton createSearchButton(Runnable action) {
-        JButton searchButton = new JButton("Search by name");
+        JButton searchButton = new JButton("Search");
         searchButton.setForeground(Color.WHITE); // Set text color to white
         searchButton.setBackground(Color.BLACK); // Set background color to red
         searchButton.setBorderPainted(false); // Remove border
@@ -152,20 +152,6 @@ public static JButton createButton(String buttonText, Runnable action) {
         return searchButton;
     }
 
-     // Search Button is created by Sebastian
-    public static JButton createSearchCodeButton(Runnable action) {
-        JButton searchCodeButton = new JButton("Search by code");
-        searchCodeButton.setForeground(Color.WHITE); // Set text color to white
-        searchCodeButton.setBackground(Color.BLACK); // Set background color to red
-        searchCodeButton.setBorderPainted(false); // Remove border
-        searchCodeButton.setPreferredSize(new Dimension(150, 20)); // Set a specific size
-        searchCodeButton.addActionListener(e -> {
-            if (action != null) {
-                action.run();
-            }
-        });
-        return searchCodeButton;
-    }
 //Search button created by Kristian
     public static JButton createSearchNumberButton(Runnable action) {
         JButton searchNumberButton = new JButton("Search by number");
