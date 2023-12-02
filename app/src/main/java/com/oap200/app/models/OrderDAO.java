@@ -167,68 +167,95 @@ public boolean isValidDate(String dateStr, String dateFormat) {
 }
 
 
-    // Method for deleting orders from the database
-    public boolean deleteOrders (String orderNumber) {
-        
+
+
+public boolean deleteOrders(String orderNumber) {
     try {
-    DbConnect db = new DbConnect();
-    Connection myConnection = db.getConnection();
-     
-    PreparedStatement preparedStatement = myConnection.prepareStatement("DELETE FROM orders WHERE orderNumber = ?");
-    preparedStatement.setString(1, orderNumber);
+        DbConnect db = new DbConnect();
+        Connection myConnection = db.getConnection();
 
-    int rowsAffected = preparedStatement.executeUpdate();
+        // First, delete related rows in orderdetails
+        String deleteOrderDetailsQuery = "DELETE FROM orderdetails WHERE orderNumber = ?";
+        PreparedStatement deleteOrderDetailsStatement = myConnection.prepareStatement(deleteOrderDetailsQuery);
+        deleteOrderDetailsStatement.setString(1, orderNumber);
+        int rowsAffectedOrderDetails = deleteOrderDetailsStatement.executeUpdate();
 
-    return rowsAffected > 0;
-} catch (SQLException | ClassNotFoundException e) {
-    e.printStackTrace();
-    return false;
-    }
-        
-}
+        // Then, delete the order
+        String deleteOrderQuery = "DELETE FROM orders WHERE orderNumber = ?";
+        PreparedStatement deleteOrderStatement = myConnection.prepareStatement(deleteOrderQuery);
+        deleteOrderStatement.setString(1, orderNumber);
+        int rowsAffectedOrders = deleteOrderStatement.executeUpdate();
 
-// Method for updating orders to the database
-   public boolean updateOrders(int orderNumberToUpdate, String orderDate, String requiredDate, String shippedDate, String status, String comments, int newcustomerNumber) {
-    Connection myConnection = null;
- 
-    try {
-       DbConnect db = new DbConnect();
-       myConnection = db.getConnection();
-
-       java.sql.Date orderDateSQL = java.sql.Date.valueOf(orderDate); 
-       java.sql.Date requiredDateSQL = java.sql.Date.valueOf(requiredDate); 
-       java.sql.Date shippedDateSQL = java.sql.Date.valueOf(shippedDate); 
-
-       PreparedStatement preparedStatement = myConnection.prepareStatement(
-        "UPDATE orders SET orderNumber=?, orderDate=?, requiredDate=?, shippedDate =?, status=?, comments=?, customerNumber=? WHERE orderNumber=?");
-
-       
-        preparedStatement.setInt(1, orderNumberToUpdate);
-        preparedStatement.setDate(2, orderDateSQL);
-        preparedStatement.setDate(3, requiredDateSQL);
-        preparedStatement.setDate(4, shippedDateSQL);
-        preparedStatement.setString(5, status);
-        preparedStatement.setString(6, comments);
-        preparedStatement.setInt(7, newcustomerNumber);
-
-        // Validate input data
-        if (orderDate == null || orderDate.trim().isEmpty() || requiredDate == null || requiredDate.trim().isEmpty() || shippedDate == null || shippedDate.trim().isEmpty() || status == null || status.trim().isEmpty() || comments == null || comments.trim().isEmpty()) {
-            System.out.println("OrderDetails are required.");
-            return false;
-        }
-
-        // Validate input data for int
-        if (orderNumberToUpdate <= 0 || newcustomerNumber <= 0) {
-            System.out.println("OrderNumber and CustomerNumber are required.");
-            return false;
-        }
-        
-       int rowsAffected = preparedStatement.executeUpdate();
-
-        return rowsAffected > 0;
-     } catch (SQLException | ClassNotFoundException | ParseException | Integer e) {
+        return rowsAffectedOrders > 0;
+    } catch (SQLException | ClassNotFoundException e) {
         e.printStackTrace();
         return false;
     }
+}
 
-   }}
+public boolean updateOrders(int orderNumberToUpdate, String neworderDate, String newrequiredDate,
+        String newshippedDate, String newstatus, String newcomments) {
+    Connection myConnection = null;
+
+    try {
+        DbConnect db = new DbConnect();
+        myConnection = db.getConnection();
+
+        List<String> updateColumns = new ArrayList<>();
+        List<Object> updateValues = new ArrayList<>();
+
+        // Validate and convert orderDate
+        if (neworderDate != null && !neworderDate.trim().isEmpty()) {
+            updateColumns.add("orderDate = ?");
+            updateValues.add(java.sql.Date.valueOf(neworderDate));
+        }
+
+        // Validate and convert requiredDate
+        if (newrequiredDate != null && !newrequiredDate.trim().isEmpty()) {
+            updateColumns.add("requiredDate = ?");
+            updateValues.add(java.sql.Date.valueOf(newrequiredDate));
+        }
+
+        // Validate and convert shippedDate
+        if (newshippedDate != null && !newshippedDate.trim().isEmpty()) {
+            updateColumns.add("shippedDate = ?");
+            updateValues.add(java.sql.Date.valueOf(newshippedDate));
+        }
+
+        // Validate and convert status
+        if (newstatus != null && !newstatus.trim().isEmpty()) {
+            updateColumns.add("status = ?");
+            updateValues.add(newstatus);
+        }
+
+        // Validate and convert comments
+        if (newcomments != null && !newcomments.trim().isEmpty()) {
+            updateColumns.add("comments = ?");
+            updateValues.add(newcomments);
+        }
+
+        // Build the dynamic update SQL statement
+        StringBuilder updateSql = new StringBuilder("UPDATE orders SET ");
+        updateSql.append(String.join(", ", updateColumns));
+        updateSql.append(" WHERE orderNumber = ?");
+
+        // Prepare the statement
+        PreparedStatement preparedStatement = myConnection.prepareStatement(updateSql.toString());
+
+        // Set parameter values
+        for (int i = 0; i < updateValues.size(); i++) {
+            preparedStatement.setObject(i + 1, updateValues.get(i));
+        }
+        preparedStatement.setInt(updateValues.size() + 1, orderNumberToUpdate);
+
+        // Execute the update
+        int rowsAffected = preparedStatement.executeUpdate();
+
+        return rowsAffected > 0;
+    } catch (SQLException | ClassNotFoundException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
+   }

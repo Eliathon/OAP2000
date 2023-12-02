@@ -50,8 +50,8 @@ public class OrderManagementPanel extends JPanel {
 
     private OrdersController OrdersController;
 
-    public OrderManagementPanel(MainFrame mainFrame2) {
-        this.mainFrame = new MainFrame();   
+    public OrderManagementPanel(JFrame parentFrame) {
+       
         initializeFields();
         OrdersController = new OrdersController(new OrderDAO(), this);
 
@@ -153,18 +153,16 @@ public class OrderManagementPanel extends JPanel {
         searchButton.addActionListener(e -> searchOrders());
         deleteButton.addActionListener(e -> deleteOrder());
         addButton.addActionListener(e -> addOrder());
-        updateButton.addActionListener(e -> 
-         {
+        updateButton.addActionListener(e -> {
             int orderNumberToUpdate = Integer.parseInt(updateorderNumber.getText());
             String neworderDate = updateorderDate.getText();
             String newrequiredDate = updaterequiredDate.getText();
             String newshippedDate = updateshippedDate.getText();
             String newstatus = updatestatus.getText();
             String newcomments = updatecomments.getText();
-            int newcustomerNumber = Integer.parseInt(updatecustomerNumber.getText());
-
-            OrdersController.handleUpdateOrders(orderNumberToUpdate, neworderDate, newrequiredDate, newshippedDate, newstatus, newcomments, newcustomerNumber);
-            System.out.println(orderNumberToUpdate + neworderDate + newrequiredDate + newshippedDate + newstatus + newcomments + newcustomerNumber);
+        
+            OrdersController.handleUpdateOrders(orderNumberToUpdate, neworderDate, newrequiredDate, newshippedDate, newstatus, newcomments);
+            System.out.println(orderNumberToUpdate + neworderDate + newrequiredDate + newshippedDate + newstatus + newcomments);
         });
         loadOrdersLines();
     }

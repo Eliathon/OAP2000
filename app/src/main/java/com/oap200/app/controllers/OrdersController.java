@@ -73,35 +73,48 @@ public boolean handleAddOrder(int orderNumber, String orderDate, String required
     
 
 
-    public boolean handleUpdateOrders(int orderNumberToUpdate, String neworderDate, String newrequiredDate,
-    String newshippedDate, String newstatus, String newcomments, int newcustomerNumber) {
+public boolean handleUpdateOrders(int orderNumberToUpdate, String neworderDate, String newrequiredDate,
+        String newshippedDate, String newstatus, String newcomments) {
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     Date sqlShippedDate = null;
 
     try {
-    sqlShippedDate = new java.sql.Date(dateFormat.parse(newshippedDate).getTime());
+        if (!newshippedDate.isEmpty()) {
+            sqlShippedDate = new java.sql.Date(dateFormat.parse(newshippedDate).getTime());
+        }
     } catch (ParseException e) {
-    JOptionPane.showMessageDialog(orderManagementPanel, "Error parsing shipped date.", "Error", JOptionPane.ERROR_MESSAGE);
-    return false;
+        JOptionPane.showMessageDialog(orderManagementPanel, "Error parsing shipped date.", "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+        return false;
     }
 
     try {
-    boolean updateSuccessful = orderDAO.updateOrders(orderNumberToUpdate, neworderDate,
-    newrequiredDate, sqlShippedDate.toString(), newstatus, newcomments, newcustomerNumber);
+        System.out.println("Updating order...");
+        System.out.println("Order Number: " + orderNumberToUpdate);
+        System.out.println("New Order Date: " + neworderDate);
+        System.out.println("New Required Date: " + newrequiredDate);
+        System.out.println("New Shipped Date: " + sqlShippedDate);
+        System.out.println("New Status: " + newstatus);
+        System.out.println("New Comments: " + newcomments);
 
-    if (updateSuccessful) {
-    JOptionPane.showMessageDialog(orderManagementPanel, "Order updated successfully.", "Update Success", JOptionPane.INFORMATION_MESSAGE);
-    } else {
-    JOptionPane.showMessageDialog(orderManagementPanel, "Error updating order.", "Error", JOptionPane.ERROR_MESSAGE);
+        boolean updateSuccessful = orderDAO.updateOrders(orderNumberToUpdate, neworderDate,
+                newrequiredDate, (sqlShippedDate != null) ? sqlShippedDate.toString() : null, newstatus, newcomments);
+
+        if (updateSuccessful) {
+            JOptionPane.showMessageDialog(orderManagementPanel, "Order updated successfully.", "Update Success", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(orderManagementPanel, "Error updating order.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return updateSuccessful;
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(orderManagementPanel, "An unexpected error occurred.", "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+        return false;
     }
+}
 
-    return updateSuccessful;
-     } catch (Exception e) {
-JOptionPane.showMessageDialog(orderManagementPanel, "An unexpected error occurred.", "Error", JOptionPane.ERROR_MESSAGE);
-e.printStackTrace();
-return false;
-}
-}
+
 }
 
 
