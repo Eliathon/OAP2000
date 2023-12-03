@@ -1,20 +1,22 @@
 package com.oap200.app.views;
 
-import com.oap200.app.utils.DbConnect;
 import com.oap200.app.utils.PrintManager;
 import com.oap200.app.Interfaces.ReportGenerator;
+import com.oap200.app.controllers.ReportStockController;
 import com.oap200.app.utils.ButtonBuilder;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
-import java.sql.*;
+import java.awt.FlowLayout;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
- * ReportStockPanel is responsible for generating and displaying stock reports.
- * It provides functionality to search and print stock data.
- *
+ * Panel class responsible for displaying stock reports.
+ * It interacts with the StockController to retrieve and display stock data.
+ * 
  * @author Dirkje Jansje van der Poel
  */
 public class ReportStockPanel extends JPanel implements ReportGenerator {
@@ -34,7 +36,7 @@ public class ReportStockPanel extends JPanel implements ReportGenerator {
     }
 
     /**
-     * Initializes the components of the panel.
+     * Initializes the components of the panel such as buttons, table, and search field.
      */
     private void initializeComponents() {
        // generateReportButton = ButtonBuilder.createButton("Generate Stock Report", this::generateReport);
@@ -57,7 +59,7 @@ public class ReportStockPanel extends JPanel implements ReportGenerator {
         tableModel.addColumn("Quantity In Stock");
         tableModel.addColumn("Buy Price");
 
-        JPanel inputPanel = new JPanel();
+        JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         inputPanel.add(new JLabel("Search:"));
         inputPanel.add(searchField);
         inputPanel.add(generateReportButton);
@@ -68,7 +70,7 @@ public class ReportStockPanel extends JPanel implements ReportGenerator {
     }
 
     /**
-     * Handles the action to print the report.
+     * Handles the action of printing the stock report.
      */
     private void handlePrintAction() {
         if (PrintManager.isPrinting()) {
@@ -78,39 +80,23 @@ public class ReportStockPanel extends JPanel implements ReportGenerator {
     }
 
     /**
-     * Generates the report based on the search criteria.
+     * Generates and displays the stock report based on the provided search criteria.
      */
-    @Override
-    public void generateReport() {
-        String searchText = (searchField != null) ? searchField.getText().toLowerCase() : "";        DefaultTableModel tableModel = (DefaultTableModel) reportTable.getModel();
-        tableModel.setRowCount(0);
+   @Override
+public void generateReport() {
+    String searchText = (searchField != null) ? searchField.getText().toLowerCase() : "";
+    ReportStockController controller = new ReportStockController();
 
-        try (DbConnect dbConnect = new DbConnect();
-             Connection conn = dbConnect.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(
-                     "SELECT productCode, productName, productLine, quantityInStock, buyPrice " +
-                     "FROM products " +
-                     "WHERE LOWER(productName) LIKE ? OR LOWER(productLine) LIKE ? " +
-                     "ORDER BY quantityInStock DESC;")) {
-            pstmt.setString(1, "%" + searchText + "%");
-            pstmt.setString(2, "%" + searchText + "%");
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    tableModel.addRow(new Object[]{
-                        rs.getString("productCode"),
-                        rs.getString("productName"),
-                        rs.getString("productLine"),
-                        rs.getInt("quantityInStock"),
-                        rs.getDouble("buyPrice")
-                    });
-                }
-            }
-        } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error accessing the database: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error closing database connection: " + ex.getMessage(), "Connection Error", JOptionPane.ERROR_MESSAGE);
+    DefaultTableModel tableModel = (DefaultTableModel) reportTable.getModel();
+    tableModel.setRowCount(0);
+
+    try {
+        List<Object[]> stockData = controller.getStockData(searchText);
+        for (Object[] row : stockData) {
+            tableModel.addRow(row);
         }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
+  }
 }

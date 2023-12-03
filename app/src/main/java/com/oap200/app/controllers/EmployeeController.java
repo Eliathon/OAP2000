@@ -78,7 +78,7 @@ public class EmployeeController {
         employeeManagementPanel.displayEmployees(allEmployees);
         
     }
-
+    
     /**
      * Handle deleting an employee.
      *
