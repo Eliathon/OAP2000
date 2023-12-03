@@ -233,25 +233,46 @@ public class PaymentManagementPanel extends JPanel {
     private void addComponentsToPanelView(JPanel panelView) {
         // Adding components to the panel view
         panelView.setLayout(new BorderLayout());
-    
+
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 0.3; // Button weight
-    
-        // Adding the sorting buttons dynamically
-        String[] columnNames = { "Customer Number", "Checknumber", "Payment Date", "Amount" };
-        for (String columnName : columnNames) {
-            JButton sortButton = new JButton("Sort by " + columnName);
-            sortButton.addActionListener(e -> viewSortedData(columnName));
-            inputPanel.add(sortButton, gbc);
-        }
-    
+
+        // Adding the "Customer Number" sorting button
+        JButton sortCustomerButton = new JButton("Sort by Customer Number");
+        sortCustomerButton.addActionListener(e -> viewSortedData("customerNumber"));
+        inputPanel.add(sortCustomerButton, gbc);
+
+        // Adding the "Check Number" sorting button
+        JButton sortCheckButton = new JButton("Sort by Check Number");
+        sortCheckButton.addActionListener(e -> viewSortedData("checkNumber"));
+        gbc.gridx = 1;
+        inputPanel.add(sortCheckButton, gbc);
+
+        // Adding the "Payment Date" sorting button
+        JButton sortDateButton = new JButton("Sort by Payment Date");
+        sortDateButton.addActionListener(e -> viewSortedData("paymentDate"));
+        gbc.gridx = 2;
+        inputPanel.add(sortDateButton, gbc);
+
+        // Adding the "Amount" sorting button
+        JButton sortAmountButton = new JButton("Sort by Amount");
+        sortAmountButton.addActionListener(e -> viewSortedData("amount"));
+        gbc.gridx = 3;
+        inputPanel.add(sortAmountButton, gbc);
+
+        // Adjusting button size based on header size
+        Dimension buttonSize = sortCustomerButton.getPreferredSize();
+        sortCheckButton.setPreferredSize(buttonSize);
+        sortDateButton.setPreferredSize(buttonSize);
+        sortAmountButton.setPreferredSize(buttonSize);
+
         panelView.add(inputPanel, BorderLayout.NORTH);
-    
+
         // Now, create the scrollPane with the paymentsTable right here:
         JScrollPane scrollPane = new JScrollPane(paymentsTable);
-    
+
         // Create a container panel for the table to align it to the left
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.add(scrollPane, BorderLayout.CENTER);
