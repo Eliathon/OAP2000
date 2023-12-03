@@ -48,6 +48,9 @@ public class EmployeeManagementPanel extends JPanel {
     JComboBox<String> updateJobTitle;
     private EmployeeController employeeController;
 
+
+
+    
     /**
      * Constructor for the EmployeeManagementPanel.
      *
@@ -188,11 +191,12 @@ public class EmployeeManagementPanel extends JPanel {
  */
 private JPanel createAddPanel() {
     JPanel panel = new JPanel(new BorderLayout());
-    JButton addButton = ButtonBuilder.createAddButton(() -> addEmployee());
-    JPanel addPanel = new JPanel(new GridLayout(9, 2));
+
+    // Input fields panel
+    JPanel addPanel = new JPanel(new GridLayout(9, 2, 5, 5)); // 9 rows for input fields
     addPanel.add(new JLabel("Last Name:"));
     addPanel.add(lastName);
-    addPanel.add(new JLabel("First Names:"));
+    addPanel.add(new JLabel("First Name:"));
     addPanel.add(firstName);
     addPanel.add(new JLabel("Extension:"));
     addPanel.add(extension);
@@ -202,12 +206,30 @@ private JPanel createAddPanel() {
     addPanel.add(officeCode);
     addPanel.add(new JLabel("Reports To:"));
     addPanel.add(reportsTo);
-    addPanel.add(new JLabel("Employee Roles:"));
+    addPanel.add(new JLabel("Employee Role:"));
     addPanel.add(employeeRolesComboBox);
-    panel.add(addPanel, BorderLayout.CENTER);
-    panel.add(addButton, BorderLayout.SOUTH);
+
+    // Add the input fields panel to the top
+    panel.add(addPanel, BorderLayout.NORTH);
+
+    // Separate panel for the comment field
+    JPanel commentPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    commentPanel.add(new JLabel("<html><br><br>Employee Number - This will be autimatically added upon successful creation.<br><br>Extension - This is a phone number for communication inside office walls. Example = x2248.<br><br>Office Code - Choose the right office between code 1-7.<br><br>Reports to - Choose which existing employee the new one will report directly to. Choose by typing corresponding Emp. Num.</html>"));
+    
+
+    // Add the comment panel to the center
+    panel.add(commentPanel, BorderLayout.CENTER);
+
+    // Add button at the bottom
+    JButton addButton = ButtonBuilder.createAddButton(() -> addEmployee());
+    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    buttonPanel.add(addButton);
+    panel.add(buttonPanel, BorderLayout.SOUTH);
+
     return panel;
 }
+
+
 
 /**
  * Creates the panel for updating employee information.
@@ -216,9 +238,9 @@ private JPanel createAddPanel() {
  */
 private JPanel createUpdatePanel() {
     JPanel panel = new JPanel(new BorderLayout());
-    JButton updateButton = ButtonBuilder.createUpdateButton(() -> updateEmployee());
-    JPanel updatePanel = new JPanel(new GridLayout(9, 2));
-    JComboBox<String> updateJobTitle = new JComboBox<>(employeeRolesComboBox.getModel());
+
+    // Input fields panel
+    JPanel updatePanel = new JPanel(new GridLayout(9, 2, 5, 5)); // 9 rows for input fields
     updatePanel.add(new JLabel("Choose Employee By Emp. Number:"));
     updatePanel.add(updateEmployeeNumber);
     updatePanel.add(new JLabel("Update Last Name:"));
@@ -234,11 +256,30 @@ private JPanel createUpdatePanel() {
     updatePanel.add(new JLabel("Update Reports To:"));
     updatePanel.add(updateReportsTo);
     updatePanel.add(new JLabel("Update Job Title:"));
-    updatePanel.add(updateJobTitle); // Add the combo box instead of a text field
-    panel.add(updatePanel, BorderLayout.CENTER);
-    panel.add(updateButton, BorderLayout.SOUTH);
+    JComboBox<String> updateJobTitleComboBox = new JComboBox<>(employeeRolesComboBox.getModel());
+    updatePanel.add(updateJobTitleComboBox);
+
+    // Add the input fields panel to the top
+    panel.add(updatePanel, BorderLayout.NORTH);
+
+    // Separate panel for the comment field
+    JPanel commentPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+    commentPanel.add(new JLabel("<html><br><br>Her you can update the wanted details for an employee by filling out the corresponding fields. <br><br><br><br>Extension - This is a phone number for communication inside office walls. Example = x2248.<br><br>Office Code - Choose the right office between code 1-7.<br><br>Reports to - Choose which existing employee the new one will report directly to. Choose by typing corresponding Emp. Num.</html>"));
+    
+
+    // Add the comment panel to the center
+    panel.add(commentPanel, BorderLayout.CENTER);
+
+    // Update button at the bottom
+    JButton updateButton = ButtonBuilder.createUpdateButton(() -> updateEmployee());
+    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    buttonPanel.add(updateButton);
+    panel.add(buttonPanel, BorderLayout.SOUTH);
+
     return panel;
 }
+
 
 /**
  * Creates the panel for deleting an employee.
@@ -467,7 +508,7 @@ private void deleteEmployee() {
             );
             JOptionPane.showMessageDialog(this, message, "Employee Deleted", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Failed to delete employee. Three possible reasons for this: \n \n 1. You typed a letter instead of an employee number \n 2. Chosen employee has employees reporting to them \n 3. Employee does not exist", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to delete employee. Three possible reasons for this: \n \n 1. You typed a letter instead of an employee number \n 2. Chosen employee has employees reporting to them. Please update the employee's details\n 3. Employee does not exist", "Error", JOptionPane.ERROR_MESSAGE);
         }
     } catch (SQLException | ClassNotFoundException ex) {
         ex.printStackTrace();
@@ -510,3 +551,4 @@ public static void main(String[] args) {
     });
 }
 }
+
