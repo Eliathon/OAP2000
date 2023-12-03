@@ -7,13 +7,17 @@ import com.oap200.app.utils.DbConnect;
 
 import java.lang.Integer;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -57,44 +61,60 @@ public class OrderDAO {
         return orders;
     }
 
-    /**
+     /**
      * Searches for specific orders in the database based on the provided order number.
      *
      * @param orderNumber The order number to search for.
      * @return List of string arrays representing search results.
      */
     public List<String[]> searchOrders(String orderNumber) {
-        List<String[]> searchResult = new ArrayList<>();
+    List<String[]> searchResult = new ArrayList<>();
 
-        try {
-            DbConnect db = new DbConnect();
-            Connection myConnection = db.getConnection();
+    try {
+        DbConnect db = new DbConnect();
+        Connection myConnection = db.getConnection();
 
-            PreparedStatement statement = myConnection.prepareStatement("SELECT * FROM orders WHERE orderNumber LIKE ? ");
-            statement.setString(1, "%" + orderNumber + "%");
-            ResultSet myRs = statement.executeQuery();
+        PreparedStatement statement = myConnection.prepareStatement("SELECT * FROM orders WHERE orderNumber LIKE ? ");
+        statement.setString(1, "%" + orderNumber + "%");
+        ResultSet myRs = statement.executeQuery();
 
-            while (myRs.next()) {
-                String[] order = new String[] {
-                        myRs.getString("orderNumber"),
-                        myRs.getString("orderDate"),
-                        myRs.getString("requiredDate"),
-                        myRs.getString("shippedDate"),
-                        myRs.getString("status"),
-                        myRs.getString("comments"),
-                        myRs.getString("customerNumber"),
-                };
-                searchResult.add(order);
-            }
-        } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
+         while (myRs.next()) {
+            String[] order = new String[] {
+                    myRs.getString("orderNumber"),
+                    myRs.getString("orderDate"),
+                    myRs.getString("requiredDate"),
+                    myRs.getString("shippedDate"),
+                    myRs.getString("status"),
+                    myRs.getString("comments"),
+                    myRs.getString("customerNumber"),
+                    
+            };
+            searchResult.add(order);
         }
-        return searchResult;
+    } catch (SQLException | ClassNotFoundException ex) {
+        ex.printStackTrace();
     }
+    return searchResult;
+}
 
-    /**
+public int fetchLatestOrderNumber() {
+    try {
+        DbConnect db = new DbConnect();
+        Connection myConnection = db.getConnection();
+
+        Statement statement = myConnection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT MAX(orderNumber) AS MaxOrderNumber FROM orders");
+
+        if (resultSet.next()) {
+            return resultSet.getInt("MaxOrderNumber");
+        }
+    } catch (SQLException | ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+    return 0; // Return 0 if there's an issue or no orders exist yet
+}
+     /**
      * Adds a new order to the database.
-     *
      * @param orderNumber    The order number.
      * @param orderDate      The order date.
      * @param requiredDate   The required date.
@@ -104,95 +124,100 @@ public class OrderDAO {
      * @param customerNumber The customer number.
      * @return True if the order is added successfully, false otherwise.
      */
-    public boolean addOrders(int orderNumber, String orderDate, String requiredDate, String shippedDate, String status, String comments, int customerNumber) {
-        Connection myConnection = null;
 
-        try {
-            DbConnect db = new DbConnect();
-            myConnection = db.getConnection();
-
-            // Fetch the highest orderNumber from the orders table
-            PreparedStatement getMaxOrderNumber = myConnection.prepareStatement("SELECT MAX(orderNumber) AS OrderNumber FROM orders");
-            ResultSet resultSet = getMaxOrderNumber.executeQuery();
-            int maxOrderNumber = 0;
-            if (resultSet.next()) {
-                maxOrderNumber = resultSet.getInt("maxOrderNumber");
-            }
-            // Increment the maxOrderNumber to get the new orderNumber
-            int newOrderNumber = maxOrderNumber + 1;
-
-            java.sql.Date orderDateSQL = java.sql.Date.valueOf(orderDate);
-            java.sql.Date requiredDateSQL = java.sql.Date.valueOf(requiredDate);
-            java.sql.Date shippedDateSQL = java.sql.Date.valueOf(shippedDate);
-
-            PreparedStatement statement = myConnection.prepareStatement("INSERT INTO orders VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-
-            statement.setInt(1, newOrderNumber);
-            statement.setDate(2, orderDateSQL);
-            statement.setDate(3, requiredDateSQL);
-            statement.setDate(4, shippedDateSQL);
-            statement.setString(5, status);
-            statement.setString(6, comments);
-            statement.setInt(7, customerNumber);
-
-            // Validate input data
-            if (orderDate == null || orderDate.trim().isEmpty() || requiredDate == null || requiredDate.trim().isEmpty() || shippedDate == null || shippedDate.trim().isEmpty() || status == null || status.trim().isEmpty() || comments == null || comments.trim().isEmpty()) {
-                System.out.println("Order details are required.");
-                return false;
-            }
-
-            if (customerNumber <= 0) {
-                System.out.println("CustomerNumber is required.");
-                return false;
-            }
-
-            myConnection.setAutoCommit(false);
-            int rowsAffected = statement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                myConnection.commit();
-                System.out.println("Order has been added successfully!");
-            } else {
-                myConnection.rollback();
-                System.out.println("Order has not been added!");
-            }
-
-            System.out.println("Rows affected: " + rowsAffected);
-
-            return rowsAffected > 0;
-
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                if (myConnection != null) {
-                    myConnection.setAutoCommit(true);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+    public boolean addOrders(String orderDate, String requiredDate, String shippedDate, String status, String comments, int customerNumber) {
+    Connection myConnection = null;
+    
+    String dateString = "yyyy-mm-dd"; // Replace this with your date string
+    try {
+        Date parsedDate = java.sql.Date.valueOf(dateString);
+        // Use the parsedDate
+    } catch (IllegalArgumentException e) {
+        // Handle the exception (e.g., display an error message)
+        e.printStackTrace();
     }
+    try {
+        DbConnect db = new DbConnect();
+        myConnection = db.getConnection();
 
-    /**
+        List<String> insertColumns = new ArrayList<>();
+        List<Object> insertValues = new ArrayList<>();
+
+        // Validate and convert orderDate
+        if (orderDate != null && !orderDate.trim().isEmpty()) {
+            insertColumns.add("orderDate");
+            insertValues.add(java.sql.Date.valueOf(orderDate));
+        }
+
+        // Validate and convert requiredDate
+        if (requiredDate != null && !requiredDate.trim().isEmpty()) {
+            insertColumns.add("requiredDate");
+            insertValues.add(java.sql.Date.valueOf(requiredDate));
+        }
+
+        // Validate and convert shippedDate
+        if (shippedDate != null && !shippedDate.trim().isEmpty()) {
+            insertColumns.add("shippedDate");
+            insertValues.add(java.sql.Date.valueOf(shippedDate));
+        }
+
+        // Validate and convert status
+        if (status != null && !status.trim().isEmpty()) {
+            insertColumns.add("status");
+            insertValues.add(status);
+        }
+
+        // Validate and convert comments
+        if (comments != null && !comments.trim().isEmpty()) {
+            insertColumns.add("comments");
+            insertValues.add(comments);
+        }
+
+        // Add customer number
+        insertColumns.add("customerNumber");
+        insertValues.add(customerNumber);
+
+        // Build the dynamic insert SQL statement
+        StringBuilder insertSql = new StringBuilder("INSERT INTO orders (");
+        insertSql.append(String.join(", ", insertColumns));
+        insertSql.append(") VALUES (");
+        insertSql.append(String.join(", ", Collections.nCopies(insertColumns.size(), "?")));
+        insertSql.append(")");
+
+        // Prepare the statement
+        PreparedStatement preparedStatement = myConnection.prepareStatement(insertSql.toString());
+
+        // Set parameter values
+        for (int i = 0; i < insertValues.size(); i++) {
+            preparedStatement.setObject(i + 1, insertValues.get(i));
+        }
+
+        // Execute the insertion
+        int rowsAffected = preparedStatement.executeUpdate();
+
+        return rowsAffected > 0;
+    } catch (SQLException | ClassNotFoundException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+/**
      * Validates the date format based on the provided date string and format.
      *
      * @param dateStr    The date string to validate.
      * @param dateFormat The expected date format.
      * @return True if the date is valid, false otherwise.
      */
-    public boolean isValidDate(String dateStr, String dateFormat) {
-        DateFormat sdf = new SimpleDateFormat(dateFormat);
-        sdf.setLenient(false);
-
-        try {
-            sdf.parse(dateStr);
-            return true;
-        } catch (ParseException e) {
-            return false;
-        }
+public boolean isValidDateFormat(String dateStr) {
+     try {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");;
+    sdf.setLenient(false);
+    sdf.parse(dateStr);
+    return true; // Data String in the correct format
+    } catch (ParseException e) {
+        return false; // Data String in the incorrect format
     }
+}
 
 /**
  * Deletes orders and related order details from the database based on the provided order number.
@@ -204,17 +229,16 @@ public class OrderDAO {
  */
 public boolean deleteOrders(String orderNumber) {
     try {
-        // Establish a connection to the database
         DbConnect db = new DbConnect();
         Connection myConnection = db.getConnection();
 
-        // Delete related rows in 'orderdetails' table
+        // First, delete related rows in orderdetails to allow for deleting of an order in the database
         String deleteOrderDetailsQuery = "DELETE FROM orderdetails WHERE orderNumber = ?";
         PreparedStatement deleteOrderDetailsStatement = myConnection.prepareStatement(deleteOrderDetailsQuery);
         deleteOrderDetailsStatement.setString(1, orderNumber);
         int rowsAffectedOrderDetails = deleteOrderDetailsStatement.executeUpdate();
 
-        // Delete the order from the 'orders' table
+        // Then, delete the order
         String deleteOrderQuery = "DELETE FROM orders WHERE orderNumber = ?";
         PreparedStatement deleteOrderStatement = myConnection.prepareStatement(deleteOrderQuery);
         deleteOrderStatement.setString(1, orderNumber);
@@ -241,15 +265,13 @@ public boolean deleteOrders(String orderNumber) {
  * @return True if the update is successful, false otherwise.
  */
 public boolean updateOrders(int orderNumberToUpdate, String neworderDate, String newrequiredDate,
-                            String newshippedDate, String newstatus, String newcomments) {
+        String newshippedDate, String newstatus, String newcomments) {
     Connection myConnection = null;
 
     try {
-        // Establish a connection to the database
         DbConnect db = new DbConnect();
         myConnection = db.getConnection();
 
-        // Lists to store update columns and values
         List<String> updateColumns = new ArrayList<>();
         List<Object> updateValues = new ArrayList<>();
 
@@ -306,4 +328,10 @@ public boolean updateOrders(int orderNumberToUpdate, String neworderDate, String
         return false;
     }
 }
+
+public boolean addOrders(int orderNumber, String orderDate, String requiredDate, String shippedDate, String status,
+        String comments, int customerNumber) {
+    return false;
 }
+
+   }

@@ -1,5 +1,6 @@
 package com.oap200.app.controllers;
 
+
 import com.oap200.app.models.OrderDAO;
 import com.oap200.app.views.OrderManagementPanel;
 
@@ -10,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Date;
 import javax.swing.JOptionPane;
+
 /**
  * Controller class responsible for handling operations related to orders, linking the data access layer and the view.
  * 
@@ -19,53 +21,55 @@ import javax.swing.JOptionPane;
  */
 public class OrdersController {
 
-    private OrderDAO orderDAO;
-    private OrderManagementPanel orderManagementPanel;
+   
+private OrderDAO orderDAO;
+private OrderManagementPanel orderManagementPanel;
 
-    /**
+/**
      * Constructor for OrdersController.
      * 
      * @param orderDAO The data access object for orders.
      * @param orderManagementPanel The panel responsible for displaying and managing orders.
      */
-    public OrdersController(OrderDAO orderDAO, OrderManagementPanel orderManagementPanel) {
-        this.orderDAO = orderDAO;
-        this.orderManagementPanel = orderManagementPanel;
-    }
+public OrdersController(OrderDAO orderDAO, OrderManagementPanel orderManagementPanel) {
+    this.orderDAO = orderDAO;
+    this.orderManagementPanel = orderManagementPanel;
+}
 
-    /**
+/**
      * Handles the search for orders by order number.
      * 
      * @param orderNumber The order number to search for.
      */
-    public void handleSearchOrders(String orderNumber) {
-        List<String[]> searchResult = orderDAO.searchOrders(orderNumber);
-        orderManagementPanel.displayOrders(searchResult);
-    }
+public void handleSearchOrders(String orderNumber) {
+    List<String[]> searchResult = orderDAO.searchOrders(orderNumber);
+    orderManagementPanel.displayOrders(searchResult);
+}
 
-    /**
-     * Handles the display of all orders.
+ /**
+     * Handles the display to view all orders.
      */
-    public void handleViewAllOrders() {
-        List<String[]> allOrders = orderDAO.fetchOrders();
-        orderManagementPanel.displayOrders(allOrders);
-    }
+public void handleViewAllOrders() {
+    List<String[]> allOrders = orderDAO.fetchOrders();
+    orderManagementPanel.displayOrders(allOrders);
+}
 
-    /**
+/**
      * Handles the deletion of an order.
      * 
      * @param orderNumber The order number to be deleted.
      * @return True if deletion is successful, false otherwise.
      */
-    public boolean handleDeleteOrders(String orderNumber) {
-        boolean deletionSuccessful = orderDAO.deleteOrders(orderNumber);
-        if (!deletionSuccessful) {
-            // Handle errors here, for example, display an error message
-        }
-        return deletionSuccessful;
+public boolean handleDeleteOrders(String orderNumber) {
+    boolean deletionSuccessful = orderDAO.deleteOrders(orderNumber);
+    if (deletionSuccessful) {
+        return true;
+    } else {
+        return false;
     }
+}
 
-    /**
+/**
      * Handles the addition of a new order.
      * 
      * @param orderNumber The order number.
@@ -77,27 +81,17 @@ public class OrdersController {
      * @param customerNumber The customer number associated with the order.
      * @return True if addition is successful, false otherwise.
      */
-    public boolean handleAddOrder(int orderNumber, String orderDate, String requiredDate, String shippedDate,
-                                  String status, String comments, int customerNumber) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-        try {
-            Date parsedOrderDate = dateFormat.parse(orderDate);
-            Date parsedRequiredDate = dateFormat.parse(requiredDate);
-            Date parsedShippedDate = dateFormat.parse(shippedDate);
-
-            Date sqlOrderDate = new java.sql.Date(parsedOrderDate.getTime());
-            Date sqlRequiredDate = new java.sql.Date(parsedRequiredDate.getTime());
-            Date sqlShippedDate = new java.sql.Date(parsedShippedDate.getTime());
-
-            return orderDAO.addOrders(orderNumber, sqlOrderDate.toString(), sqlRequiredDate.toString(),
-                                      sqlShippedDate.toString(), status, comments, customerNumber);
-        } catch (NumberFormatException | ParseException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(orderManagementPanel, "Error parsing date.", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
+public boolean handleAddOrder(int orderNumber, String orderDate, String requiredDate, String shippedDate, String status, String comments, int customerNumber) {
+    try {
+        
+        return orderDAO.addOrders(orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber);
+    } catch (NumberFormatException ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(orderManagementPanel, "Error Parse Date.", "Error", JOptionPane.ERROR_MESSAGE);
+        return false;
     }
+}
 
     /**
      * Handles the update of an order.
@@ -109,45 +103,49 @@ public class OrdersController {
      * @param newstatus The new order status.
      * @param newcomments The new order comments.
      * @return True if the update is successful, false otherwise.
+     * 
+     * @author Patrik and Sebastian
      */
-    public boolean handleUpdateOrders(int orderNumberToUpdate, String neworderDate, String newrequiredDate,
-                                      String newshippedDate, String newstatus, String newcomments) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date sqlShippedDate = null;
+public boolean handleUpdateOrders(int orderNumberToUpdate, String neworderDate, String newrequiredDate,
+        String newshippedDate, String newstatus, String newcomments) {
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    Date sqlShippedDate = null;
 
-        try {
-            if (!newshippedDate.isEmpty()) {
-                sqlShippedDate = new java.sql.Date(dateFormat.parse(newshippedDate).getTime());
-            }
-        } catch (ParseException e) {
-            JOptionPane.showMessageDialog(orderManagementPanel, "Error parsing shipped date.", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return false;
+    try {
+        if (!newshippedDate.isEmpty()) {
+            sqlShippedDate = new java.sql.Date(dateFormat.parse(newshippedDate).getTime());
         }
-
-        try {
-            System.out.println("Updating order...");
-            System.out.println("Order Number: " + orderNumberToUpdate);
-            System.out.println("New Order Date: " + neworderDate);
-            System.out.println("New Required Date: " + newrequiredDate);
-            System.out.println("New Shipped Date: " + sqlShippedDate);
-            System.out.println("New Status: " + newstatus);
-            System.out.println("New Comments: " + newcomments);
-
-            boolean updateSuccessful = orderDAO.updateOrders(orderNumberToUpdate, neworderDate,
-                    newrequiredDate, (sqlShippedDate != null) ? sqlShippedDate.toString() : null, newstatus, newcomments);
-
-            if (updateSuccessful) {
-                JOptionPane.showMessageDialog(orderManagementPanel, "Order updated successfully.", "Update Success", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(orderManagementPanel, "Error updating order.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-            return updateSuccessful;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(orderManagementPanel, "An unexpected error occurred.", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-            return false;
-        }
+    } catch (ParseException e) {
+        JOptionPane.showMessageDialog(orderManagementPanel, "Error parsing shipped date.", "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+        return false;
     }
+
+    try {
+        System.out.println("Updating order...");
+        System.out.println("Order Number: " + orderNumberToUpdate);
+        System.out.println("New Order Date: " + neworderDate);
+        System.out.println("New Required Date: " + newrequiredDate);
+        System.out.println("New Shipped Date: " + sqlShippedDate);
+        System.out.println("New Status: " + newstatus);
+        System.out.println("New Comments: " + newcomments);
+
+        boolean updateSuccessful = orderDAO.updateOrders(orderNumberToUpdate, neworderDate,
+                newrequiredDate, (sqlShippedDate != null) ? sqlShippedDate.toString() : null, newstatus, newcomments);
+
+        if (updateSuccessful) {
+            JOptionPane.showMessageDialog(orderManagementPanel, "Order updated successfully.", "Update Success", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(orderManagementPanel, "Error updating order.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return updateSuccessful;
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(orderManagementPanel, "An unexpected error occurred.", "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+        return false;
+    }
+}
+
+
 }
