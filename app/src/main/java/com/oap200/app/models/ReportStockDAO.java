@@ -14,7 +14,7 @@ import java.util.List;
  * 
  * @author Dirkje Jansje van der Poel
  */
-public class StockDAO {
+public class ReportStockDAO {
 
     /**
      * Retrieves stock data from the database based on search text.

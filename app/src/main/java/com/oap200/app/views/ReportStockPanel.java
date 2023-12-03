@@ -2,7 +2,7 @@ package com.oap200.app.views;
 
 import com.oap200.app.utils.PrintManager;
 import com.oap200.app.Interfaces.ReportGenerator;
-import com.oap200.app.controllers.StockController;
+import com.oap200.app.controllers.ReportStockController;
 import com.oap200.app.utils.ButtonBuilder;
 
 import javax.swing.*;
@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -81,19 +82,21 @@ public class ReportStockPanel extends JPanel implements ReportGenerator {
     /**
      * Generates and displays the stock report based on the provided search criteria.
      */
-    @Override
-    public void generateReport() {
+   @Override
+public void generateReport() {
     String searchText = (searchField != null) ? searchField.getText().toLowerCase() : "";
-    StockController controller = new StockController();
+    ReportStockController controller = new ReportStockController();
 
     DefaultTableModel tableModel = (DefaultTableModel) reportTable.getModel();
     tableModel.setRowCount(0);
 
-    List<Object[]> stockData = controller.getStockData(searchText);
-    if (stockData != null) {
+    try {
+        List<Object[]> stockData = controller.getStockData(searchText);
         for (Object[] row : stockData) {
             tableModel.addRow(row);
         }
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
   }
 }

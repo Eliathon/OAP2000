@@ -1,6 +1,7 @@
 package com.oap200.app.views;
 
 import com.oap200.app.Interfaces.ReportGenerator;
+import com.oap200.app.controllers.ReportFinancialController;
 import com.oap200.app.utils.DbConnect;
 import com.oap200.app.utils.ButtonBuilder;
 import com.oap200.app.utils.DateFactory;
@@ -11,6 +12,7 @@ import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.List;
 import java.io.IOException;
 import java.sql.*;
 
@@ -31,7 +33,10 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
     private JTable financialTable;
     private DefaultTableModel tableModel;
 
+    private ReportFinancialController controller;
+
     public ReportFinancialPanel() {
+        this.controller = new ReportFinancialController();
         setLayout(new BorderLayout());
         initializeComponents();
         addActionsToButtons();
@@ -186,49 +191,17 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
      * @param endDate   The end date for the report.
      */
     private void generateReportWithDates(String startDate, String endDate) {
-        DbConnect dbConnect = null;
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
         try {
-            dbConnect = new DbConnect();
-            conn = dbConnect.getConnection();
-            String sql = "SELECT c.customerName, SUM(od.quantityOrdered * od.priceEach) AS totalSales "
-                    + "FROM customers c "
-                    + "JOIN orders o ON c.customerNumber = o.customerNumber "
-                    + "JOIN orderdetails od ON o.orderNumber = od.orderNumber "
-                    + "WHERE o.orderDate BETWEEN ? AND ? "
-                    + "GROUP BY c.customerName "
-                    + "ORDER BY totalSales DESC;";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, startDate);
-            pstmt.setString(2, endDate);
-            rs = pstmt.executeQuery();
-
-            tableModel.setRowCount(0); // Clear the table
-            while (rs.next()) {
-                tableModel.addRow(new Object[]{
-                    rs.getString("customerName"),
-                    rs.getBigDecimal("totalSales")
-                });
+            List<Object[]> financialData = controller.getFinancialData(startDate, endDate);
+            tableModel.setRowCount(0);
+            for (Object[] row : financialData) {
+                tableModel.addRow(row);
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error generating report: " + e.getMessage(), "Error",
-                    JOptionPane.ERROR_MESSAGE);
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-                if (dbConnect != null) dbConnect.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Unexpected error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    } 
+    }
 }
 

@@ -1,6 +1,6 @@
 package com.oap200.app.controllers;
 
-import com.oap200.app.models.StockDAO;
+import com.oap200.app.models.ReportStockDAO;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -10,15 +10,15 @@ import java.util.List;
  * 
  * @author Dirkje Jansje van der Poel
  */
-public class StockController {
+public class ReportStockController {
 
-    private StockDAO model;
+    private ReportStockDAO model;
 
     /**
      * Constructs a new StockController.
      */
-    public StockController() {
-        this.model = new StockDAO();
+    public ReportStockController() {
+        this.model = new ReportStockDAO();
     }
 
     /**
@@ -26,7 +26,9 @@ public class StockController {
      * 
      * @param searchText The search criteria for stock data.
      * @return A list of stock data objects.
-     */
+     * @throws SQLException If a database access error occurs.
+     * @throws ClassNotFoundException If the JDBC driver class is not found.
+    */
     public List<Object[]> getStockData(String searchText) {
         try {
             return model.getStockData(searchText);

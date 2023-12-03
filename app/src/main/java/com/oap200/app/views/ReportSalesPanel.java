@@ -1,7 +1,8 @@
 package com.oap200.app.views;
 
 import com.oap200.app.Interfaces.ReportGenerator;
-import com.oap200.app.utils.DbConnect;
+import com.oap200.app.controllers.ReportSaleController;
+//import com.oap200.app.utils.DbConnect;
 import com.oap200.app.utils.PrintManager;
 import com.oap200.app.utils.ButtonBuilder;
 import com.oap200.app.utils.DateFactory;
@@ -10,6 +11,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Calendar;
 import java.util.Date;
 import java.awt.*;
@@ -86,37 +88,24 @@ public class ReportSalesPanel extends JPanel implements ReportGenerator {
     /**
      * Generates the report based on selected dates.
      */
-    @Override
-    public void generateReport() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String startDate = dateFormat.format(startDateSpinner.getValue());
-        String endDate = dateFormat.format(endDateSpinner.getValue());
+   @Override
+public void generateReport() {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    String startDate = dateFormat.format(startDateSpinner.getValue());
+    String endDate = dateFormat.format(endDateSpinner.getValue());
 
-        tableModel.setRowCount(0);
+    ReportSaleController controller = new ReportSaleController();
+    tableModel.setRowCount(0);
 
-        try (DbConnect dbConnect = new DbConnect();
-             Connection conn = dbConnect.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(
-                     "SELECT customerNumber, checkNumber, paymentDate, amount FROM payments " +
-                     "WHERE paymentDate BETWEEN ? AND ? ORDER BY paymentDate DESC;")) {
-            pstmt.setString(1, startDate);
-            pstmt.setString(2, endDate);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    tableModel.addRow(new Object[]{
-                        rs.getInt("customerNumber"),
-                        rs.getString("checkNumber"),
-                        rs.getDate("paymentDate"),
-                        rs.getDouble("amount")
-                    });
-                }
-            }
-        } catch (SQLException | ClassNotFoundException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error accessing the database: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error closing database connection: " + ex.getMessage(), "Connection Error", JOptionPane.ERROR_MESSAGE);
+    try {
+        List<Object[]> salesData = controller.getSalesData(startDate, endDate);
+        for (Object[] row : salesData) {
+            tableModel.addRow(row);
         }
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Error accessing the database: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
+  }
 }

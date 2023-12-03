@@ -19,11 +19,19 @@ public class DbConnect implements AutoCloseable {
         myConnection = DriverManager.getConnection(dbUrl, user, pass);
     }
 
-    // Method to retrieve the connection if needed
-    public Connection getConnection() {
+/**
+ * Retrieves the established database connection.
+ *
+ * @return The active database connection.
+ */    public Connection getConnection() {
         return myConnection;
     }
 
+    /**
+ * Closes the database connection if it's open.
+ *
+ * @throws SQLException If an error occurs while closing the connection.
+ */
     @Override
 public void close() throws SQLException {
     if (myConnection != null && !myConnection.isClosed()) {
