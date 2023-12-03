@@ -39,9 +39,6 @@ import java.util.List;
 public class EmployeeManagementPanel extends JPanel {
     // Declaration of class fields
     private JTable employeeTable;
-    private JTable employeeTableAdd;
-    private JTable employeeTableUpdate;
-    private JTable employeeTableDelete;
     private JTextField searchByNumberField;
     private JTextField searchNumberField, searchNameField;
     private JTextField employeeNumber, lastName, firstName, extension, email, officeCode, reportsTo, jobTitle;
@@ -86,79 +83,44 @@ public class EmployeeManagementPanel extends JPanel {
             // Open the LoginPanel in a new window
             openLoginPanel();
         });
-        
-        JButton viewButton = ButtonBuilder.createViewButton(this::viewEmployees);
-        JButton addButton = ButtonBuilder.createAddButton(this::addEmployee);
-        JButton deleteButton = ButtonBuilder.createDeleteButton(this::deleteEmployee);
-        JButton updateButton = ButtonBuilder.createUpdateButton(this::updateEmployee);
-        JButton searchButton = ButtonBuilder.createSearchButton(this::searchEmployeesName);
-        JButton searchNumberButton = ButtonBuilder.createSearchNumberButton(this::searchEmployeesByNumber);
 
-        JPanel viewSearchButtonPanel = createViewSearchButtonPanel(viewButton, searchButton, searchNumberButton);
-        
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("View Employees", null, createViewPanel(), "Click to view");
         tabbedPane.addTab("Add Employee", null, createAddPanel(), "Click to add");
-        tabbedPane.addTab("Update Employee", null, createUpdatePanel(updateButton), "Click to Update");
+        tabbedPane.addTab("Update Employee", null, createUpdatePanel(), "Click to Update");
         tabbedPane.addTab("Delete Employee", null, createDeletePanel(), "Click to Delete");
 
         add(createButtonPanel(backButton, logoutButton), BorderLayout.NORTH);
         add(tabbedPane, BorderLayout.CENTER);
     }
-private JPanel createViewSearchButtonPanel(JButton viewButton, JButton searchButton, JButton searchNumberButton) {
-            JPanel panel = new JPanel(new FlowLayout());
-            panel.add(viewButton);
-            panel.add(searchButton);
-            panel.add(searchNumberButton);
-            return panel;
-        }
+
     /**
      * Initializes all the text fields and components in the panel.
      */
     private void initializeFields() {
         // Initialize text fields
-        Dimension fieldDimension = new Dimension(150,20); //Sets a desired width and height of input fields
-
         searchNumberField = new JTextField(10);
-        searchNumberField.setPreferredSize(fieldDimension);
         searchNameField = new JTextField(10);
-        searchNameField.setPreferredSize(fieldDimension);
         employeeNumber = new JTextField(10);
-        employeeNumber.setPreferredSize(fieldDimension);
         lastName = new JTextField(10);
-        lastName.setPreferredSize(fieldDimension);
         firstName = new JTextField(10);
-        firstName.setPreferredSize(fieldDimension);
         extension = new JTextField(10);
-        extension.setPreferredSize(fieldDimension);
         email = new JTextField(10);
-        email.setPreferredSize(fieldDimension);
         officeCode = new JTextField(10);
-        officeCode.setPreferredSize(fieldDimension);
         reportsTo = new JTextField(10);
-        reportsTo.setPreferredSize(fieldDimension);
         jobTitle = new JTextField(10);
-        jobTitle.setPreferredSize(fieldDimension);
 
         updateEmployeeNumber = new JTextField(10);
-        updateEmployeeNumber.setPreferredSize(fieldDimension);
-        
         updateLastName = new JTextField(10);
-        updateLastName.setPreferredSize(fieldDimension);
         updateFirstName = new JTextField(10);
-        updateFirstName.setPreferredSize(fieldDimension);
         updateExtension = new JTextField(10);
-        updateExtension.setPreferredSize(fieldDimension);
         updateEmail = new JTextField(10);
-        updateEmail.setPreferredSize(fieldDimension);
         updateOfficeCode = new JTextField(10);
-        updateOfficeCode.setPreferredSize(fieldDimension);
         updateReportsTo = new JTextField(10);
-        updateReportsTo.setPreferredSize(fieldDimension);
         updateJobTitle = new JComboBox<String>();
-        updateJobTitle.setPreferredSize(fieldDimension);
+
         employeeTable = new JTable(new DefaultTableModel());
-        
+
         employeeRolesComboBox = new JComboBox<>();
     }
 
@@ -175,7 +137,6 @@ private JPanel createViewSearchButtonPanel(JButton viewButton, JButton searchBut
         buttonPanel.add(logoutButton);
         return buttonPanel;
     }
-    
 
     /**
      * Creates the view panel with search functionality and a table to display employees.
@@ -226,52 +187,58 @@ private JPanel createViewSearchButtonPanel(JButton viewButton, JButton searchBut
  * @return The panel for adding a new employee.
  */
 private JPanel createAddPanel() {
-    // Main panel for adding a new employee, using BorderLayout for overall arrangement
-    JPanel addPanel = new JPanel(new BorderLayout());
-
-    // Panel to hold all the label and input field pairs, using BoxLayout for vertical stacking
-    JPanel fieldsPanel = new JPanel();
-    fieldsPanel.setLayout(new BoxLayout(fieldsPanel, BoxLayout.Y_AXIS));
-
-    // Add the pairs of labels and text fields to the fieldsPanel
-    fieldsPanel.add(createFieldPanel("Last Name:", lastName));
-    fieldsPanel.add(createFieldPanel("First Names:", firstName));
-    fieldsPanel.add(createFieldPanel("Extension:", extension));
-    fieldsPanel.add(createFieldPanel("Email:", email));
-    fieldsPanel.add(createFieldPanel("Office Code:", officeCode));
-    fieldsPanel.add(createFieldPanel("Reports To:", reportsTo));
-    fieldsPanel.add(createFieldPanel("Employee Roles:", employeeRolesComboBox));
-
-    // Wrap fieldsPanel in a container to prevent it from stretching to the full width of the window
-    JPanel fieldsContainer = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    fieldsContainer.add(fieldsPanel);
-
-    // Add the fieldsContainer to the center of the addPanel
-    addPanel.add(fieldsContainer, BorderLayout.CENTER);
-
-    // Create and add the Add button to the south of addPanel
+    JPanel panel = new JPanel(new BorderLayout());
     JButton addButton = ButtonBuilder.createAddButton(() -> addEmployee());
-    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    buttonPanel.add(addButton);
-    addPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-    return addPanel;
+    JPanel addPanel = new JPanel(new GridLayout(9, 2));
+    addPanel.add(new JLabel("Last Name:"));
+    addPanel.add(lastName);
+    addPanel.add(new JLabel("First Names:"));
+    addPanel.add(firstName);
+    addPanel.add(new JLabel("Extension:"));
+    addPanel.add(extension);
+    addPanel.add(new JLabel("Email:"));
+    addPanel.add(email);
+    addPanel.add(new JLabel("Office Code:"));
+    addPanel.add(officeCode);
+    addPanel.add(new JLabel("Reports To:"));
+    addPanel.add(reportsTo);
+    addPanel.add(new JLabel("Employee Roles:"));
+    addPanel.add(employeeRolesComboBox);
+    panel.add(addPanel, BorderLayout.CENTER);
+    panel.add(addButton, BorderLayout.SOUTH);
+    return panel;
 }
-
-// Helper method to create a panel with a label and text field using FlowLayout for alignment
-private JPanel createFieldPanel(String labelText, Component field) {
-    JPanel fieldPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    fieldPanel.add(new JLabel(labelText));
-    fieldPanel.add(field);
-    return fieldPanel;
-}
-
 
 /**
  * Creates the panel for updating employee information.
  *
  * @return The panel for updating employee information.
  */
+private JPanel createUpdatePanel() {
+    JPanel panel = new JPanel(new BorderLayout());
+    JButton updateButton = ButtonBuilder.createUpdateButton(() -> updateEmployee());
+    JPanel updatePanel = new JPanel(new GridLayout(9, 2));
+    JComboBox<String> updateJobTitle = new JComboBox<>(employeeRolesComboBox.getModel());
+    updatePanel.add(new JLabel("Choose Employee By Emp. Number:"));
+    updatePanel.add(updateEmployeeNumber);
+    updatePanel.add(new JLabel("Update Last Name:"));
+    updatePanel.add(updateLastName);
+    updatePanel.add(new JLabel("Update First Name:"));
+    updatePanel.add(updateFirstName);
+    updatePanel.add(new JLabel("Update Extension:"));
+    updatePanel.add(updateExtension);
+    updatePanel.add(new JLabel("Update Email:"));
+    updatePanel.add(updateEmail);
+    updatePanel.add(new JLabel("Update Office Code:"));
+    updatePanel.add(updateOfficeCode);
+    updatePanel.add(new JLabel("Update Reports To:"));
+    updatePanel.add(updateReportsTo);
+    updatePanel.add(new JLabel("Update Job Title:"));
+    updatePanel.add(updateJobTitle); // Add the combo box instead of a text field
+    panel.add(updatePanel, BorderLayout.CENTER);
+    panel.add(updateButton, BorderLayout.SOUTH);
+    return panel;
+}
 
 /**
  * Creates the panel for deleting an employee.
@@ -288,63 +255,7 @@ private JPanel createDeletePanel() {
     panel.add(deleteButton, BorderLayout.SOUTH);
     return panel;
 }
-private JPanel createUpdatePanel(JButton updateButton) {
-    JPanel panel = new JPanel(new BorderLayout());
-        // Add label and field panel as before
-        JPanel inputPanel = new JPanel(new GridLayout(8, 2));
-        // Add labels and corresponding text fields
-        inputPanel.add(new JLabel("employee Number:"));
-        inputPanel.add(employeeNumber);
 
-        // Update the size of the Product Name field to match the view panel
-        Dimension preferredSize = employeeTable.getTableHeader().getDefaultRenderer()
-                .getTableCellRendererComponent(employeeTable, "Employee Number", false, false, -1, 0)
-                .getPreferredSize();
-        employeeNumber.setPreferredSize(preferredSize);
-
-        inputPanel.add(new JLabel("Last Name:"));
-        inputPanel.add(lastName);
-        inputPanel.add(new JLabel("First Name:"));
-        inputPanel.add(firstName);
-        inputPanel.add(new JLabel("Extension:"));
-        inputPanel.add(extension);
-        inputPanel.add(new JLabel("Email:"));
-        inputPanel.add(email);
-        inputPanel.add(new JLabel("Reports To:"));
-        inputPanel.add(reportsTo);
-        inputPanel.add(new JLabel("Job Title:"));
-        inputPanel.add(employeeRolesComboBox);
-
-        // Add label and field panel to the west and center positions
-        panel.add(inputPanel, BorderLayout.WEST);
-        
-
-        // Add the button to a separate panel for positioning adjustment
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonPanel.add(updateButton);
-        
-       
-
-        // Add the button's panel at the center
-        panel.add(buttonPanel, BorderLayout.CENTER);
-
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.add(inputPanel, BorderLayout.WEST);
-        topPanel.add(inputPanel, BorderLayout.WEST);
-        panel.add(buttonPanel, BorderLayout.WEST);
-        panel.add(topPanel, BorderLayout.NORTH);
-
-        employeeTableUpdate = new JTable();
-        JScrollPane scrollPaneAdd = new JScrollPane(employeeTableUpdate);
-
-        // Add scroll pane to the main panel
-        panel.add(scrollPaneAdd, BorderLayout.CENTER);
-
-        // Add the top panel to the main panel
-        panel.add(topPanel, BorderLayout.NORTH);
-
-        return panel;
-    }
 /**
  * Loads employee roles into the combo box.
  */
@@ -411,9 +322,7 @@ private void searchEmployeesByNumber() {
         JOptionPane.showMessageDialog(this, "Please enter an employee number to search.", "Input Error", JOptionPane.ERROR_MESSAGE);
     }
 }
-private void viewEmployees() {
-    employeeController.handleViewAllEmployees();
-}
+
 /**
  * Adds a new employee based on the input fields.
  */
@@ -558,7 +467,7 @@ private void deleteEmployee() {
             );
             JOptionPane.showMessageDialog(this, message, "Employee Deleted", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Failed to delete employee. This might be because you typed a letter, or the employee does not exist.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to delete employee. Three possible reasons for this: \n \n 1. You typed a letter instead of an employee number \n 2. Chosen employee has employees reporting to them \n 3. Employee does not exist", "Error", JOptionPane.ERROR_MESSAGE);
         }
     } catch (SQLException | ClassNotFoundException ex) {
         ex.printStackTrace();
