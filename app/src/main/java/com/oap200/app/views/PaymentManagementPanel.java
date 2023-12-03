@@ -15,6 +15,10 @@ import java.util.List;
 import com.oap200.app.models.PaymentsDAO;
 import com.oap200.app.utils.ButtonBuilder;
 
+/**
+ * The PaymentManagementPanel class represents a JPanel for managing payments,
+ * including viewing, sorting, and displaying payment data.
+ */
 public class PaymentManagementPanel extends JPanel {
 
     private JTable paymentsTable; // Table for displaying payments
@@ -43,26 +47,25 @@ public class PaymentManagementPanel extends JPanel {
             openLoginPanel();
         });
 
+        
+       
+        
+       
         JButton viewButton = ButtonBuilder.createViewButton(() -> {
             /* Action for View Button */
         });
 
-        // Adding action listeners to the view button for various views
-        viewButton.addActionListener(e -> viewPayments());
-        viewButton.addActionListener(e -> viewSortedData("customerNumber"));
-        viewButton.addActionListener(e -> viewCheck());
-        viewButton.addActionListener(e -> viewDate());
-        viewButton.addActionListener(e -> viewAmount());
-
         // Initializing buttons for sorting
-        String[] columnNames = { "Customer Number", "Checknumber", "Payment Date", "Amount" };
-        JPanel sortingButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton sortCustomerButton = new JButton("Sort by Customer Number");
+        JButton sortCheckButton = new JButton("Sort by Check Number");
+        JButton sortDateButton = new JButton("Sort by Payment Date");
+        JButton sortAmountButton = new JButton("Sort by Amount");
 
-        for (String columnName : columnNames) {
-            JButton sortButton = new JButton("Sort by " + columnName);
-            sortButton.addActionListener(e -> viewSortedData(columnName));
-            sortingButtonPanel.add(sortButton);
-        }
+        // Adding action listeners for sorting
+        sortCustomerButton.addActionListener(e -> viewSortedData("customerNumber"));
+        sortCheckButton.addActionListener(e -> viewSortedData("checkNumber"));
+        sortDateButton.addActionListener(e -> viewSortedData("paymentDate"));
+        sortAmountButton.addActionListener(e -> viewSortedData("amount"));
 
         // Creating a JTabbedPane for tabbed navigation
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -71,7 +74,6 @@ public class PaymentManagementPanel extends JPanel {
         JPanel panel1 = new JPanel(new BorderLayout());
         addComponentsToPanelView(panel1);
         panel1.add(viewButton, BorderLayout.SOUTH);
-        panel1.add(sortingButtonPanel, BorderLayout.NORTH); // Add the sorting buttons
         tabbedPane.addTab("View Payments", null, panel1, "Click to view");
 
         // Initializing panels for buttons and tabbed navigation
@@ -101,6 +103,12 @@ public class PaymentManagementPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(paymentsTable);
         // Correcting this line to add the scrollPane to the CENTER instead of EAST
         panel1.add(scrollPane, BorderLayout.CENTER);
+
+        // Adding action listeners to the view button for various views
+        viewButton.addActionListener(e -> viewPayments());
+        viewButton.addActionListener(e -> viewCheck());
+        viewButton.addActionListener(e -> viewDate());
+        viewButton.addActionListener(e -> viewAmount());
     }
 
     /**
@@ -231,17 +239,34 @@ public class PaymentManagementPanel extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 0.3; // Button weight
 
-        // Adjusting button size based on header size
-        Dimension buttonSize = new JButton().getPreferredSize();
+        // Adding the "Customer Number" sorting button
+        JButton sortCustomerButton = new JButton("Sort by Customer Number");
+        sortCustomerButton.addActionListener(e -> viewSortedData("customerNumber"));
+        inputPanel.add(sortCustomerButton, gbc);
 
-        // Adding the sorting buttons dynamically
-        String[] columnNames = { "Customer Number", "Checknumber", "Payment Date", "Amount" };
-        for (String columnName : columnNames) {
-            JButton sortButton = new JButton("Sort by " + columnName);
-            sortButton.addActionListener(e -> viewSortedData(columnName));
-            inputPanel.add(sortButton, gbc);
-            sortButton.setPreferredSize(buttonSize);
-        }
+        // Adding the "Check Number" sorting button
+        JButton sortCheckButton = new JButton("Sort by Check Number");
+        sortCheckButton.addActionListener(e -> viewSortedData("checkNumber"));
+        gbc.gridx = 1;
+        inputPanel.add(sortCheckButton, gbc);
+
+        // Adding the "Payment Date" sorting button
+        JButton sortDateButton = new JButton("Sort by Payment Date");
+        sortDateButton.addActionListener(e -> viewSortedData("paymentDate"));
+        gbc.gridx = 2;
+        inputPanel.add(sortDateButton, gbc);
+
+        // Adding the "Amount" sorting button
+        JButton sortAmountButton = new JButton("Sort by Amount");
+        sortAmountButton.addActionListener(e -> viewSortedData("amount"));
+        gbc.gridx = 3;
+        inputPanel.add(sortAmountButton, gbc);
+
+        // Adjusting button size based on header size
+        Dimension buttonSize = sortCustomerButton.getPreferredSize();
+        sortCheckButton.setPreferredSize(buttonSize);
+        sortDateButton.setPreferredSize(buttonSize);
+        sortAmountButton.setPreferredSize(buttonSize);
 
         panelView.add(inputPanel, BorderLayout.NORTH);
 
