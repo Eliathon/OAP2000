@@ -43,7 +43,7 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
      */
     private void initializeComponents() {
         yearComboBox = new JComboBox<>(new String[]{"2003", "2004", "2005"});
-        quarterComboBox = new JComboBox<>(new String[]{"Q1", "Q2", "Q3", "Q4", "Q All"});
+        quarterComboBox = new JComboBox<>(new String[]{"Q1", "Q2", "Q3", "Q4", "Year"});
 
         generateReportButton = ButtonBuilder.createButton("Filter", () -> generateReport());
         saveReportButton = ButtonBuilder.createButton("Save as...", () -> saveReportToFile());
@@ -67,7 +67,7 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
         tableModel.addColumn("Customer Name");
         tableModel.addColumn("Total Amount");
       
-        JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         inputPanel.add(new JLabel("Year:"));
         inputPanel.add(yearComboBox);
         inputPanel.add(new JLabel("Quarter:"));
@@ -229,5 +229,6 @@ public class ReportFinancialPanel extends JPanel implements ReportGenerator {
                 e.printStackTrace();
             }
         }
-    }}
+    } 
+}
 
