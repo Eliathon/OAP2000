@@ -1,3 +1,24 @@
+package com.oap200.app.models;
+
+import com.oap200.app.utils.DbConnect;  
+import com.oap200.app.views.OrderManagementPanel;
+import com.oap200.app.controllers.OrdersController; 
+import com.oap200.app.utils.DbConnect;
+
+import java.lang.Integer;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 /**
  * Data Access Object for handling operations related to orders in the database.
  * @author Patrik.
@@ -172,7 +193,7 @@ public class OrderDAO {
             return false;
         }
     }
-}
+
 /**
  * Deletes orders and related order details from the database based on the provided order number.
  *
@@ -284,4 +305,5 @@ public boolean updateOrders(int orderNumberToUpdate, String neworderDate, String
         e.printStackTrace();
         return false;
     }
+}
 }

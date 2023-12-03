@@ -4,6 +4,8 @@ import com.oap200.app.models.OrderDAO;
 import com.oap200.app.controllers.OrdersController;
 import com.oap200.app.utils.ButtonBuilder;
 
+import java.lang.Integer;
+import java.text.ParseException;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -60,7 +62,7 @@ public class OrderManagementPanel extends JPanel {
     public OrderManagementPanel(JFrame parentFrame) {
         initializeFields();
         ordersController = new OrdersController(new OrderDAO(), this);
-
+        
         // Load the last window position
         Preferences prefs = Preferences.userNodeForPackage(OrderManagementPanel.class);
         int x = prefs.getInt(PREF_X, 50); // Default x position
@@ -150,6 +152,9 @@ public class OrderManagementPanel extends JPanel {
         addButton.addActionListener(e -> addOrder());
         updateButton.addActionListener(e -> updateOrder());
         loadOrdersLines();
+    }
+
+    private void addWindowListener(WindowAdapter windowAdapter) {
     }
 
     private void updateOrder() {
@@ -470,4 +475,5 @@ public static void main(String[] args) {
         // Set the frame to be visible
         panel.setVisible(true);
     });
+}
 }
