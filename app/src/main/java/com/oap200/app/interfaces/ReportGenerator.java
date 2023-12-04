@@ -1,4 +1,4 @@
- package com.oap200.app.Interfaces;
+ package com.oap200.app.interfaces;
 
 /**
  * Interface defining the contract for report generation in the application.
