@@ -1,3 +1,12 @@
+
+/** CustomerController Class
+ *  Customer is a class that acts as a controller for managing customers. It handles interactions
+ * between the CustomerDAO (data access object) and the CustomerManagementPanel (view).
+ * @author Johnny
+ * @version 1.0
+ * @since 2023-04-12
+ */
+
 package com.oap200.app.controllers;
 
 import com.oap200.app.models.CustomerDAO;
@@ -7,16 +16,25 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class CustomerController {
-
+    // Method for handling the display of customers
     private CustomerDAO customerDAO;
     private CustomerManagementPanel customerManagementPanel;
 
-    public CustomerController(CustomerDAO customerDAO, CustomerManagementPanel customerManagementPanel) {
-        this.customerDAO = customerDAO;
-        this.customerManagementPanel = customerManagementPanel;
+     /** Constructor for Customer Controller     *
+     * @param customerDAO            Data access object for customer-related operations.
+     * @param customerManagementPanel Panel for managing the display of customers.
+     */
+     public CustomerController(CustomerDAO customerDAO, CustomerManagementPanel customerManagementPanel) {
+     this.customerDAO = customerDAO;
+     this.customerManagementPanel = customerManagementPanel;
     }
-
-    public String[] getCustomerDetails(String customerNumber) {
+    /**
+     * Get details of a customer based on the customer number.
+     *
+     * @param customerNumber The customer number to retrieve details for.
+     * @return An array of customer details, or null if not found or an exception occurs.
+     */
+        public String[] getCustomerDetails(String customerNumber) {
         try {
             return customerDAO.getCustomerDetails(customerNumber);
         } catch (SQLException | ClassNotFoundException e) {
@@ -24,6 +42,12 @@ public class CustomerController {
             return null;
         }
     }
+    /**
+     * Handle searching for customers by name.
+     *
+     * @param customerName The name to search for.
+     * @return List of search results, or an empty list if none found.
+     */
     public List<String[]> handleSearchCustomersByNumber(String customerNumber) {
         List<String[]> searchResults = customerDAO.searchCustomersByNumber(customerNumber);
         if (!searchResults.isEmpty()) {
@@ -35,7 +59,12 @@ public class CustomerController {
         }
         return searchResults;
     }
-
+     /**
+     * Handle searching for customers by number.
+     *
+     * @param customerNumber The customer number to search for.
+     * @return List  the search results, or an empty list if none found.
+     */
     public List<String[]> handleSearchCustomersNumber(String customerNumber) {
         List<String[]> searchResults = customerDAO.searchCustomersByNumber(customerNumber);
         if (!searchResults.isEmpty()) {
@@ -43,6 +72,9 @@ public class CustomerController {
         }
         return searchResults;
     }
+    /**
+     * Handle displaying all employees.
+     */     
 
     public void handleViewAllCustomers() {
         List<String[]> allCustomers = customerDAO.fetchCustomers();
@@ -130,3 +162,4 @@ public class CustomerController {
         return isUpdated;
     }
 } 
+

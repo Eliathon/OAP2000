@@ -1,14 +1,46 @@
-package com.oap200.app.models;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import com.oap200.app.utils.DbConnect;
+/**
+ * Data Access Object (DAO) class for handling customers data.
+ * Manages interactions with the database related to customers
+ *
+ * <p>This class provides methods to retrieve, add, update, and delete customer records
+ * in the database. It also includes functionality to fetch all customers, search for
+ * custopmers by name or number.
+ *
+ * <p>Database connectivity is managed through the {@link com.oap200.app.utils.DbConnect} class,
+ * and the methods in this class throw {@link java.sql.SQLException} and {@link ClassNotFoundException}
+ * to handle potential database access errors.
+ *
+ * <p>Usage example:
+ * <pre>{@code
+ * CustomerDao customerDAO = new CustomerDAO();
+ * String[] customerDetails = customerDAO.getCustomerDetails("123");
+ * }</pre>
+ *
+ * @author Johnny
+ * @version 1.0
+ * @since 2023-04-12
+ */
+    package com.oap200.app.models;
 
+     import java.sql.*;
+     import java.util.ArrayList;
+     import java.util.List;
+     import com.oap200.app.utils.DbConnect;
+/**
+ * Data Access Object (DAO) class for handling customers data.
+ * Manages interactions with the database related to customers.
+ */
 public class CustomerDAO {
-
-    // Retrieves customer details based on customer number
-    public String[] getCustomerDetails(String customerNumber) throws SQLException, ClassNotFoundException {
+    /**
+     * Retrieves the details of a customer based on the customer number.
+     *
+     * @param customerNumber The customer number to retrieve details for.
+     * @return An array containing the customer details, or null if no customer found with the given number.
+     * @throws SQLException            If a database access error occurs.
+     * @throws ClassNotFoundException If the JDBC driver class is not found.
+     */
+        public String[] getCustomerDetails(String customerNumber) throws SQLException, ClassNotFoundException {
         String sql = "SELECT customerNumber, customerName, contactLastName, contactFirstName, phone, addressLine1, addressLine2, city, state, postalCode, country, salesRepEmployeeNumber, creditLimit FROM customers WHERE customerNumber = ?";
         try (Connection connection = new DbConnect().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -16,27 +48,31 @@ public class CustomerDAO {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     return new String[]{
-                            resultSet.getString("customerNumber"),
-                            resultSet.getString("customerName"),
-                            resultSet.getString("contactLastName"),
-                            resultSet.getString("contactFirstName"),
-                            resultSet.getString("phone"),
-                            resultSet.getString("addressLine1"),
-                            resultSet.getString("addressLine2"),
-                            resultSet.getString("city"),
-                            resultSet.getString("state"),
-                            resultSet.getString("postalCode"),
-                            resultSet.getString("country"),
-                            resultSet.getString("salesRepEmployeeNumber"),
-                            resultSet.getString("creditLimit")
+                    resultSet.getString("customerNumber"),
+                    resultSet.getString("customerName"),
+                    resultSet.getString("contactLastName"),
+                    resultSet.getString("contactFirstName"),
+                    resultSet.getString("phone"),
+                    resultSet.getString("addressLine1"),
+                    resultSet.getString("addressLine2"),
+                    resultSet.getString("city"),
+                    resultSet.getString("state"),
+                    resultSet.getString("postalCode"),
+                    resultSet.getString("country"),
+                    resultSet.getString("salesRepEmployeeNumber"),
+                    resultSet.getString("creditLimit")
                     };
                 }
             }
         }
         return null;
     }
-
-    // Checks if a customer exists based on customer number
+    /**
+     * Checks if a customer exists in the database based on the customer number.
+     *
+     * @param customerNumber The customer number to check for existence.
+     * @return True if the customer exists, false otherwise.
+     */
     public boolean doesCustomerExist(String customerNumber) {
         String sql = "SELECT COUNT(*) FROM customers WHERE customerNumber = ?";
         try (Connection connection = new DbConnect().getConnection();
@@ -50,39 +86,52 @@ public class CustomerDAO {
             return false;
         }
     }
-   
-private String generatedCustomerNumber;
-    public String getNextAvailableCustomerNumber() throws SQLException, ClassNotFoundException {
-        // Initialize the DbConnect object
-        DbConnect db = new DbConnect();
-        // Use the object to get a connection
-        try (Connection connection = db.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(customerNumber) as maxNumber FROM customers");
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-
-            if (resultSet.next()) {
-                String maxNumber = resultSet.getString("maxNumber");
-                if (maxNumber != null && !maxNumber.trim().isEmpty()) {
-                    // Assumes employeeNumber is a numeric string that can be parsed into an integer
-                    int nextNumber = Integer.parseInt(maxNumber.trim()) + 1;
-                    generatedCustomerNumber = String.format("%04d", nextNumber); // Pad with zeros if necessary
-                } else {
-                    // Default employee number to start if no employees exist
-                    generatedCustomerNumber = "0001";
+    // Generate customernumber   
+    private String generatedCustomerNumber;
+      /**
+     * Retrieves the next available customer number by incrementing the maximum existing employee number.
+     *
+     * @return The next available customer number.
+     * @throws SQLException If a database access error occurs.
+     * @throws ClassNotFoundException If the JDBC driver class is not found.
+     */  
+     public String getNextAvailableCustomerNumber() throws SQLException, ClassNotFoundException {
+     // Initialize the DbConnect object
+     DbConnect db = new DbConnect();
+     // Use the object to get a connection
+     try (Connection connection = db.getConnection();
+     PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(customerNumber) as maxNumber FROM customers");
+     ResultSet resultSet = preparedStatement.executeQuery()) {
+     if (resultSet.next()) {
+     String maxNumber = resultSet.getString("maxNumber");
+     if (maxNumber != null && !maxNumber.trim().isEmpty()) {
+     // Assumes employeeNumber is a numeric string that can be parsed into an integer
+     int nextNumber = Integer.parseInt(maxNumber.trim()) + 1;
+             generatedCustomerNumber = String.format("%04d", nextNumber); // Pad with zeros if necessary
+           } else {
+           // Default employee number to start if no employees exist
+              generatedCustomerNumber = "0001";
                 }
             } else {
                 throw new SQLException("Unable to retrieve the highest customer number.");
-            }
-        }
+         }
+      }
         return generatedCustomerNumber;
     }
-
-public String getGeneratedCustomerNumber() {
+       /**
+     * Gets the most recently generated customer number.
+     *
+     * @return The most recently generated customer number.
+     */
+     public String getGeneratedCustomerNumber() {
+     return generatedCustomerNumber;
+    }
+    /**
+    * Method to fetch all customers from the database.
+    *
+    * @return A list of arrays, each containing details of an customer.
+    */
     
-    return generatedCustomerNumber;
-}
-
-    // Fetch all customers from the database
     public List<String[]> fetchCustomers() {
         List<String[]> customers = new ArrayList<>();
         String sql = "SELECT * FROM customers";
@@ -91,19 +140,19 @@ public String getGeneratedCustomerNumber() {
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
                 customers.add(new String[]{
-                        resultSet.getString("customerNumber"),
-                        resultSet.getString("customerName"),
-                        resultSet.getString("contactLastName"),
-                        resultSet.getString("contactFirstName"),
-                        resultSet.getString("phone"),
-                        resultSet.getString("addressLine1"),
-                        resultSet.getString("addressLine2"),
-                        resultSet.getString("city"),
-                        resultSet.getString("state"),
-                        resultSet.getString("postalCode"),
-                        resultSet.getString("country"),
-                        resultSet.getString("salesRepEmployeeNumber"),
-                        resultSet.getString("creditLimit")
+                resultSet.getString("customerNumber"),
+                resultSet.getString("customerName"),
+                resultSet.getString("contactLastName"),
+                resultSet.getString("contactFirstName"),
+                resultSet.getString("phone"),
+                resultSet.getString("addressLine1"),
+                resultSet.getString("addressLine2"),
+                resultSet.getString("city"),
+                resultSet.getString("state"),
+                resultSet.getString("postalCode"),
+                resultSet.getString("country"),
+                resultSet.getString("salesRepEmployeeNumber"),
+                resultSet.getString("creditLimit")
                 });
             }
         } catch (SQLException | ClassNotFoundException ex) {
@@ -111,30 +160,34 @@ public String getGeneratedCustomerNumber() {
         }
         return customers;
     }
-
-    // Search for customers by name
-    public List<String[]> searchCustomersByName(String customerName) {
+/**
+ * Method to search for customers by name in the database.
+ *
+ * @param lastName The last name to search for.
+ * @return A list of arrays, each containing details of an employee matching the search criteria.
+ */
+        public List<String[]> searchCustomersByName(String customerName) {
         List<String[]> searchResults = new ArrayList<>();
         String sql = "SELECT * FROM customers WHERE customerName LIKE ?";
         try (Connection connection = new DbConnect().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, "%" + customerName + "%");
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    searchResults.add(new String[]{
-                            resultSet.getString("customerNumber"),
-                            resultSet.getString("customerName"),
-                            resultSet.getString("contactLastName"),
-                            resultSet.getString("contactFirstName"),
-                            resultSet.getString("phone"),
-                            resultSet.getString("addressLine1"),
-                            resultSet.getString("addressLine2"),
-                            resultSet.getString("city"),
-                            resultSet.getString("state"),
-                            resultSet.getString("postalCode"),
-                            resultSet.getString("country"),
-                            resultSet.getString("salesRepEmployeeNumber"),
-                            resultSet.getString("creditLimit")
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        preparedStatement.setString(1, "%" + customerName + "%");
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+            searchResults.add(new String[]{
+            resultSet.getString("customerNumber"),
+            resultSet.getString("customerName"),
+            resultSet.getString("contactLastName"),
+            resultSet.getString("contactFirstName"),
+            resultSet.getString("phone"),
+            resultSet.getString("addressLine1"),
+            resultSet.getString("addressLine2"),
+            resultSet.getString("city"),
+            resultSet.getString("state"),
+            resultSet.getString("postalCode"),
+            resultSet.getString("country"),
+            resultSet.getString("salesRepEmployeeNumber"),
+            resultSet.getString("creditLimit")
                     });
                 }
             }
@@ -143,33 +196,36 @@ public String getGeneratedCustomerNumber() {
         }
         return searchResults;
     }
-
-
-    // Search for customers by number
-    public List<String[]> searchCustomersByNumber(String customerNumber) {
-        List<String[]> searchResults = new ArrayList<>();
-        String sql = "SELECT * FROM customers WHERE customerNumber LIKE ?";
-        try (Connection connection = new DbConnect().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, customerNumber + "%");
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    searchResults.add(new String[]{
-                            resultSet.getString("customerNumber"),
-                            resultSet.getString("customerName"),
-                            resultSet.getString("contactLastName"),
-                            resultSet.getString("contactFirstName"),
-                            resultSet.getString("phone"),
-                            resultSet.getString("addressLine1"),
-                            resultSet.getString("addressLine2"),
-                            resultSet.getString("city"),
-                            resultSet.getString("state"),
-                            resultSet.getString("postalCode"),
-                            resultSet.getString("country"),
-                            resultSet.getString("salesRepEmployeeNumber"),
-                            resultSet.getString("creditLimit")
-                    });
-                }
+ /**
+ * Method to search for employees by number in the database.
+ *
+ * @param customerNumber The customer number to search for.
+ * @return A list of customers, each containing details of an customer matching the search criteria.
+ */
+      public List<String[]> searchCustomersByNumber(String customerNumber) {
+      List<String[]> searchResults = new ArrayList<>();
+      String sql = "SELECT * FROM customers WHERE customerNumber LIKE ?";
+      try (Connection connection = new DbConnect().getConnection();
+      PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+      preparedStatement.setString(1, customerNumber + "%");
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+           while (resultSet.next()) {
+           searchResults.add(new String[]{
+           resultSet.getString("customerNumber"),
+           resultSet.getString("customerName"),
+           resultSet.getString("contactLastName"),
+           resultSet.getString("contactFirstName"),
+           resultSet.getString("phone"),
+           resultSet.getString("addressLine1"),
+           resultSet.getString("addressLine2"),
+           resultSet.getString("city"),
+           resultSet.getString("state"),
+           resultSet.getString("postalCode"),
+           resultSet.getString("country"),
+           resultSet.getString("salesRepEmployeeNumber"),
+           resultSet.getString("creditLimit")
+          });
+        }
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -250,7 +306,7 @@ myRs.getString("creditLimit"),
  * @return true if the customer was successfully added, false if the addition failed.
  */
  // Method to add a new customer
- public boolean addCustomer(String customernumber ,String customerName, String contactLastName, 
+ public boolean addCustomer(String customernumber , String customerName, String contactLastName, 
  String contactFirstName, String phone, String addressLine1, 
  String addressLine2, String city, String state, String postalCode, 
  String country, String salesRepEmployeeNumber, String creditLimit) {
@@ -285,10 +341,10 @@ myRs.getString("creditLimit"),
 }
 
 // Method to update a customer record
-public boolean updateCustomer(String customerNumber, String customerName, String contactLastName, 
-    String contactFirstName, String phone, String addressLine1, 
-    String addressLine2, String city, String state, String postalCode, 
-    String country, String salesRepEmployeeNumber, String creditLimit) {
+public boolean updateCustomer(String updateCustomerNumber, String updateCustomerName, String updateCLastName, 
+    String updateCFirstName, String updatePhone, String updateAddressLine1, 
+    String updateAddressLine2, String updateCity, String updateState, String updatePostalCode, 
+    String updateCountry, String updateSalesRepEmployeeNumber, String updateCreditLimit) {
 String sql = "UPDATE customers SET customerName = COALESCE(?, customerName), " +
 "contactLastName = COALESCE(?, contactLastName), " +
 "contactFirstName = COALESCE(?, contactFirstName), " +
@@ -305,19 +361,19 @@ String sql = "UPDATE customers SET customerName = COALESCE(?, customerName), " +
 try (Connection connection = new DbConnect().getConnection();
 PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-preparedStatement.setString(1, isEmpty(customerName) ? null : customerName);
-preparedStatement.setString(2, isEmpty(contactLastName) ? null : contactLastName);
-preparedStatement.setString(3, isEmpty(contactFirstName) ? null : contactFirstName);
-preparedStatement.setString(4, isEmpty(phone) ? null : phone);
-preparedStatement.setString(5, isEmpty(addressLine1) ? null : addressLine1);
-preparedStatement.setString(6, isEmpty(addressLine2) ? null : addressLine2);
-preparedStatement.setString(7, isEmpty(city) ? null : city);
-preparedStatement.setString(8, isEmpty(state) ? null : state);
-preparedStatement.setString(9, isEmpty(postalCode) ? null : postalCode);
-preparedStatement.setString(10, isEmpty(country) ? null : country);
-preparedStatement.setString(11, isEmpty(salesRepEmployeeNumber) ? null : salesRepEmployeeNumber);
-preparedStatement.setString(12, isEmpty(creditLimit) ? null : creditLimit);
-preparedStatement.setString(13, customerNumber);
+preparedStatement.setString(1, isEmpty(updateCustomerName) ? null : updateCustomerName);
+preparedStatement.setString(2, isEmpty(updateCLastName) ? null : updateCLastName);
+preparedStatement.setString(3, isEmpty(updateCFirstName) ? null : updateCFirstName);
+preparedStatement.setString(4, isEmpty(updatePhone) ? null : updatePhone);
+preparedStatement.setString(5, isEmpty(updateAddressLine1) ? null : updateAddressLine1);
+preparedStatement.setString(6, isEmpty(updateAddressLine2) ? null : updateAddressLine2);
+preparedStatement.setString(7, isEmpty(updateCity) ? null : updateCity);
+preparedStatement.setString(8, isEmpty(updateState) ? null : updateState);
+preparedStatement.setString(9, isEmpty(updatePostalCode) ? null : updatePostalCode);
+preparedStatement.setString(10, isEmpty(updateCountry) ? null : updateCountry);
+preparedStatement.setString(11, isEmpty(updateSalesRepEmployeeNumber) ? null : updateSalesRepEmployeeNumber);
+preparedStatement.setString(12, isEmpty(updateCreditLimit) ? null : updateCreditLimit);
+preparedStatement.setString(13, updateCustomerNumber);
 
 int rowsAffected = preparedStatement.executeUpdate();
 return rowsAffected > 0;
