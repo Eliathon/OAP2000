@@ -1,16 +1,16 @@
 package com.oap200.app.tabbedPanels;
 
-/**
-*@author Jesper Solberg
-*
-*/
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.prefs.Preferences;
 import com.oap200.app.utils.ButtonBuilder; // Importing the ButtonBuilder class
+
+/**
+*@author Jesper Solberg
+*
+*/
 
 /**
  * The TabbedPaymentPanel class represents a Swing JFrame for a tabbed payment panel,

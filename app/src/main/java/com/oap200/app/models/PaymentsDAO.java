@@ -1,10 +1,5 @@
 package com.oap200.app.models;
 
-/**
-*@author Jesper Solberg
-*
-*/
-
 import com.oap200.app.utils.DbConnect;
 
 import java.sql.Connection;
@@ -13,6 +8,11 @@ import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+*@author Jesper Solberg
+*
+*/
 
 /**
  * Data Access Object (DAO) class for handling payments-related database operations.

@@ -1,10 +1,5 @@
 package com.oap200.app.views;
 
-/**
-*@author Jesper Solberg
-*This panel ensures a visual help to view the paymentdata in the database.
-*/
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -14,6 +9,11 @@ import java.util.List;
 
 import com.oap200.app.models.PaymentsDAO;
 import com.oap200.app.utils.ButtonBuilder;
+
+/**
+*@author Jesper Solberg
+*This panel ensures a visual help to view the paymentdata in the database.
+*/
 
 /**
  * The PaymentManagementPanel class represents a JPanel for managing payments,
