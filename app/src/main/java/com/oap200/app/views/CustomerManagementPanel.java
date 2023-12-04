@@ -392,7 +392,7 @@ addButton.addActionListener(new ActionListener() {
         System.out.println("12:" + sRepEmployeeNumber);
         System.out.println("13:" + cLimit);
 
-        String customerInfoMessage = "Customer added successfully with inputs:\n\n" +
+        String customerInfoMessage = "Employee added successfully with inputs:\n\n" +
                 "Customer Number: " + cNumber + "\n" +
                 "Customer Name: " + cName + "\n" +
                 "Last Name: " + cLastName + "\n" +
@@ -565,7 +565,7 @@ customerController.handleUpdateCustomer(
                         );
                         JOptionPane.showMessageDialog(this, message, "Customer Deleted", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(this, "Failed to delete customer or customer not found.", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Failed to delete customer, customer not found or because they have existing orders.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (Exception e) {
                     // Handle the exception
