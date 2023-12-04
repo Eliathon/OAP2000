@@ -10,6 +10,8 @@ import com.oap200.app.utils.ButtonBuilder; // Importing the ButtonBuilder class
 /**
 *@author Jesper Solberg
 *
+*This application includes buttons for navigation,
+* handles window position and ensures the application is launched with a specified size.
 */
 
 /**

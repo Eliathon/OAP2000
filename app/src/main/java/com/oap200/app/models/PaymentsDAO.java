@@ -11,7 +11,9 @@ import java.util.List;
 
 /**
 *@author Jesper Solberg
-*
+*The class acts as a data access object, providing methods to fetch
+*payment infomation from the sql database. There methods retrieve info about the 
+*relevant data, and orders them in specified columns.
 */
 
 /**
