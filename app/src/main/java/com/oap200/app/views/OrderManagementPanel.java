@@ -86,8 +86,22 @@ public class OrderManagementPanel extends JPanel {
         setLayout(new BorderLayout());
 
         // Initialize ButtonBuilder buttons
-        JButton backButton = ButtonBuilder.createBlueBackButton(() -> { });
-        JButton logoutButton = ButtonBuilder.createRedLogoutButton(() -> {  });
+        // Initialize BackButton buttons
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> {
+            SwingUtilities.getWindowAncestor(this).dispose(); 
+
+        });
+        // Initialize LogoutButton button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> {
+
+            LoginPanel loginPanel = new LoginPanel();
+            loginPanel.setVisible(true);
+
+            SwingUtilities.getWindowAncestor(this).dispose();
+         });
+         
         JButton viewButton = ButtonBuilder.createViewButton(() -> { });
         JButton addButton = ButtonBuilder.createAddButton(() -> {
         
