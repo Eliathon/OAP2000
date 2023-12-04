@@ -2,7 +2,6 @@ package com.oap200.app.views;
 
 import com.oap200.app.Interfaces.ReportGenerator;
 import com.oap200.app.controllers.ReportSaleController;
-//import com.oap200.app.utils.DbConnect;
 import com.oap200.app.utils.PrintManager;
 import com.oap200.app.utils.ButtonBuilder;
 import com.oap200.app.utils.DateFactory;
